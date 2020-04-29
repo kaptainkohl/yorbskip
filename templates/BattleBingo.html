@@ -22,7 +22,7 @@
 	color:#3c70df;
 	font-size:200%;
 	font-weight:700;
-	height:130px;
+	height:85px;
 	width:95px;
 	max-width:95px;
 	text-align:center;
@@ -173,6 +173,88 @@ bingoList[3] = [
 {name: "4 trebleclefs", types: ["Round 3 global", "Trebleclefs"]},
 ];
 
+bingoList[4] = [
+{name: "6 jiggies in MT", types: ["Round 4 previous levels", "MT jiggies"]},
+{name: "5 jiggies in GGM", types: ["Round 4 previous levels", "GGM jiggies"]},
+{name: "Ice Train jiggy", types: ["Round 4 previous levels", "HFP jiggies"]},
+{name: "Defeat Terry", types: ["TDL","TDL jiggies"]},
+{name: "3 jiggies in CCL", types: ["CCL","CCL jiggies"]},
+{name: "All jinjos in IoH/SM", types: ["Jinjos"]},
+{name: "9 Glowbos", types:["Round 4 global", "Glowbos"]},
+{name: "8 Cheato pages", types:["Round 4 global", "Cheato pages"]},
+{name: "10 honeycombs", types: ["Round 4 global", "Honeycombs"]},
+{name: "6 trebleclefs", types: ["Round 4 global", "Trebleclefs"]},
+{name: "Dragon Kazooie", types: ["GGM"]},
+{name: "Chris P. Bacon Jiggy", types: ["JRL"]},
+{name: "Trash Can Jiggy", types: ["CCL"]},
+{name: "Oogle Boogle Jiggy", types: ["TDL"]},
+{name: "Old King Coal Jiggy", types: ["Train", "GGM"]},
+{name: "4 Train Switches", types: ["Train"]},
+{name: "Zubba's Minigame Jiggy", types: ["CCL"]},
+{name: "Enlarge the Small Styracosaurus", types: ["TDL"]},
+{name: "Terry Jiggy", types: ["Bosses", "TDL"]},
+{name: "Kill 7 Minjos", types: ["Minjos"]},
+{name: "All Notes in TDL", types: ["Notes", "TDL"]},
+{name: "Mr. Patch Jiggy", types: ["Bosses", "WW"]},
+{name: "All Cheato Pages in HFP", types: ["Cheatos", "HFP"]},
+];
+
+bingoList[5] = [
+{name: "All Train Switches", types: ["Train", "Global"]},
+{name: "4 Jiggies in JRL", types: ["JRL", "jiggies"]},
+{name: "Boggy’s Kids Jiggy", types: ["WW"]},
+{name: "5 Jiggies in WW", types: ["WW", "jiggies"]},
+{name: "5 Jiggies in HFP", types: ["HFP", "jiggies"]},
+{name: "Twinkly Packaging Jiggy", types: ["GI"]},
+{name: "8 Jiggies in GGM", types: ["GGM", "jiggies"]},
+{name: "Learn Shack Pack", types: ["Moves", "HFP"]},
+{name: "Learn Glide", types: ["Moves", "HFP"]},
+{name: "6 Jiggies in CCL", types: ["CCL", "jiggies"]},
+{name: "Quality Control Jiggy", types: ["GI"]},
+{name: "Clinkers Cavern Jiggy", types: ["GI"]},
+{name: "Learn Snooze Pack", types: ["Moves", "GI"]},
+{name: "6 Jiggies in CCL", types: ["CCL", "jiggies"]},
+{name: "11 Glowbos", types: ["Glowbo", "Global"]},
+{name: "7 Trebleclefs", types: ["Trebleclef", "Global"]},
+{name: "All Notes in GI", types: ["Notes", "GI"]},
+{name: "Tiptup Jiggy", types: ["JRL", "hatch"]},
+{name: "Defeat 5 Bosses", types: ["Bosses"]},
+{name: "12 Cheato pages", types:["Global", "Cheato pages"]},
+];
+
+bingoList[6] = [
+{name: "All Jinjos in GI", types: ["Jinjos", "GI"]},
+{name: "Kill 11 Minjos", types: ["Minjos", "Global"]},
+{name: "Worker Jiggy in GI", types: ["GI"]},
+{name: "6 Jiggies in GI", types: ["GI", "jiggies"]},
+{name: "7 Jiggies in WW", types: ["WW", "jiggies"]},
+{name: "8 Jiggies in CCL", types: ["CCL", "jiggies"]},
+{name: "Hatch 7 Eggs", types: ["hatch", "Global", "Over"]},
+{name: "Terry’s Kids Jiggy", types:["TDL", "hatch"]},
+{name: "Oil Drill Jiggy", types: ["HFP", "GI"]},
+{name: "Defeat 6 Bosses", types: ["Bosses"]},
+{name: "9 Trebleclefs", types: ["Trebleclef", "Global"]},
+{name: "Sabreman Jiggy", types: ["HFP"]},
+{name: "All Mumbo Warp Pads", types: ["Warps", "Over"]},
+{name: "15 Cheato pages", types:["Global", "Cheato pages"]},
+];
+
+bingoList[7] = [
+{name: "Dodgem Dome Jiggy", types: ["WW"]},
+{name: "9-Health BK", types: ["Honeycombs", "Global"]},
+{name: "Alien Kids Jiggy", types: ["HFP"]},
+{name: "Heal The Sick Styracosaurus", types:  ["TDL"]},
+{name: "7 Jiggies in HFP", types: ["HFP"]},
+{name: "Defeat 7 Bosses", types: ["Bosses"]},
+{name: "Open all 4 Battery Doors in GI", types: ["GI"]},
+{name: "All Cheato Pages in CCL", types: ["Cheatos", "CCL"]},
+{name: "Kill 13 Minjos", types: ["Minjos", "Global"]},
+{name: "Ride Train to Icy Side", types: ["HFP", "Train"]},
+{name: "2 Cheato Page in Every Level", types: ["Global", "Cheatos"]},
+{name: "18 Cheato pages", types:["Global", "Cheatos"]},
+];
+
+
 
 var roundtemp =[]
 var round =[];
@@ -219,7 +301,7 @@ function start_game()
 	
 	
 	
-for (var a = 1; a< 4; a++){
+for (var a = 1; a< 8; a++){
 	
 	var r11 = (SEED * a)%10;
 	var r12 = Math.floor(((SEED * a)/100))%10;
@@ -298,7 +380,7 @@ function tableCreate(name) {
     var tbl = document.createElement('table');
 	tbl.setAttribute('id','bingo')	
     var tbdy = document.createElement('tbody');
-    for (var i = 1; i < 4; i++) {
+    for (var i = 1; i < 8; i++) {
         var tr = document.createElement('tr');
         tr.setAttribute('id',name +" tr " +i);
 		for (var j = 0; j < 3; j++) {
@@ -341,6 +423,7 @@ function clicked(x) {
 socket.on('newdata', function(msg) {
 	
 	document.getElementById(msg.data).style.backgroundColor=msg.color;
+	document.getElementById(msg.data).style.color='#fff';
 	check_round();
 });
 
@@ -373,8 +456,10 @@ function check_round() {
 		for (var i = a; i < a+3; i++) 
 		{	
 			document.getElementById("player1 cell "+i).style.backgroundColor = "red";
+			document.getElementById("player1 cell "+i).style.color='#fff';
 			document.getElementById("player1 cell "+i).removeAttribute('onclick');
 			document.getElementById("player2 cell "+i).style.backgroundColor = "red"
+			document.getElementById("player2 cell "+i).style.color='#fff';
 			document.getElementById("player2 cell "+i).removeAttribute('onclick');
 			document.getElementById("player1 cell "+(i+3)).style.visibility = 'visible';
 			document.getElementById("player2 cell "+(i+3)).style.visibility = 'visible';
@@ -386,8 +471,10 @@ function check_round() {
 		for (var i = a; i < a+3; i++) 
 		{	
 			document.getElementById("player1 cell "+i).style.backgroundColor = "blue";
+			document.getElementById("player1 cell "+i).style.color='#fff';
 			document.getElementById("player1 cell "+i).removeAttribute('onclick');
 			document.getElementById("player2 cell "+i).style.backgroundColor = "blue"
+			document.getElementById("player2 cell "+i).style.color='#fff';
 			document.getElementById("player2 cell "+i).removeAttribute('onclick');
 			document.getElementById("player1 cell "+(i+3)).style.visibility = 'visible';
 			document.getElementById("player2 cell "+(i+3)).style.visibility = 'visible';			

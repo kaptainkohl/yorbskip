@@ -20,7 +20,6 @@ def test_message(message):
     
 @socketio.on('clicked')
 def handle_array(data):
-    print(data)
     emit("newdata", data , broadcast=True)
     
 @socketio.on('start')
