@@ -1,0 +1,140 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+    <title>Banjo-Tooie Bingo</title>
+
+    <!-- Style -->
+    <link href="{{ url_for('static', filename='css/bingo.css') }}" rel="stylesheet" type="text/css">
+    <link href="{{ url_for('static', filename='css/style.css') }}" rel="stylesheet" type="text/css">
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.0/jquery.min.js"></script>
+
+    <style>
+	body{
+		 padding-right: 30px;
+	  padding-left: 30px;
+	   padding-top: 5px;
+	
+	}
+	#bingo td {
+	background:#000811;
+	border:2px #0a245a solid;
+	color:#3c70df;
+	font-size:200%;
+	font-weight:700;
+	height:130px;
+	width:95px;
+	max-width:95px;
+	text-align:center;
+	line-height: 120%;
+
+}
+
+#bingo td:hover {
+	background:#1448b3;
+	color:#fff;
+}
+	
+#bingo tr td.greensquare {
+	background:#051;
+}
+
+#bingo tr td.greensquare.hover {
+	background:#072;
+}	
+	
+	
+	</style>
+</head>
+
+<body>
+
+
+        <div id="results">
+            <table class = "bingoPage" id="bingo"><tbody>
+			
+			<tr>
+			<td colspan = "6" class="bingo" id="slot1asd" style="height:700px;"></td>
+			<td colspan = "6" class="bingo" id="slot1asasdd" style="height:700px;"></td>
+			</tr>
+			<tr>
+				<td colspan = "5" class="bingo" id="slot1" style="height:35px;color:red;">Name</td>
+				<td colspan = "1" rowspan="3" class="bingo" id="row7f" style="height:35px;border:0px;"></td>
+				<td colspan = "1" rowspan="3" class="bingo" id="row7f" style="height:35px;border:0px;"></td>
+				<td colspan = "5" class="bingo" id="slot8" style="height:35px;color:red;">Name</td>				
+				
+			</tr>
+			<tr>
+				<td colspan = "5" class="bingo" id="slot2" style="height:35px;">Col 5</td>
+
+				<td colspan = "5" class="bingo" id="slot9" style="height:35px;">Col 5</td>
+			
+            <tr>
+                
+                <td class="bingo" id="slot3" onclick ="clicked(this);">9-Health BK</td>
+                <td class="bingo" id="slot4" onclick ="clicked(this);">Canary Mary Jiggy & CP in GGM</td>
+                <td class="bingo" id="slot5" onclick ="clicked(this);">Trash Can Jiggy</td>
+                <td class="bingo" id="slot6" onclick ="clicked(this);">Double Air</td>
+                <td class="bingo" id="slot7" onclick ="clicked(this);">Hag 1</td>
+				
+
+				
+				
+                <td class="bingo" id="slot10" onclick ="clicked(this);">9-Health BK</td>
+                <td class="bingo" id="slot11" onclick ="clicked(this);">Canary Mary Jiggy & CP in GGM</td>
+                <td class="bingo" id="slot12" onclick ="clicked(this);">Trash Can Jiggy</td>
+                <td class="bingo" id="slot13" onclick ="clicked(this);">Double Air</td>
+                <td class="bingo" id="slot14" onclick ="clicked(this);">Hag 1</td>
+            </tr>
+            </tbody></table>
+        </div>
+	<br>
+	<br>
+<textarea align="right" rows="40" cols="120"style="height:400px;width:800px;font-size:14pt;" id="goals" type="text" name="goals">
+Name
+ROW
+Goal 1
+Goal 2
+Goal 3
+Goal 4
+Goal 5
+Name
+ROW
+Goal 1
+Goal 2
+Goal 3
+Goal 4
+Goal 5
+</textarea>
+
+<button onclick = "goals();">Place Rows </button>
+
+<script>
+
+
+function goals(){
+	var obj = document.getElementById("goals").value.split('\n');
+	for (i = 0; i < obj.length;i++)
+		{
+		document.getElementById("slot"+(i+1)).innerHTML = obj[i];
+
+		}
+}
+
+function clicked(x) {
+    
+	if(x.style.backgroundColor == 'green')
+	{
+	 x.style.backgroundColor="#000811";
+	 x.style.color= "#3c70df";
+	}
+	else {
+	x.style.backgroundColor='green';
+	x.style.color="#fff";
+	}
+
+}
+</script>
+
+</body>
+</html>
