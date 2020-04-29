@@ -1,1 +1,1 @@
-web: gunicorn --worker-class socketio.sgunicorn.GeventSocketIOWorker --log-file=- yorbskipServer:app
+web: gunicorn --worker-class eventlet -w 1 yorbskipServer:app
