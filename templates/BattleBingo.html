@@ -1,0 +1,422 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+    <title>Banjo-Tooie Bingo</title>
+
+    <!-- Style -->
+    <link href="{{ url_for('static', filename='css/bingo.css') }}" rel="stylesheet" type="text/css">
+    <link href="{{ url_for('static', filename='css/style.css') }}" rel="stylesheet" type="text/css">
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.0/jquery.min.js"></script>
+
+    <style>
+	body{
+		 padding-right: 30px;
+	  padding-left: 30px;
+	   padding-top: 5px;
+	
+	}
+	#bingo td {
+	background:#000811;
+	border:2px #0a245a solid;
+	color:#3c70df;
+	font-size:200%;
+	font-weight:700;
+	height:130px;
+	width:95px;
+	max-width:95px;
+	text-align:center;
+	line-height: 120%;
+
+}
+
+#bingo td:hover {
+	background:#1448b3;
+	color:#fff;
+}
+	
+#bingo tr td.greensquare {
+	background:#051;
+}
+
+#bingo tr td.greensquare.hover {
+	background:#072;
+}	
+
+.grid-container {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    grid-gap: 20px;
+}	
+
+.center {
+  display: block;
+  margin-left: auto;
+  margin-right: auto;
+
+}	
+	
+	</style>
+</head>
+<body>
+	<div class="center">
+	 <img src="{{ url_for('static', filename='logo.png') }}" style="height:150px;" alt="battle"class="center">
+	 <br>
+
+	<button onclick="start_game()" class="button">Generate</button>
+	<input type="number" id="seed" min="0" max="999999">
+	COLOR Select: 
+<select id="p1color" name="player" onchange="color_pick(this.value);">
+  <option value="Spectate">Spectate</option>
+  <option value="red">Red</option>  
+  <option value="blue">Blue</option> 
+   
+</select> 
+</div> 
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.4/jquery.min.js"></script>
+
+<div class="grid-container">
+
+    <div id="player1" class="grid-child player1">
+        <img src="{{ url_for('static', filename='4.png') }}" style="height:50px;" alt="red"class="center">
+		
+    </div>
+
+    <div id="player2" class="grid-child player2">
+        <img src="{{ url_for('static', filename='2.png') }}" style="height:50px" alt="blue" class="center">
+		
+    </div>
+  
+</div>
+
+<script src="//cdnjs.cloudflare.com/ajax/libs/socket.io/2.2.0/socket.io.js" integrity="sha256-yr4fRk/GU1ehYJPAs8P4JlTgu0Hdsp4ZKrx8bDEDC3I=" crossorigin="anonymous"></script>
+<script type="text/javascript" charset="utf-8">
+    var socket = io();
+    socket.on('connect', function() {
+        socket.emit('my event', "Hello");
+    });
+</script>
+
+<script>
+	playercolor = 'purple';
+	function color_pick(p){
+    playercolor = p;
+	
+/*if (p == "red"){
+	
+		document.getElementById("player1").style.visibility = 'visible';
+		document.getElementById("player2").style.visibility = 'hidden';		
+	}
+	if (p == "blue"){
+		document.getElementById("player2").style.visibility = 'visible';
+		document.getElementById("player1").style.visibility = 'hidden';		
+	}
+	if (p == "Spectate"){
+		document.getElementById("player2").style.visibility = 'visible';
+		document.getElementById("player1").style.visibility = 'visible';		
+	} */		
+}
+	
+	$('td').click(function(){console.log(playercolor);});
+
+
+		var goals = [];
+		
+	var bingoList = [];
+	
+bingoList[1] = [
+{name: "All honeycombs in MT", types: ["MT", "Honeycombs"]},
+{name: "All Cheato pages in MT", types: ["MT", "Cheato pages"]},
+{name: "All glowbos in MT", types: ["MT", "Glowbos"]},
+{name: "3 jiggies in MT", types: ["MT","MT jiggies"]},
+{name: "Golden Goliath Jiggy", types: ["MT"]},
+{name: "Relic Jiggy", types: ["MT"]},
+{name: "Dilberta Jiggy", types: ["GGM"]},
+{name: "Power Hut Jiggy", types: ["GGM"]},
+{name: "3 Glowbos", types:["Round 1 global", "Glowbos"]},
+{name: "4 Cheato pages", types:["Round 1 global", "Cheato pages"]},
+{name: "5 Empty Honeycombs", types: ["Round 1 global", "Honeycombs"]},
+{name: "2 jiggies in GGM", types: ["GGM", "GGM jiggies"]},
+{name: "All Honeycombs in GGM", types: ["GGM", "Honeycombs"]},
+];
+
+
+
+bingoList[2] = [
+{name: "All Honeycombs in MT", types: ["MT", "Honeycombs"]},
+{name: "4 jiggies in MT", types: ["MT","MT jiggies"]},
+{name: "5 jiggies in MT", types: ["MT","MT jiggies"]},
+{name: "3 jiggies in GGM", types: ["GGM", "GGM jiggies"]},
+{name: "4 jiggies in GGM", types: ["GGM", "GGM jiggies"]},
+{name: "3 jiggies in WW", types: ["WW", "WW jiggies"]},
+{name: "Inferno jiggy", types: ["WW", "WW jiggies"]},
+{name: "All Honeycombs in WW", types: ["WW", "Honeycombs"]},
+{name: "5 Glowbos", types:["Round 2 global", "Glowbos"]},
+{name: "6 Cheato pages", types:["Round 2 global", "Cheato pages"]},
+{name: "7 Empty Honeycombs", types: ["Round 2 global", "Honeycombs"]},
+];
+
+bingoList[3] = [
+{name: "5 jiggies in MT", types: ["Round 3 previous level","MT jiggies"]},
+{name: "4 jiggies in GGM", types: ["Round 3 previous level", "GGM jiggies"]},
+{name: "3 jiggies in WW", types: ["Round 3 previous level", "WW jiggies"]},
+{name: "Inferno jiggy", types: ["Round 3 previous level", "WW jiggies"]},
+{name: "All Honeycombs in WW", types: ["Round 3 previous level", "Honeycombs"]},
+{name: "1 jiggy in JRL", types: ["JRL", "JRL jiggies"]},
+{name: "All glowbos in JRL", types: ["JRL", "Glowbos"]},
+{name: "1 jiggy in HFP", types: ["HFP", "HFP jiggies"]},
+{name: "All glowbos in HFP", types: ["HFP", "Glowbos"]},
+{name: "Stub Biggafoot's Toe", types: ["HFP"]},
+{name: "7 Glowbos", types:["Round 3 global", "Glowbos"]},
+{name: "7 Cheato pages", types:["Round 3 global", "Cheato pages"]},
+{name: "8 health BK", types: ["Round 3 global", "Honeycombs"]},
+{name: "4 trebleclefs", types: ["Round 3 global", "Trebleclefs"]},
+];
+
+
+var roundtemp =[]
+var round =[];
+	round[1] = [];
+	round[2] = [];
+	round[3] = [];
+	round[4] = [];
+	round[5] = [];
+	round[6] = [];
+	round[7] = [];
+
+ 
+ 
+ 	
+socket.on('startgame', function(msg) {
+	
+	document.getElementById("seed").value = msg.data;	
+	getRandom();
+});
+ 
+function start_game()
+{ 
+ socket.emit('start', {data: parseInt(document.getElementById("seed").value)});
+}
+ 
+ 
+ function getRandom() {
+	
+	//create a list of goals that are balanced
+	
+	// gen round 1
+	// get 3 that dont have overlapping tags
+
+	var SEED = parseInt(document.getElementById("seed").value);
+	SEED = Math.floor(59153827743/SEED);
+	
+	
+	
+	
+for (var a = 1; a< 4; a++){
+	
+	var r11 = (SEED * a)%10;
+	var r12 = Math.floor(((SEED * a)/100))%10;
+	var r13 = Math.floor(((SEED * a)/1000))%10;
+	
+	roundtemp = bingoList[a].slice();
+	
+	round[a][0]= roundtemp[r11];
+	console.log(round[a][0]);
+		
+	console.log(bingoList[a]);
+	//loop and delete all things that overlap
+	
+	for (var i = 0; i < roundtemp.length; i++) {
+			
+			for (var j = 0; j < bingoList[a][i].types.length; j++) {
+				for (var k = 0; k < round[a][0].types.length; k++) {
+				if (bingoList[a][i].types[j] == round[a][0].types[k])
+					{
+					roundtemp[i] = null;
+					}
+				}				
+			}
+	}
+	console.log(roundtemp);
+	
+	//grab 2nd
+	
+	while( roundtemp[r12] == null )
+	{
+	r12 = (r12 + r11 + 1)%10;
+	}
+	
+	round[a][1]= roundtemp[r12];
+	console.log(round[a][1]);
+	
+	for (var i = 0; i < roundtemp.length; i++) {
+			
+			for (var j = 0; j < bingoList[a][i].types.length; j++) {
+				for (var k = 0; k < round[a][1].types.length; k++) {
+				if (bingoList[a][i].types[j] == round[a][1].types[k])
+					{
+					roundtemp[i] = null;
+					}
+				}				
+			}
+	}
+	console.log(roundtemp);	
+	
+	//grab 3nd
+	console.log(r13);
+	while( roundtemp[r13] == null )
+	{
+	r13 = (r13 + 1)%10;
+	}
+	
+	round[a][2]= roundtemp[r13];	
+	console.log(round[a][2]);
+	}
+	
+	
+	
+	
+	
+	
+	
+	tableCreate("player1");
+	tableCreate("player2");
+ }
+
+
+
+function tableCreate(name) {
+	var a = 0;
+    var place = document.getElementById(name);
+    var tbl = document.createElement('table');
+	tbl.setAttribute('id','bingo')	
+    var tbdy = document.createElement('tbody');
+    for (var i = 1; i < 4; i++) {
+        var tr = document.createElement('tr');
+        tr.setAttribute('id',name +" tr " +i);
+		for (var j = 0; j < 3; j++) {
+
+                var td = document.createElement('td');
+                td.appendChild(document.createTextNode(round[i][j].name))
+				td.setAttribute('id',name +" cell " +a)				
+				td.setAttribute('height', '80px');
+				td.setAttribute('onclick','clicked(this)')
+                tr.appendChild(td)
+			
+			if (i > 1){
+			td.setAttribute("style"," visibility:hidden");
+			}
+
+			a++;
+			
+        }
+        tbdy.appendChild(tr);
+    }
+    console.log(tbl);
+	console.log(tbdy);
+	tbl.appendChild(tbdy);
+	place.appendChild(tbl);
+
+}	
+
+
+function clicked(x) {
+   
+	
+
+    socket.emit('clicked', {data: x.id,color:playercolor});
+
+
+}
+
+
+	
+socket.on('newdata', function(msg) {
+	
+	document.getElementById(msg.data).style.backgroundColor=msg.color;
+	check_round();
+});
+
+
+function check_round() {
+
+// check for color of cells in a row
+
+	
+	for (var a = 0; a < 22; a+=3) 
+	{	
+	var color_red =0;
+	var color_blue =0;
+	
+	for (var i = a; i < a+3; i++) 
+	{
+	 if (document.getElementById("player1 cell "+i).style.backgroundColor == "red")
+	 {
+		color_red++;
+	 }
+	 if (document.getElementById("player2 cell "+i).style.backgroundColor == "blue")
+	 {
+		color_blue++;
+	 }	 	 
+	}
+	//console.log("a "+a)
+	//console.log("color red "+color_red)
+	if ( color_red >=2 )
+	{
+		for (var i = a; i < a+3; i++) 
+		{	
+			document.getElementById("player1 cell "+i).style.backgroundColor = "red";
+			document.getElementById("player1 cell "+i).removeAttribute('onclick');
+			document.getElementById("player2 cell "+i).style.backgroundColor = "red"
+			document.getElementById("player2 cell "+i).removeAttribute('onclick');
+			document.getElementById("player1 cell "+(i+3)).style.visibility = 'visible';
+			document.getElementById("player2 cell "+(i+3)).style.visibility = 'visible';
+		}		
+		
+	}
+	if ( color_blue >=2 )
+	{
+		for (var i = a; i < a+3; i++) 
+		{	
+			document.getElementById("player1 cell "+i).style.backgroundColor = "blue";
+			document.getElementById("player1 cell "+i).removeAttribute('onclick');
+			document.getElementById("player2 cell "+i).style.backgroundColor = "blue"
+			document.getElementById("player2 cell "+i).removeAttribute('onclick');
+			document.getElementById("player1 cell "+(i+3)).style.visibility = 'visible';
+			document.getElementById("player2 cell "+(i+3)).style.visibility = 'visible';			
+		}		
+		
+	}
+	
+	}
+	
+	color_pick(playercolor);
+}
+
+
+function shuffle(array) {
+  var currentIndex = array.length, temporaryValue, randomIndex;
+
+  // While there remain elements to shuffle...
+  while (0 !== currentIndex) {
+
+    // Pick a remaining element...
+    randomIndex = Math.floor(Math.random() * currentIndex);
+    currentIndex -= 1;
+
+    // And swap it with the current element.
+    temporaryValue = array[currentIndex];
+    array[currentIndex] = array[randomIndex];
+    array[randomIndex] = temporaryValue;
+  }
+
+  return array;
+}		
+</script>
+</body>
+</html>
+
+
+
+
+
