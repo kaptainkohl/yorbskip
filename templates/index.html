@@ -7,13 +7,94 @@
     <!-- Style -->
     <link href="{{ url_for('static', filename='css/bingo.css') }}" rel="stylesheet" type="text/css">
     <link href="{{ url_for('static', filename='css/style.css') }}" rel="stylesheet" type="text/css">
+	<link href="https://fonts.googleapis.com/css2?family=Open+Sans&display=swap" rel="stylesheet">
+	<script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.0/js/bootstrap.min.js"></script>
+	<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.0/css/bootstrap.min.css">
 <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.0/jquery.min.js"></script>
+<style>
+	body{
+	display: block;
+	margin-left: auto;
+	margin-right: auto;
+		background:#2c2f33;
+		font-family: 'Open Sans', sans-serif;
+	}
 
+.center {
+  display: block;
+  margin-left: auto;
+  margin-right: auto;
+
+}	
+#invite {
+	font-family: 'Open Sans', sans-serif;
+	background:#23272a;
+	border:2px #0a245a solid;
+	color:#99aab5;
+	font-size:100%;
+	font-weight:800;
+	line-height: 120%;
+
+}
+.circle {
+  height: 13px;
+  width: 13px;
+  background-color: #79E37E;
+  border-radius: 50%;
+}
+.circle2 {
+  height: 13px;
+  width: 13px;
+  background-color: #99aab5;
+  border-radius: 50%;
+}
+</style>
 </head>
 
 
 <body>
-yorbskip
+<img src="{{ url_for('static', filename='yorbskiplogo.png') }}" style="height:250px;" alt="yorb"class="center">
+<div class="center">
+<button type="button" class="btn btn-primary btn-lg" style="background-color:#f500dc;" onclick="battle();" >Battle Bingo</button>
+<button type="button" class="btn btn-primary btn-lg" style="background-color:#f500dc;" onclick="stats();" >Bingo Stats</button>
+<button type="button" class="btn btn-primary btn-lg" style="background-color:#f500dc;" onclick="hor();" >Horizontal Goals</button>
+</div>
+<br>
+<br>
+<table id="invite" style="width:350px;border:2px;" class="center">
+  	<tr>
+		<td colspan = "3" id="slot1asd" style="height:20px;"> &ensp; YOU'VE BEEN INVITED TO JOIN A SERVER</td>
+
+	</tr>
+  <tr>
+    <td colspan = "1" rowspan="2"  id="row7f" style="height:35px;border:0px;"> <img src="{{ url_for('static', filename='5.png') }}" style="height:50px;" alt="red"class="center"></td>
+	<td colspan = "2" style="text-align:left" >Sym Squad</td>
+	<td colspan = "1" rowspan="2" ><button type="button" class="btn btn-primary" style="background-color:#79E37E;" onclick="meme();" >Join</button></td>
+  </tr>
+  <tr>
+    <td> <div class="circle" style="float: left;"></div> <div style="float: left;"> 18 Online</div> </td>
+	<td><div class="circle2" style="float: left;"></div><div style="float: left;"> 37 Members</div> </td>
+  </tr>
+
+</table>
+
+
+<script>
+function meme(){
+window.location.href = "https://www.youtube.com/watch?v=LSmBRG3IWy8";
+}
+function battle(){
+window.location.href = "https://www.yorbskip.com/BattleBingo";
+}
+function stats(){
+window.location.href = "https://www.yorbskip.com/BingoStats";
+}
+function hor(){
+window.location.href = "https://www.yorbskip.com/HorizontalGoals";
+}
+</script>
+
+
 </body>
 </html>
 
