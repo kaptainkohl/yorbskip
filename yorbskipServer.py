@@ -9,6 +9,8 @@ socketio = SocketIO(app)
 var_seed = 0
 var_player1 = []
 var_player2 = []
+var_c1 = []
+var_c2 = []
 
 @app.route('/')
 def index():
@@ -29,14 +31,18 @@ def horGoals():
 @socketio.on('my event')
 def test_message(message):
     print(var_seed)
-    emit("load", {'seed': var_seed, 'player1':var_player1,'player2':var_player2}, broadcast=True);
+    emit("load", {'seed': var_seed, 'player1':var_player1,'player2':var_player2,'c1':var_c1,'c2':var_c2});
     
 @socketio.on('clicked')
 def handle_array(data):
     global var_player1
     global var_player2
+    global var_c1
+    global var_c2    
     var_player1 = data['p1']
     var_player2 = data['p2']
+    var_c1 = data['c1']
+    var_c2 = data['c2']        
     emit("newdata", data , broadcast=True)
     
 @socketio.on('start')

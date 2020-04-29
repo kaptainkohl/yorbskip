@@ -125,7 +125,10 @@
 	var p1 =[];
 	
 	var p2 =[];
+
+	var c1 =[];
 	
+	var c2 =[];	
 		
 	var bingoList = [];
 	
@@ -149,117 +152,173 @@ bingoList[1] = [
 
 
 
+
 bingoList[2] = [
 {name: "All Honeycombs in MT", types: ["MT", "Honeycombs"]},
-{name: "4 jiggies in MT", types: ["MT","MT jiggies"]},
 {name: "5 jiggies in MT", types: ["MT","MT jiggies"]},
-{name: "3 jiggies in GGM", types: ["GGM", "GGM jiggies"]},
+{name: "Targitzan Jiggy", types: ["MT"]},
 {name: "4 jiggies in GGM", types: ["GGM", "GGM jiggies"]},
-{name: "3 jiggies in WW", types: ["WW", "WW jiggies"]},
+{name: "CM Cheato Page", types: ["GGM", "Cheato pages"]},
 {name: "Inferno jiggy", types: ["WW", "WW jiggies"]},
 {name: "All Honeycombs in WW", types: ["WW", "Honeycombs"]},
-{name: "5 Glowbos", types:["Round 2 global", "Glowbos"]},
+{name: "6 Glowbos", types:["Round 2 global", "Glowbos"]},
 {name: "6 Cheato pages", types:["Round 2 global", "Cheato pages"]},
 {name: "7 Empty Honeycombs", types: ["Round 2 global", "Honeycombs"]},
-];
-
-bingoList[3] = [
-{name: "5 jiggies in MT", types: ["Round 3 previous level","MT jiggies"]},
-{name: "4 jiggies in GGM", types: ["Round 3 previous level", "GGM jiggies"]},
-{name: "3 jiggies in WW", types: ["Round 3 previous level", "WW jiggies"]},
 {name: "Inferno jiggy", types: ["Round 3 previous level", "WW jiggies"]},
-{name: "All Honeycombs in WW", types: ["Round 3 previous level", "Honeycombs"]},
 {name: "1 jiggy in JRL", types: ["JRL", "JRL jiggies"]},
 {name: "All glowbos in JRL", types: ["JRL", "Glowbos"]},
 {name: "1 jiggy in HFP", types: ["HFP", "HFP jiggies"]},
 {name: "All glowbos in HFP", types: ["HFP", "Glowbos"]},
 {name: "Stub Biggafoot's Toe", types: ["HFP"]},
-{name: "7 Glowbos", types:["Round 3 global", "Glowbos"]},
-{name: "7 Cheato pages", types:["Round 3 global", "Cheato pages"]},
-{name: "8 health BK", types: ["Round 3 global", "Honeycombs"]},
-{name: "4 trebleclefs", types: ["Round 3 global", "Trebleclefs"]},
 ];
 
+bingoList[3] = [
+{name: "3 jiggies in WW", types: ["WW"]},
+{name: "8 Glowbos", types:["Global", "Glowbos"]},
+{name: "8 Cheato pages", types:["Global", "Cheato pages"]},
+{name: "8 health BK", types: ["Global", "Honeycombs"]},
+{name: "5 trebleclefs", types: ["Global", "Trebleclefs"]},
+{name: "Chris P. Bacon Jiggy", types: ["JRL"]},
+{name: "Mr. Patch Jiggy", types: ["WW","Bosses"]},
+{name: "MT Kickball", types: ["MT"]},
+{name: "Old King Coal Jiggy", types: ["GGM", "Train"]},
+{name: "All Notes in JRL", types: ["JRL"]},
+{name: "All Notes in HFP", types: ["HFP"]},
+{name: "6 jiggies in MT", types: ["MT","MT jiggies"]},
+{name: "5 jiggies in GGM", types: ["GGM", "GGM jiggies"]},
+];
+
+
 bingoList[4] = [
-{name: "6 jiggies in MT", types: ["Round 4 previous levels", "MT jiggies"]},
-{name: "5 jiggies in GGM", types: ["Round 4 previous levels", "GGM jiggies"]},
-{name: "Ice Train jiggy", types: ["Round 4 previous levels", "HFP jiggies"]},
-{name: "Defeat Terry", types: ["TDL","TDL jiggies"]},
+{name: "All Cheato Pages in HFP", types: ["Round 4 previous levels","Cheato pages"]},
+{name: "Dragon Kazooie", types: ["GGM"]},
+{name: "Crushing Shed Jiggy", types: ["WW","Bosses"]},
+{name: "Enlarge the Small Styracosaurus", types: ["TDL"]},
+{name: "Terry Jiggy", types: ["TDL", "Bosses"]},
+{name: "All Notes in TDL", types: ["TDL", "Notes"]},
+{name: "Oogle Boogle Jiggy", types: ["TDL", "TDL jiggies"]},
+{name: "Trash Can Jiggy", types: ["CCL", "CCL jiggies"]},
 {name: "3 jiggies in CCL", types: ["CCL","CCL jiggies"]},
+{name: "Zubba's Minigame Jiggy", types: ["CCL", "CCL jiggies"]},
 {name: "All jinjos in IoH/SM", types: ["Jinjos"]},
+{name: "5 Trebleclefs", types:["Round 4 global", "Trebleclefs"]},
 {name: "9 Glowbos", types:["Round 4 global", "Glowbos"]},
 {name: "8 Cheato pages", types:["Round 4 global", "Cheato pages"]},
 {name: "10 honeycombs", types: ["Round 4 global", "Honeycombs"]},
 {name: "6 trebleclefs", types: ["Round 4 global", "Trebleclefs"]},
-{name: "Dragon Kazooie", types: ["GGM"]},
-{name: "Chris P. Bacon Jiggy", types: ["JRL"]},
-{name: "Trash Can Jiggy", types: ["CCL"]},
-{name: "Oogle Boogle Jiggy", types: ["TDL"]},
-{name: "Old King Coal Jiggy", types: ["Train", "GGM"]},
-{name: "4 Train Switches", types: ["Train"]},
-{name: "Zubba's Minigame Jiggy", types: ["CCL"]},
-{name: "Enlarge the Small Styracosaurus", types: ["TDL"]},
-{name: "Terry Jiggy", types: ["Bosses", "TDL"]},
-{name: "Kill 7 Minjos", types: ["Minjos"]},
-{name: "All Notes in TDL", types: ["Notes", "TDL"]},
-{name: "Mr. Patch Jiggy", types: ["Bosses", "WW"]},
-{name: "All Cheato Pages in HFP", types: ["Cheatos", "HFP"]},
+{name: "4 Train Switches", types: ["Round 4 global","Train"]},
+{name: "Kill 7 Minjos", types: ["Round 4 global","Minjos"]},
+{name: "All Cheato Pages in HFP", types: ["HFP","Cheato pages"]},
 ];
 
 bingoList[5] = [
-{name: "All Train Switches", types: ["Train", "Global"]},
-{name: "4 Jiggies in JRL", types: ["JRL", "jiggies"]},
-{name: "Boggy’s Kids Jiggy", types: ["WW"]},
-{name: "5 Jiggies in WW", types: ["WW", "jiggies"]},
-{name: "5 Jiggies in HFP", types: ["HFP", "jiggies"]},
-{name: "Twinkly Packaging Jiggy", types: ["GI"]},
-{name: "8 Jiggies in GGM", types: ["GGM", "jiggies"]},
-{name: "Learn Shack Pack", types: ["Moves", "HFP"]},
-{name: "Learn Glide", types: ["Moves", "HFP"]},
 {name: "6 Jiggies in CCL", types: ["CCL", "jiggies"]},
-{name: "Quality Control Jiggy", types: ["GI"]},
-{name: "Clinkers Cavern Jiggy", types: ["GI"]},
 {name: "Learn Snooze Pack", types: ["Moves", "GI"]},
-{name: "6 Jiggies in CCL", types: ["CCL", "jiggies"]},
-{name: "11 Glowbos", types: ["Glowbo", "Global"]},
-{name: "7 Trebleclefs", types: ["Trebleclef", "Global"]},
-{name: "All Notes in GI", types: ["Notes", "GI"]},
-{name: "Tiptup Jiggy", types: ["JRL", "hatch"]},
-{name: "Defeat 5 Bosses", types: ["Bosses"]},
-{name: "12 Cheato pages", types:["Global", "Cheato pages"]},
-];
+{name: "Boggy’s Kids Jiggy", types: ["WW"]},
+{name: "All Train Switches", types: ["Train", "Global"]},
+{name: "Hatch Heggy’s 3 Eggs", types: ["Bash", "hatch"]},
+{name: "All Jinjos in GGM, JRL, and IoH/SM", types: ["Jinjos", "GGM", "JRL"]},
+{name: "Clinkers Cavern Jiggy", types: ["GI"]},
+{name: "Sabreman Jiggy", types: ["HFP"]},
+{name: "1 Jiggy in Every Level", types: ["Global", "jiggies"]},
+{name: "Learn Shack Pack", types: ["Moves", "HFP"]},
+{name: "All Cheato Pages in WW", types: ["Cheatos", "WW"]},
+{name: "13 Glowbos", types: ["Glowbo", "Global"]},
+{name: "All CP, HC, and Glowbos in GI", types: ["GI", "Cheatos", "Honeycombs", "Glowbos"]},
+{name: "8 Trebleclefs", types: ["Trebleclef", "Global"]},
+{name: "Dodgem Dome Jiggy", types: ["WW"]},
+{name: "Twinkly Packaging Jiggy", types: ["GI"]},
+{name: "Icicle Grotto CP w/ Shack Pack", types: ["HFP", "Cheato", "Moves"]},
+{name: "Defeat 6 Bosses", types: ["Bosses"]},
+{name: "Learn Glide", types: ["Moves", "HFP"]},
+{name: "8 Jiggies in GGM", types: ["GGM", "jiggies"]},
+{name: "Oil Drill Jiggy", types: ["HFP", "GI"]},
+{name: "12 Cheato Pages", types: ["Cheatos", "Global"]},
+{name: "Jelly Castle Jiggy as Banjo", types: ["CCL", "Moves"]},
+{name: "Canary Mary Jiggy & CP in CCL", types: ["GGM", "CCL", "Cheatos"]},
+{name: "6 Jiggies in HFP", types: ["HFP", "jiggies"]},
+{name: "6 Jiggies in GI", types: ["GI", "jiggies"]},
+{name: "Terry’s Kids Jiggy", types:["TDL", "hatch"]},
+{name: "6 Jiggies in WW", types: ["WW", "jiggies"]},
+{name: "8 Jiggies in CCL", types: ["CCL", "jiggies"]},
+{name: "1 Cheato Page in Every Level", types: ["Global", "Cheatos"]},
+{name: "5 Jiggies in JRL", types: ["JRL", "jiggies"]},
+{name: "Worker Jiggy in GI", types: ["GI"]},
+{name: "Hatch 7 Eggs", types: ["hatch", "Global", "Over"]},
+]
 
 bingoList[6] = [
-{name: "All Jinjos in GI", types: ["Jinjos", "GI"]},
-{name: "Kill 11 Minjos", types: ["Minjos", "Global"]},
-{name: "Worker Jiggy in GI", types: ["GI"]},
-{name: "6 Jiggies in GI", types: ["GI", "jiggies"]},
-{name: "7 Jiggies in WW", types: ["WW", "jiggies"]},
-{name: "8 Jiggies in CCL", types: ["CCL", "jiggies"]},
-{name: "Hatch 7 Eggs", types: ["hatch", "Global", "Over"]},
-{name: "Terry’s Kids Jiggy", types:["TDL", "hatch"]},
-{name: "Oil Drill Jiggy", types: ["HFP", "GI"]},
-{name: "Defeat 6 Bosses", types: ["Bosses"]},
-{name: "9 Trebleclefs", types: ["Trebleclef", "Global"]},
+{name: "6 Jiggies in CCL", types: ["CCL", "jiggies"]},
+{name: "Learn Snooze Pack", types: ["Moves", "GI"]},
+{name: "Boggy’s Kids Jiggy", types: ["WW"]},
+{name: "All Train Switches", types: ["Train", "Global"]},
+{name: "Hatch Heggy’s 3 Eggs", types: ["Bash", "hatch"]},
+{name: "All Jinjos in GGM, JRL, and IoH/SM", types: ["Jinjos", "GGM", "JRL"]},
+{name: "Clinkers Cavern Jiggy", types: ["GI"]},
 {name: "Sabreman Jiggy", types: ["HFP"]},
-{name: "All Mumbo Warp Pads", types: ["Warps", "Over"]},
-{name: "15 Cheato pages", types:["Global", "Cheato pages"]},
-];
+{name: "1 Jiggy in Every Level", types: ["Global", "jiggies"]},
+{name: "Learn Shack Pack", types: ["Moves", "HFP"]},
+{name: "All Cheato Pages in WW", types: ["Cheatos", "WW"]},
+{name: "13 Glowbos", types: ["Glowbo", "Global"]},
+{name: "All CP, HC, and Glowbos in GI", types: ["GI", "Cheatos", "Honeycombs", "Glowbos"]},
+{name: "8 Trebleclefs", types: ["Trebleclef", "Global"]},
+{name: "Dodgem Dome Jiggy", types: ["WW"]},
+{name: "Twinkly Packaging Jiggy", types: ["GI"]},
+{name: "Icicle Grotto CP w/ Shack Pack", types: ["HFP", "Cheato", "Moves"]},
+{name: "Defeat 6 Bosses", types: ["Bosses"]},
+{name: "Learn Glide", types: ["Moves", "HFP"]},
+{name: "8 Jiggies in GGM", types: ["GGM", "jiggies"]},
+{name: "Oil Drill Jiggy", types: ["HFP", "GI"]},
+{name: "12 Cheato Pages", types: ["Cheatos", "Global"]},
+{name: "Jelly Castle Jiggy as Banjo", types: ["CCL", "Moves"]},
+{name: "Canary Mary Jiggy & CP in CCL", types: ["GGM", "CCL", "Cheatos"]},
+{name: "6 Jiggies in HFP", types: ["HFP", "jiggies"]},
+{name: "6 Jiggies in GI", types: ["GI", "jiggies"]},
+{name: "Terry’s Kids Jiggy", types:["TDL", "hatch"]},
+{name: "6 Jiggies in WW", types: ["WW", "jiggies"]},
+{name: "8 Jiggies in CCL", types: ["CCL", "jiggies"]},
+{name: "1 Cheato Page in Every Level", types: ["Global", "Cheatos"]},
+{name: "5 Jiggies in JRL", types: ["JRL", "jiggies"]},
+{name: "Worker Jiggy in GI", types: ["GI"]},
+{name: "Hatch 7 Eggs", types: ["hatch", "Global", "Over"]},
+]
 
 bingoList[7] = [
+{name: "6 Jiggies in CCL", types: ["CCL", "jiggies"]},
+{name: "Learn Snooze Pack", types: ["Moves", "GI"]},
+{name: "Boggy’s Kids Jiggy", types: ["WW"]},
+{name: "All Train Switches", types: ["Train", "Global"]},
+{name: "Hatch Heggy’s 3 Eggs", types: ["Bash", "hatch"]},
+{name: "All Jinjos in GGM, JRL, and IoH/SM", types: ["Jinjos", "GGM", "JRL"]},
+{name: "Clinkers Cavern Jiggy", types: ["GI"]},
+{name: "Sabreman Jiggy", types: ["HFP"]},
+{name: "1 Jiggy in Every Level", types: ["Global", "jiggies"]},
+{name: "Learn Shack Pack", types: ["Moves", "HFP"]},
+{name: "All Cheato Pages in WW", types: ["Cheatos", "WW"]},
+{name: "13 Glowbos", types: ["Glowbo", "Global"]},
+{name: "All CP, HC, and Glowbos in GI", types: ["GI", "Cheatos", "Honeycombs", "Glowbos"]},
+{name: "8 Trebleclefs", types: ["Trebleclef", "Global"]},
 {name: "Dodgem Dome Jiggy", types: ["WW"]},
-{name: "9-Health BK", types: ["Honeycombs", "Global"]},
-{name: "Alien Kids Jiggy", types: ["HFP"]},
-{name: "Heal The Sick Styracosaurus", types:  ["TDL"]},
-{name: "7 Jiggies in HFP", types: ["HFP"]},
-{name: "Defeat 7 Bosses", types: ["Bosses"]},
-{name: "Open all 4 Battery Doors in GI", types: ["GI"]},
-{name: "All Cheato Pages in CCL", types: ["Cheatos", "CCL"]},
-{name: "Kill 13 Minjos", types: ["Minjos", "Global"]},
-{name: "Ride Train to Icy Side", types: ["HFP", "Train"]},
-{name: "2 Cheato Page in Every Level", types: ["Global", "Cheatos"]},
-{name: "18 Cheato pages", types:["Global", "Cheatos"]},
-];
+{name: "Twinkly Packaging Jiggy", types: ["GI"]},
+{name: "Icicle Grotto CP w/ Shack Pack", types: ["HFP", "Cheato", "Moves"]},
+{name: "Defeat 6 Bosses", types: ["Bosses"]},
+{name: "Learn Glide", types: ["Moves", "HFP"]},
+{name: "8 Jiggies in GGM", types: ["GGM", "jiggies"]},
+{name: "Oil Drill Jiggy", types: ["HFP", "GI"]},
+{name: "12 Cheato Pages", types: ["Cheatos", "Global"]},
+{name: "Jelly Castle Jiggy as Banjo", types: ["CCL", "Moves"]},
+{name: "Canary Mary Jiggy & CP in CCL", types: ["GGM", "CCL", "Cheatos"]},
+{name: "6 Jiggies in HFP", types: ["HFP", "jiggies"]},
+{name: "6 Jiggies in GI", types: ["GI", "jiggies"]},
+{name: "Terry’s Kids Jiggy", types:["TDL", "hatch"]},
+{name: "6 Jiggies in WW", types: ["WW", "jiggies"]},
+{name: "8 Jiggies in CCL", types: ["CCL", "jiggies"]},
+{name: "1 Cheato Page in Every Level", types: ["Global", "Cheatos"]},
+{name: "5 Jiggies in JRL", types: ["JRL", "jiggies"]},
+{name: "Worker Jiggy in GI", types: ["GI"]},
+{name: "Hatch 7 Eggs", types: ["hatch", "Global", "Over"]},
+]
+
 
 
 
@@ -272,6 +331,8 @@ var round =[];
 	round[5] = [];
 	round[6] = [];
 	round[7] = [];
+	
+var goal_check = [{"name" : "MT jiggies","data":0},{"name" : "GGM jiggies","data":0},{"name" : "WW jiggies","data":0},{"name" : "Cheato pages","data":0},{"name" : "Glowbos","data":0},{"name" : "Honeycombs","data":0},{"name" : "Trebleclefs","data":0}]
 
  
  
@@ -296,6 +357,13 @@ socket.on('load', function(msg) {
 		if (msg.player2[a] != null){
 			document.getElementById("player2 cell "+a).style.backgroundColor = msg.player2[a];
 		}
+		if (msg.c1[a] != null){
+			document.getElementById("player1 cell "+a).style.textDecoration = "underline";
+		}
+		if (msg.c2[a] != null){
+			document.getElementById("player2 cell "+a).style.textDecoration = "underline";
+		}		
+		
 	}
 	
 
@@ -325,7 +393,8 @@ function start_game()
 	var SEED = parseInt(document.getElementById("seed").value);
 	SEED = Math.floor(59153827743/(SEED + 1));
 	
-	
+	goal_check = [{"name" : "MT jiggies","data":0},{"name" : "GGM jiggies","data":0},{"name" : "WW jiggies","data":0},{"name" : "Cheato pages","data":0},{"name" : "Glowbos","data":0},{"name" : "Honeycombs","data":0},{"name" : "Trebleclefs","data":0}]
+
 	
 	
 for (var a = 1; a< 8; a++){
@@ -336,11 +405,49 @@ for (var a = 1; a< 8; a++){
 	
 	roundtemp = bingoList[a].slice();
 	
-	round[a][0]= roundtemp[r11];
-	console.log(round[a][0]);
-		
-	console.log(bingoList[a]);
+
 	//loop and delete all things that overlap
+	
+	//delete goals based on previous data
+	
+	if(a<5){
+		for (var i = 0; i < roundtemp.length; i++) {
+				
+				for (var j = 0; j < bingoList[a][i].types.length; j++) {
+					for (var k = 0; k < goal_check.length; k++) {
+					if (bingoList[a][i].types[j] == goal_check[k].name && goal_check[k].data == 1)
+						{
+						roundtemp[i] = null;
+						console.log("deleteing: " + goal_check[k].name);
+						}
+					}				
+				}
+		}	
+	}
+	if(a>5){
+		for (var i = 0; i < roundtemp.length; i++) {
+				
+				for (var j = 5; j < 7; j++) {
+					for (var k = 0; k < round[j].length; k++) {
+					if (bingoList[a][i].name == round[j][k].name )
+						{
+						roundtemp[i] = null;
+						console.log("deleteing: " + round[j][k].name);
+						}
+					}				
+				}
+		}	
+	}	
+	
+	
+	while( roundtemp[r11] == null )
+	{
+	r11 = (r11 + 1)%10;
+	}
+	round[a][0]= roundtemp[r11];	
+	console.log(round[a][0]);		
+	console.log(bingoList[a]);
+	
 	
 	for (var i = 0; i < roundtemp.length; i++) {
 			
@@ -387,6 +494,20 @@ for (var a = 1; a< 8; a++){
 	
 	round[a][2]= roundtemp[r13];	
 	console.log(round[a][2]);
+		if(a<5){
+		for (var i = 0; i < round[a].length; i++) {
+				
+				for (var j = 0; j < round[a][i].types.length; j++) {
+					for (var k = 0; k < goal_check.length; k++) {
+					if (round[a][i].types[j] == goal_check[k].name)
+						{
+						goal_check[k].data = 1;
+						}
+					}				
+				}
+		}	
+	}
+	
 	}
 	
 	
@@ -443,13 +564,15 @@ function clicked(x) {
 	if (ele[0] == "player1")
 	{
 		p1[ele[2]] = "red";
+		c1[ele[2]] = 1;
 	}
 	else
 	{
 		p2[ele[2]] = "blue";
+		c2[ele[2]] = 1;
 	}
 
-    socket.emit('clicked', {'data': x.id,'color':playercolor,'p1':p1,'p2':p2});
+    socket.emit('clicked', {'data': x.id,'color':playercolor,'p1':p1,'p2':p2,'c1':c1,'c2':c2});
 
 	
 
@@ -461,8 +584,7 @@ socket.on('newdata', function(msg) {
 	
 	document.getElementById(msg.data).style.backgroundColor=msg.color;
 	document.getElementById(msg.data).style.color='#fff';
-	document.getElementById(msg.data).style.fontSize = "xx-large";
-	document.getElementById(msg.data).style.fontStyle = "italic";
+	document.getElementById(msg.data).style.textDecoration = "underline";
 	check_round();
 });
 
@@ -472,7 +594,7 @@ function check_round() {
 // check for color of cells in a row
 
 	
-	for (var a = 0; a < 22; a+=3) 
+	for (var a = 0; a < 21; a+=3) 
 	{	
 	var color_red =0;
 	var color_blue =0;
@@ -501,8 +623,10 @@ function check_round() {
 			document.getElementById("player2 cell "+i).style.backgroundColor = "red"
 			document.getElementById("player2 cell "+i).style.color='#fff';
 			document.getElementById("player2 cell "+i).removeAttribute('onclick');
+			if (a< 18){
 			document.getElementById("player1 cell "+(i+3)).style.visibility = 'visible';
 			document.getElementById("player2 cell "+(i+3)).style.visibility = 'visible';
+			}
 		}		
 		
 	}
@@ -516,8 +640,11 @@ function check_round() {
 			document.getElementById("player2 cell "+i).style.backgroundColor = "blue"
 			document.getElementById("player2 cell "+i).style.color='#fff';
 			document.getElementById("player2 cell "+i).removeAttribute('onclick');
+			
+			if (a< 18){
 			document.getElementById("player1 cell "+(i+3)).style.visibility = 'visible';
-			document.getElementById("player2 cell "+(i+3)).style.visibility = 'visible';			
+			document.getElementById("player2 cell "+(i+3)).style.visibility = 'visible';
+			}			
 		}		
 		
 	}
