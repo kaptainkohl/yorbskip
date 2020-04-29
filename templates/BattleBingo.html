@@ -201,6 +201,13 @@ function start_game()
  
  function getRandom() {
 	
+	try {
+	document.getElementById("player1").removeChild(document.getElementById("bingo"));
+	document.getElementById("player2").removeChild(document.getElementById("bingo"));
+	}
+	catch(err) {
+	
+	}
 	//create a list of goals that are balanced
 	
 	// gen round 1
