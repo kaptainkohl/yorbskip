@@ -12,11 +12,19 @@ var_player2 = []
 
 @app.route('/')
 def index():
-    return render_template('BattleBingo.html')
+    return render_template('index.html')
     
 @app.route('/BattleBingo')
 def battle():
-    return render_template('BattleBingo.html')    
+    return render_template('BattleBingo.html')  
+
+@app.route('/BingoStats')
+def stats():
+    return render_template('BingoStats.html')
+
+@app.route('/HorizontalGoals')
+def horGoals():
+    return render_template('HorizontalGoals.html')     
 
 @socketio.on('my event')
 def test_message(message):
