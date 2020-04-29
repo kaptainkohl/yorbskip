@@ -120,9 +120,16 @@
 	$('td').click(function(){console.log(playercolor);});
 
 
-		var goals = [];
+	var goals = [];
+	
+	var p1 =[];
+	
+	var p2 =[];
+	
 		
 	var bingoList = [];
+	
+	
 	
 bingoList[1] = [
 {name: "All honeycombs in MT", types: ["MT", "Honeycombs"]},
@@ -274,10 +281,30 @@ socket.on('startgame', function(msg) {
 	document.getElementById("seed").value = msg.data;	
 	getRandom();
 });
+
+
+socket.on('load', function(msg) {
+	console.log(msg);
+	document.getElementById("seed").value = msg.seed;			
+	getRandom();
+	
+	for (var a = 0; a < 22; a++) 
+	{
+		if (msg.player1[a] != null){
+			document.getElementById("player1 cell "+a).style.backgroundColor = msg.player1[a];
+		}
+		if (msg.player2[a] != null){
+			document.getElementById("player2 cell "+a).style.backgroundColor = msg.player2[a];
+		}
+	}
+	
+
+	check_round();
+});
  
 function start_game()
 { 
- socket.emit('start', {data: parseInt(document.getElementById("seed").value)});
+ socket.emit('start', {'data': parseInt(document.getElementById("seed").value)});
 }
  
  
@@ -296,7 +323,7 @@ function start_game()
 	// get 3 that dont have overlapping tags
 
 	var SEED = parseInt(document.getElementById("seed").value);
-	SEED = Math.floor(59153827743/SEED);
+	SEED = Math.floor(59153827743/(SEED + 1));
 	
 	
 	
@@ -411,10 +438,20 @@ function tableCreate(name) {
 
 function clicked(x) {
    
+	ele = x.id.split(' ');
 	
+	if (ele[0] == "player1")
+	{
+		p1[ele[2]] = "red";
+	}
+	else
+	{
+		p2[ele[2]] = "blue";
+	}
 
-    socket.emit('clicked', {data: x.id,color:playercolor});
+    socket.emit('clicked', {'data': x.id,'color':playercolor,'p1':p1,'p2':p2});
 
+	
 
 }
 
@@ -424,6 +461,8 @@ socket.on('newdata', function(msg) {
 	
 	document.getElementById(msg.data).style.backgroundColor=msg.color;
 	document.getElementById(msg.data).style.color='#fff';
+	document.getElementById(msg.data).style.fontSize = "xx-large";
+	document.getElementById(msg.data).style.fontStyle = "italic";
 	check_round();
 });
 
@@ -438,6 +477,7 @@ function check_round() {
 	var color_red =0;
 	var color_blue =0;
 	
+	try{
 	for (var i = a; i < a+3; i++) 
 	{
 	 if (document.getElementById("player1 cell "+i).style.backgroundColor == "red")
@@ -480,6 +520,10 @@ function check_round() {
 			document.getElementById("player2 cell "+(i+3)).style.visibility = 'visible';			
 		}		
 		
+	}
+	}
+	catch(err) {
+	
 	}
 	
 	}

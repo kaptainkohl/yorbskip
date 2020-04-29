@@ -6,6 +6,10 @@ app = Flask(__name__)
 app.config['SECRET_KEY'] = 'secret!?'
 socketio = SocketIO(app)
 
+var_seed = 0
+var_player1 = []
+var_player2 = []
+
 @app.route('/')
 def index():
     return render_template('BattleBingo.html')
@@ -16,15 +20,24 @@ def battle():
 
 @socketio.on('my event')
 def test_message(message):
-    print('received message: ' + message)
+    print(var_seed)
+    emit("load", {'seed': var_seed, 'player1':var_player1,'player2':var_player2}, broadcast=True);
     
 @socketio.on('clicked')
 def handle_array(data):
+    global var_player1
+    global var_player2
+    var_player1 = data['p1']
+    var_player2 = data['p2']
     emit("newdata", data , broadcast=True)
     
 @socketio.on('start')
-def handle_start(data):
-    emit("startgame", data , broadcast=True)   
+def handle_start(msg):
+    global var_seed
+    print(msg)
+    print(msg['data'])
+    var_seed = msg['data']
+    emit("startgame", msg , broadcast=True)   
 
 
 if __name__ == '__main__':
