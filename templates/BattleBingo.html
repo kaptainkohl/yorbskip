@@ -5,15 +5,19 @@
     <title>Banjo-Tooie Bingo</title>
 
     <!-- Style -->
+	<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.0/jquery.min.js"></script>
+		<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.0/css/bootstrap.min.css">
+		<script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.0/js/bootstrap.min.js"></script>		
     <link href="{{ url_for('static', filename='css/bingo.css') }}" rel="stylesheet" type="text/css">
     <link href="{{ url_for('static', filename='css/style.css') }}" rel="stylesheet" type="text/css">
-<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.0/jquery.min.js"></script>
+
 
     <style>
 	body{
 		 padding-right: 30px;
 	  padding-left: 30px;
 	   padding-top: 5px;
+	   color:black;
 	
 	}
 	#bingo td {
@@ -54,6 +58,66 @@
   margin-left: auto;
   margin-right: auto;
 
+}
+
+.switch {
+  position: relative;
+  display: inline-block;
+  width: 60px;
+  height: 34px;
+}
+
+.switch input { 
+  opacity: 0;
+  width: 0;
+  height: 0;
+}
+
+.slider {
+  position: absolute;
+  cursor: pointer;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-color: #ccc;
+  -webkit-transition: .4s;
+  transition: .4s;
+}
+
+.slider:before {
+  position: absolute;
+  content: "";
+  height: 26px;
+  width: 26px;
+  left: 4px;
+  bottom: 4px;
+  background-color: white;
+  -webkit-transition: .4s;
+  transition: .4s;
+}
+
+input:checked + .slider {
+  background-color: #2196F3;
+}
+
+input:focus + .slider {
+  box-shadow: 0 0 1px #2196F3;
+}
+
+input:checked + .slider:before {
+  -webkit-transform: translateX(26px);
+  -ms-transform: translateX(26px);
+  transform: translateX(26px);
+}
+
+/* Rounded sliders */
+.slider.round {
+  border-radius: 34px;
+}
+
+.slider.round:before {
+  border-radius: 50%;
 }	
 	
 	</style>
@@ -63,16 +127,22 @@
 	 <img src="{{ url_for('static', filename='logo.png') }}" style="height:150px;" alt="battle"class="center">
 	 <br>
 
+	<label class="switch">
+		<input id = "checkbox" type="checkbox" disabled onclick="active()" >
+		<span class="slider round"></span>
+	</label>
+	<br>
+
 	<button onclick="start_game()" class="button">Generate</button>
 	<input type="number" id="seed" min="0" max="999999">
-	COLOR Select: 
-<select id="p1color" name="player" onchange="color_pick(this.value);">
-  <option value="Spectate">Spectate</option>
-  <option value="red">Red</option>  
-  <option value="blue">Blue</option> 
-   
-</select> 
-</div> 
+	<select id="p1color" name="player" onchange="color_pick(this.value);">
+	  <option value="Spectate">Spectate</option>
+	  <option value="red">Red</option>  
+	  <option value="blue">Blue</option> 	   
+	</select> 
+	
+	
+
 <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.4/jquery.min.js"></script>
 
 <div class="grid-container">
@@ -92,9 +162,7 @@
 <script src="//cdnjs.cloudflare.com/ajax/libs/socket.io/2.2.0/socket.io.js" integrity="sha256-yr4fRk/GU1ehYJPAs8P4JlTgu0Hdsp4ZKrx8bDEDC3I=" crossorigin="anonymous"></script>
 <script type="text/javascript" charset="utf-8">
     var socket = io();
-    socket.on('connect', function() {
-        socket.emit('my event', "Hello");
-    });
+
 </script>
 
 <script>
@@ -131,6 +199,21 @@
 	var c2 =[];	
 		
 	var bingoList = [];
+	
+	var game_active = 0;
+	
+	function active(){	
+		if (game_active ==0 ){
+		 game_active =1;
+		 
+		 
+		 
+		}
+		else
+		{
+		game_active = 0;
+		}	
+	}
 	
 	
 	
@@ -201,20 +284,19 @@ bingoList[4] = [
 {name: "Terry Jiggy", types: ["TDL", "Bosses"]},
 {name: "All Notes in TDL", types: ["TDL", "Notes"]},
 {name: "Oogle Boogle Jiggy", types: ["TDL", "TDL jiggies"]},
-{name: "Trash Can Jiggy", types: ["CCL", "CCL jiggies"]},
+{name: "Trash Can Jiggy", types: ["CCL"]},
 {name: "3 jiggies in CCL", types: ["CCL","CCL jiggies"]},
-{name: "Zubba's Minigame Jiggy", types: ["CCL", "CCL jiggies"]},
+{name: "Zubba's Minigame Jiggy", types: ["CCL"]},
 {name: "All jinjos in IoH/SM", types: ["Jinjos"]},
 {name: "5 Trebleclefs", types:["Global", "Trebleclefs"]},
 {name: "9 Glowbos", types:["Global", "Glowbos"]},
-{name: "8 Cheato pages", types:["Global", "Cheato pages"]},
-{name: "10 honeycombs", types: ["Global", "Honeycombs"]},
+{name: "8 Cheato pages", types:["Global"]},
+{name: "10 honeycombs", types: ["Global"]},
 {name: "6 trebleclefs", types: ["Global", "Trebleclefs"]},
 {name: "4 Train Switches", types: ["Global","Train"]},
 {name: "Kill 7 Minjos", types: ["Global","Minjos"]},
 {name: "All Cheato Pages in HFP", types: ["HFP","Cheato pages"]},
 ];
-
 
 bingoList[5] = [
 {name: "6 Jiggies in CCL", types: ["CCL", "jiggies"]},
@@ -229,8 +311,8 @@ bingoList[5] = [
 {name: "Learn Shack Pack", types: ["Moves", "HFP"]},
 {name: "All Cheato Pages in WW", types: ["Cheatos", "WW"]},
 {name: "13 Glowbos", types: ["Glowbo", "Global"]},
-{name: "All CP, HC, and Glowbos in GI", types: ["GI", "Cheatos", "Honeycombs", "Glowbos"]},
-{name: "8 Trebleclefs", types: ["Trebleclef", "Global"]},
+{name: "All CP, HC, and Glowbos in GI", types: ["GI", "Cheatos", "Glowbos"]},
+{name: "8 Trebleclefs", types: ["Global"]},
 {name: "Dodgem Dome Jiggy", types: ["WW"]},
 {name: "Twinkly Packaging Jiggy", types: ["GI"]},
 {name: "Icicle Grotto CP w/ Shack Pack", types: ["HFP", "Cheato", "Moves"]},
@@ -265,8 +347,8 @@ bingoList[6] = [
 {name: "Learn Shack Pack", types: ["Moves", "HFP"]},
 {name: "All Cheato Pages in WW", types: ["Cheatos", "WW"]},
 {name: "13 Glowbos", types: ["Glowbo", "Global"]},
-{name: "All CP, HC, and Glowbos in GI", types: ["GI", "Cheatos", "Honeycombs", "Glowbos"]},
-{name: "8 Trebleclefs", types: ["Trebleclef", "Global"]},
+{name: "All CP, HC, and Glowbos in GI", types: ["GI", "Cheatos", "Glowbos"]},
+{name: "8 Trebleclefs", types: ["Global"]},
 {name: "Dodgem Dome Jiggy", types: ["WW"]},
 {name: "Twinkly Packaging Jiggy", types: ["GI"]},
 {name: "Icicle Grotto CP w/ Shack Pack", types: ["HFP", "Cheato", "Moves"]},
@@ -301,8 +383,8 @@ bingoList[7] = [
 {name: "Learn Shack Pack", types: ["Moves", "HFP"]},
 {name: "All Cheato Pages in WW", types: ["Cheatos", "WW"]},
 {name: "13 Glowbos", types: ["Glowbo", "Global"]},
-{name: "All CP, HC, and Glowbos in GI", types: ["GI", "Cheatos", "Honeycombs", "Glowbos"]},
-{name: "8 Trebleclefs", types: ["Trebleclef", "Global"]},
+{name: "All CP, HC, and Glowbos in GI", types: ["GI", "Cheatos", "Glowbos"]},
+{name: "8 Trebleclefs", types: ["Global"]},
 {name: "Dodgem Dome Jiggy", types: ["WW"]},
 {name: "Twinkly Packaging Jiggy", types: ["GI"]},
 {name: "Icicle Grotto CP w/ Shack Pack", types: ["HFP", "Cheato", "Moves"]},
@@ -325,8 +407,6 @@ bingoList[7] = [
 ]
 
 
-
-
 var roundtemp =[]
 var round =[];
 	round[1] = [];
@@ -345,11 +425,31 @@ var goal_check = [{"name" : "MT jiggies","data":0},{"name" : "GGM jiggies","data
 socket.on('startgame', function(msg) {
 	
 	document.getElementById("seed").value = msg.data;	
+	
+	if (msg.start == 1)
+	{
+	document.getElementById("checkbox").checked = true;
+	game_active = 1;
+	}
 	getRandom();
 });
 
 
 socket.on('load', function(msg) {
+	
+	if (msg.start == 1)
+	{
+	document.getElementById("checkbox").checked = true;
+	game_active = 1;
+	}
+	else
+	{
+	document.getElementById("checkbox").checked = false;
+	game_active = 0;
+	}
+	
+	
+	
 	console.log(msg);
 	document.getElementById("seed").value = msg.seed;			
 	getRandom();
@@ -377,7 +477,8 @@ socket.on('load', function(msg) {
  
 function start_game()
 { 
- socket.emit('start', {'data': parseInt(document.getElementById("seed").value)});
+ socket.emit('start', {'data': parseInt(document.getElementById("seed").value),"start": 1});
+
 }
  
  
@@ -597,7 +698,8 @@ socket.on('newdata', function(msg) {
 function check_round() {
 
 // check for color of cells in a row
-
+	var total_red =0;
+	var total_blue =0;
 	
 	for (var a = 0; a < 21; a+=3) 
 	{	
@@ -657,7 +759,16 @@ function check_round() {
 	catch(err) {
 	
 	}
+	total_red +=color_red;
+	total_blue+=color_blue;
+
 	
+	
+	}
+	console.log(total_red);
+	if ((total_red>=11 || total_blue>=11)&& game_active == 1)
+	{
+		socket.emit('end', "dest");
 	}
 	
 	color_pick(playercolor);
@@ -681,7 +792,14 @@ function shuffle(array) {
   }
 
   return array;
-}		
+}	
+
+
+    socket.on('connect', function() {
+        socket.emit('my event', "dest");
+		
+		
+    });	
 </script>
 </body>
 </html>
