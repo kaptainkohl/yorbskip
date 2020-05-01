@@ -133,17 +133,52 @@ input:checked + .slider:before {
 	</label>
 	<br>
 
-	<button onclick="start_game()" class="button">Generate</button>
-	<input type="number" id="seed" min="0" max="999999">
-	<select id="p1color" name="player" onchange="color_pick(this.value);">
+<div id="info"  class="collapse" role="dialog">
+	<div class="form-inline" >
+	<button onclick="start_game()" class="btn btn-default" style="width:150px;">Generate</button>
+	<input type="number" id="seed" min="0" max="999999" style="width:150px;" class="form-control">
+	</div>
+</div>
+<br>
+<div class="form-inline" >
+<button onclick="" class="btn btn-default" data-toggle="modal" data-target="#rules" style="width:150px;">Rules</button>		
+	<select id="p1color" name="player" onchange="color_pick(this.value);" class="form-control" style="width:150px;">
 	  <option value="Spectate">Spectate</option>
 	  <option value="red">Red</option>  
 	  <option value="blue">Blue</option> 	   
-	</select> 
-	
-	
+	</select> 		
+	</div>
 
-<script src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.4/jquery.min.js"></script>
+
+
+<div class="container">	
+			<div id="rules" class="modal fade" role="dialog">
+			  <div class="modal-dialog modal-lg">
+
+				<!-- Modal content-->
+				<div class="modal-content">
+				  <div class="modal-header">
+					<button type="button" class="close" data-dismiss="modal">&times;</button>
+					<h4 class="modal-title">Bingo Battle Rules</h4>
+				  </div>
+				  <div class="modal-body">
+					<p> Bingo Battle is a new type of bingo where 2 players face off with their gameplay and routing skills in a direct battle. By stratigizing and routing goals given,a true battle done between the players.</p>
+					<p> There are 7 Rounds to a Battle <br> First to win 4 Rounds wins the Battle</p>
+					<p> There are 3 goals shown per round. You must chose to perform 2 of the 3 goals to perform. Once you do 2, you win that round, and the next round will begin.</p>
+					<p> It is your choice to figure out which goals presented will be faster for you given the moves that you got earlyer on. Some goals will be very fast for one player, but slow for another. Its all up to the player to quickly figure out what to do in order to win.</p>
+					<p> How to Begin : </p>
+					<p> The Gray/Blue switch indicates that a game is ongoing if it is blue. When gray nothing is occuring.</p>
+					<p> Each player must choice a color, otherwise they are a spectator. Use the drop down box to pick Red (left) or blue (right)</p>
+					<p> Type a Seed into the seed box, must be 1 - 999999. Press Generate to create a card and teh round will begin.</p>
+					<p> You will input goals on your side of the board. When you get a goal you will click on the square and it will mark it. Once you get 2 in a round it will automaticly progress to the next round.</p>
+					<p> Have Fun!</p>
+				  </div>
+
+				</div>
+
+			  </div>
+			</div>
+		</div>	
 
 <div class="grid-container">
 
@@ -184,7 +219,8 @@ input:checked + .slider:before {
 		document.getElementById("player1").style.visibility = 'visible';		
 	} */		
 }
-	
+
+
 	$('td').click(function(){console.log(playercolor);});
 
 
@@ -218,7 +254,6 @@ input:checked + .slider:before {
 	
 	
 bingoList[1] = [
-{name: "All honeycombs in MT", types: ["MT", "Honeycombs"]},
 {name: "All Cheato pages in MT", types: ["MT", "Cheato pages"]},
 {name: "All glowbos in MT", types: ["MT", "Glowbos"]},
 {name: "3 jiggies in MT", types: ["MT","MT jiggies"]},
@@ -226,77 +261,72 @@ bingoList[1] = [
 {name: "Relic Jiggy", types: ["MT"]},
 {name: "Dilberta Jiggy", types: ["GGM"]},
 {name: "Power Hut Jiggy", types: ["GGM"]},
-{name: "3 Glowbos", types:["Round 1 global", "Glowbos"]},
-{name: "4 Cheato pages", types:["Round 1 global", "Cheato pages"]},
-{name: "5 Empty Honeycombs", types: ["Round 1 global", "Honeycombs"]},
+{name: "3 Glowbos", types:["Global", "Glowbos"]},
+{name: "4 Cheato pages", types:["Global", "Cheato pages"]},
+{name: "5 Empty Honeycombs", types: ["Global", "Honeycombs"]},
 {name: "2 jiggies in GGM", types: ["GGM", "GGM jiggies"]},
 {name: "All Honeycombs in GGM", types: ["GGM", "Honeycombs"]},
 ];
 
 
-
-
 bingoList[2] = [
 {name: "All Honeycombs in MT", types: ["MT", "Honeycombs"]},
+{name: "4 jiggies in MT", types: ["MT","MT jiggies"]},
 {name: "5 jiggies in MT", types: ["MT","MT jiggies"]},
-{name: "Targitzan Jiggy", types: ["MT"]},
+{name: "3 jiggies in GGM", types: ["GGM", "GGM jiggies"]},
 {name: "4 jiggies in GGM", types: ["GGM", "GGM jiggies"]},
-{name: "CM Cheato Page", types: ["GGM", "Cheato pages"]},
+{name: "3 jiggies in WW", types: ["WW", "WW jiggies"]},
 {name: "Inferno jiggy", types: ["WW", "WW jiggies"]},
 {name: "All Honeycombs in WW", types: ["WW", "Honeycombs"]},
-{name: "6 Glowbos", types:["Global", "Glowbos"]},
+{name: "5 Glowbos", types:["Global", "Glowbos"]},
 {name: "6 Cheato pages", types:["Global", "Cheato pages"]},
 {name: "7 Empty Honeycombs", types: ["Global", "Honeycombs"]},
-{name: "Inferno jiggy", types: [ "WW jiggies"]},
+];
+
+bingoList[3] = [
+{name: "5 jiggies in MT", types: ["MT jiggies"]},
+{name: "4 jiggies in GGM", types: ["GGM jiggies"]},
+{name: "3 jiggies in WW", types: ["WW jiggies"]},
+{name: "Inferno jiggy", types: ["WW jiggies"]},
+{name: "All Honeycombs in WW", types: ["Round 3 previous level", "Honeycombs"]},
 {name: "1 jiggy in JRL", types: ["JRL", "JRL jiggies"]},
 {name: "All glowbos in JRL", types: ["JRL", "Glowbos"]},
 {name: "1 jiggy in HFP", types: ["HFP", "HFP jiggies"]},
 {name: "All glowbos in HFP", types: ["HFP", "Glowbos"]},
 {name: "Stub Biggafoot's Toe", types: ["HFP"]},
-];
-
-bingoList[3] = [
-{name: "3 jiggies in WW", types: ["WW","WW jiggies"]},
-{name: "8 Glowbos", types:["Global", "Glowbos"]},
-{name: "8 Cheato pages", types:["Global", "Cheato pages"]},
+{name: "7 Glowbos", types:["Global", "Glowbos"]},
+{name: "7 Cheato pages", types:["Global", "Cheato pages"]},
 {name: "8 health BK", types: ["Global", "Honeycombs"]},
-{name: "5 trebleclefs", types: ["Global", "Trebleclefs"]},
-{name: "Chris P. Bacon Jiggy", types: ["JRL"]},
-{name: "Mr. Patch Jiggy", types: ["WW","Bosses"]},
-{name: "MT Kickball", types: ["MT"]},
-{name: "Old King Coal Jiggy", types: ["GGM", "Train"]},
-{name: "All Notes in JRL", types: ["JRL"]},
-{name: "All Notes in HFP", types: ["HFP"]},
-{name: "6 jiggies in MT", types: ["MT","MT jiggies"]},
-{name: "5 jiggies in GGM", types: ["GGM", "GGM jiggies"]},
+{name: "4 trebleclefs", types: ["Global", "Trebleclefs"]},
 ];
-
-
-
-
-
 
 bingoList[4] = [
+{name: "6 jiggies in MT", types: ["MT jiggies"]},
+{name: "5 jiggies in GGM", types: ["GGM jiggies"]},
+{name: "Ice Train jiggy", types: ["HFP jiggies"]},
 {name: "All Cheato Pages in HFP", types: ["Cheato pages"]},
-{name: "Dragon Kazooie", types: ["GGM"]},
-{name: "Crushing Shed Jiggy", types: ["WW","Bosses"]},
+{name: "Dragon Kazooie", types: []},
+{name: "Chris P. Bacon Jiggy", types: []},
+{name: "Old King Coal Jiggy", types: ["Train"]},
+{name: "Mr. Patch Jiggy", types: ["Bosses"]},
+{name: "Defeat Terry", types: ["TDL","TDL jiggies"]},
 {name: "Enlarge the Small Styracosaurus", types: ["TDL"]},
 {name: "Terry Jiggy", types: ["TDL", "Bosses"]},
 {name: "All Notes in TDL", types: ["TDL", "Notes"]},
 {name: "Oogle Boogle Jiggy", types: ["TDL", "TDL jiggies"]},
-{name: "Trash Can Jiggy", types: ["CCL"]},
+{name: "Trash Can Jiggy", types: ["CCL", "CCL jiggies"]},
 {name: "3 jiggies in CCL", types: ["CCL","CCL jiggies"]},
-{name: "Zubba's Minigame Jiggy", types: ["CCL"]},
+{name: "Zubba's Minigame Jiggy", types: ["CCL", "CCL jiggies"]},
 {name: "All jinjos in IoH/SM", types: ["Jinjos"]},
 {name: "5 Trebleclefs", types:["Global", "Trebleclefs"]},
 {name: "9 Glowbos", types:["Global", "Glowbos"]},
-{name: "8 Cheato pages", types:["Global"]},
-{name: "10 honeycombs", types: ["Global"]},
+{name: "8 Cheato pages", types:["Global", "Cheato pages"]},
+{name: "10 honeycombs", types: ["Global", "Honeycombs"]},
 {name: "6 trebleclefs", types: ["Global", "Trebleclefs"]},
 {name: "4 Train Switches", types: ["Global","Train"]},
-{name: "Kill 7 Minjos", types: ["Global","Minjos"]},
-{name: "All Cheato Pages in HFP", types: ["HFP","Cheato pages"]},
+{name: "Kill 7 Minjos", types: ["Global","Minjos"]}
 ];
+
 
 bingoList[5] = [
 {name: "6 Jiggies in CCL", types: ["CCL", "jiggies"]},
@@ -430,6 +460,7 @@ socket.on('startgame', function(msg) {
 	{
 	document.getElementById("checkbox").checked = true;
 	game_active = 1;
+	$(".collapse").collapse('hide');
 	}
 	getRandom();
 });
@@ -441,11 +472,13 @@ socket.on('load', function(msg) {
 	{
 	document.getElementById("checkbox").checked = true;
 	game_active = 1;
+	$(".collapse").collapse('hide');
 	}
 	else
 	{
 	document.getElementById("checkbox").checked = false;
 	game_active = 0;
+	$(".collapse").collapse('show');
 	}
 	
 	
