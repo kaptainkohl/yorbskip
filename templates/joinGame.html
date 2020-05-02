@@ -1,0 +1,177 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+    <title>Join Room</title>
+
+    <!-- Style -->
+	<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.0/jquery.min.js"></script>
+		<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.0/css/bootstrap.min.css">
+		<script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.0/js/bootstrap.min.js"></script>		
+    <link href="{{ url_for('static', filename='css/bingo.css') }}" rel="stylesheet" type="text/css">
+    <link href="{{ url_for('static', filename='css/style.css') }}" rel="stylesheet" type="text/css">
+	<link rel="icon" type="image/png" href="{{ url_for('static', filename='6.png') }}"/>
+
+    <style>
+	body{
+		 padding-right: 30px;
+	  padding-left: 30px;
+	   padding-top: 5px;
+	   color:black;
+	
+	}
+	#bingo td {
+	background:#000811;
+	border:2px #0a245a solid;
+	color:#3c70df;
+	font-size:200%;
+	font-weight:700;
+	height:85px;
+	width:95px;
+	max-width:95px;
+	text-align:center;
+	line-height: 120%;
+
+}
+
+#bingo td:hover {
+	background:#1448b3;
+	color:#fff;
+}
+	
+#bingo tr td.greensquare {
+	background:#051;
+}
+
+#bingo tr td.greensquare.hover {
+	background:#072;
+}	
+
+.grid-container {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    grid-gap: 20px;
+}	
+
+.center {
+  display: block;
+  margin-left: auto;
+  margin-right: auto;
+
+}
+
+.switch {
+  position: relative;
+  display: inline-block;
+  width: 60px;
+  height: 34px;
+}
+
+.switch input { 
+  opacity: 0;
+  width: 0;
+  height: 0;
+}
+
+.slider {
+  position: absolute;
+  cursor: pointer;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-color: #ccc;
+  -webkit-transition: .4s;
+  transition: .4s;
+}
+
+.slider:before {
+  position: absolute;
+  content: "";
+  height: 26px;
+  width: 26px;
+  left: 4px;
+  bottom: 4px;
+  background-color: white;
+  -webkit-transition: .4s;
+  transition: .4s;
+}
+
+input:checked + .slider {
+  background-color: #2196F3;
+}
+
+input:focus + .slider {
+  box-shadow: 0 0 1px #2196F3;
+}
+
+input:checked + .slider:before {
+  -webkit-transform: translateX(26px);
+  -ms-transform: translateX(26px);
+  transform: translateX(26px);
+}
+
+/* Rounded sliders */
+.slider.round {
+  border-radius: 34px;
+}
+
+.slider.round:before {
+  border-radius: 50%;
+}	
+	
+	</style>
+</head>
+<body>
+	
+	
+	
+<div  class="center" >
+	 <img src="{{ url_for('static', filename='logo.png') }}" style="height:150px;" alt="battle"class="center">
+</div>
+
+<div id = "rooms" class="center" >	
+	<div class="form-inline" >
+	  <input type="text" id="roomname" value="">
+	  <button onclick="join()" class="btn btn-default"style="width:130px;">Create Room</button>		
+	  <br>
+	  <p style="color:white;">Active Rooms:</p>
+	  <br>
+	</div>
+</div>
+
+<script src="//cdnjs.cloudflare.com/ajax/libs/socket.io/2.2.0/socket.io.js" integrity="sha256-yr4fRk/GU1ehYJPAs8P4JlTgu0Hdsp4ZKrx8bDEDC3I=" crossorigin="anonymous"></script>
+<script type="text/javascript" charset="utf-8">
+   
+$SCRIPT_ROOT = {{ request.script_root|tojson|safe }};
+   var socket = io();
+	socket.on('connect', function() {
+        socket.emit('getrooms', "dest");		
+    });
+	
+	
+socket.on('showrooms', function(msg) {
+	
+	for (var a = 0; a < msg.length; a++) 
+	{
+		document.getElementById("rooms").innerHTML = document.getElementById("rooms").innerHTML + '<button onclick="load('+msg[a][0]+')" class="btn btn-default" style="width:150px;">'+msg[a][0]+'</button>'	
+	}
+			
+
+});	
+
+function load(name){
+	window.location.href = $SCRIPT_ROOT +"/battle/"+name;
+}
+function join(){
+	socket.emit('createroom', document.getElementById("roomname").value);
+	
+	window.location.href = $SCRIPT_ROOT +"/battle/"+document.getElementById("roomname").value;
+
+}	
+</script>	
+	
+
+	
+	
+	

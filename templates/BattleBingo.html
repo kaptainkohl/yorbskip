@@ -147,7 +147,14 @@ input:checked + .slider:before {
 	  <option value="red">Red</option>  
 	  <option value="blue">Blue</option> 	   
 	</select> 		
+</div>
+<br>
+<div class="form-inline" >
+	<div id="info"  class="collapse" role="dialog">		
+		<button onclick="close_room()" class="btn btn-default" style="width:200px;">End Room</button>
 	</div>
+	
+</div>
 
 
 
@@ -204,7 +211,7 @@ input:checked + .slider:before {
 	playercolor = 'purple';
 	function color_pick(p){
     playercolor = p;
-	
+	$SCRIPT_ROOT = {{ request.script_root|tojson|safe }};
 /*if (p == "red"){
 	
 		document.getElementById("player1").style.visibility = 'visible';
@@ -471,6 +478,15 @@ socket.on('startgame', function(msg) {
 	getRandom();
 });
 
+socket.on('close', function(msg) {	
+	window.location.href = $SCRIPT_ROOT +"/BattleBingo";
+});
+
+function close_room(){
+	socket.emit('closeroom', '{{ room }}');
+
+}
+
 
 socket.on('load', function(msg) {
 	
@@ -516,7 +532,7 @@ socket.on('load', function(msg) {
  
 function start_game()
 { 
- socket.emit('start', {'data': parseInt(document.getElementById("seed").value),"start": 1});
+ socket.emit('start', {'data': parseInt(document.getElementById("seed").value),"start": 1,'room':'{{ room }}'});
 
 }
  
@@ -735,7 +751,7 @@ function clicked(x) {
 		c2[ele[2]] = 1;
 	}
 
-    socket.emit('clicked', {'data': x.id,'color':playercolor,'p1':p1,'p2':p2,'c1':c1,'c2':c2});
+    socket.emit('clicked', {'data': x.id,'color':playercolor,'p1':p1,'p2':p2,'c1':c1,'c2':c2,'room':'{{ room }}'});
 
 	
 
@@ -825,7 +841,7 @@ function check_round() {
 	console.log(total_red);
 	if ((total_red>=11 || total_blue>=11)&& game_active == 1)
 	{
-		socket.emit('end', "dest");
+		socket.emit('end', {'room':'{{ room }}'});
 	}
 	
 	color_pick(playercolor);
@@ -851,9 +867,9 @@ function shuffle(array) {
   return array;
 }	
 
-	$SCRIPT_ROOT = {{ request.script_root|tojson|safe }};
+	
     socket.on('connect', function() {
-        socket.emit('my event', "dest");
+        socket.emit('joinroom', '{{ room }}');
 		
     });	
 	
