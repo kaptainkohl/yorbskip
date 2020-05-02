@@ -154,14 +154,22 @@ socket.on('showrooms', function(msg) {
 	
 	for (var a = 0; a < msg.length; a++) 
 	{
-		document.getElementById("rooms").innerHTML = document.getElementById("rooms").innerHTML + '<button onclick="load('+msg[a][0]+')" class="btn btn-default" style="width:150px;">'+msg[a][0]+'</button>'	
+		var place = document.getElementById("rooms");
+		var tbl = document.createElement('button');
+		 
+		tbl.setAttribute('id','bingo')	
+		tbl.setAttribute('class','btn btn-default')
+		tbl.setAttribute('style','width:150px;')
+		tbl.setAttribute('onclick',"load(this)")
+		tbl.appendChild(document.createTextNode(msg[a][0]))
+		place.appendChild(tbl);
 	}
 			
 
 });	
 
-function load(name){
-	window.location.href = $SCRIPT_ROOT +"/battle/"+name;
+function load(x){
+	window.location.href = $SCRIPT_ROOT +"/battle/"+x.innerHTML;
 }
 function join(){
 	socket.emit('createroom', document.getElementById("roomname").value);

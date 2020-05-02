@@ -50,8 +50,6 @@ def showrooms(message):
 
 @socketio.on('joinroom')
 def test_message(message):
-    print(eval(message))
-    print(room_array)
     room = message
     join_room(message)
     current_room = []
@@ -66,7 +64,7 @@ def close_message(message):
     for x in room_array:
         if x[0] == message:
             current_room = x    
-    room_array.remove(x)
+    room_array.remove(current_room)
     emit("close", broadcast=True, room=message)
     leave_room(message)
  
