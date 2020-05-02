@@ -17,6 +17,10 @@ running =0;
 def index():
     return render_template('index.html')
     
+@app.route('/ping')
+def ping_mess():
+    return render_template('ping.html')    
+    
 @app.route('/BattleBingo')
 def battle():
     return render_template('BattleBingo.html')  

@@ -279,8 +279,8 @@ bingoList[2] = [
 {name: "Inferno jiggy", types: ["WW", "WW jiggies"]},
 {name: "All Honeycombs in WW", types: ["WW", "Honeycombs"]},
 {name: "5 Glowbos", types:["Global", "Glowbos"]},
-{name: "6 Cheato pages", types:["Global", "Cheato pages"]},
-{name: "7 Empty Honeycombs", types: ["Global", "Honeycombs"]},
+{name: "5 Cheato pages", types:["Global", "Cheato pages"]},
+{name: "6 Empty Honeycombs", types: ["Global", "Honeycombs"]},
 ];
 
 bingoList[3] = [
@@ -535,13 +535,17 @@ function start_game()
 	
 for (var a = 1; a< 8; a++){
 	
-	var r11 = (SEED * a)%10;
-	var r12 = Math.floor(((SEED * a)/100))%10;
-	var r13 = Math.floor(((SEED * a)/1000))%10;
 	
 	roundtemp = bingoList[a].slice();
 	
+	var goal_amount= roundtemp.length;
+	
+	var r11 = (SEED * a)%goal_amount;
+	var r12 = Math.floor(((SEED * a)/100))%goal_amount;
+	var r13 = Math.floor(((SEED * a)/1000))%goal_amount;
+	
 
+	
 	//loop and delete all things that overlap
 	
 	//delete goals based on previous data
@@ -578,7 +582,7 @@ for (var a = 1; a< 8; a++){
 	
 	while( roundtemp[r11] == null )
 	{
-	r11 = (r11 + 1)%10;
+	r11 = (r11 + 1)%goal_amount;
 	}
 	round[a][0]= roundtemp[r11];	
 	console.log(round[a][0]);		
@@ -602,7 +606,7 @@ for (var a = 1; a< 8; a++){
 	
 	while( roundtemp[r12] == null )
 	{
-	r12 = (r12 + 1)%10;
+	r12 = (r12 + 1)%goal_amount;
 	}
 	
 	round[a][1]= roundtemp[r12];
@@ -625,7 +629,7 @@ for (var a = 1; a< 8; a++){
 	console.log(r13);
 	while( roundtemp[r13] == null )
 	{
-	r13 = (r13 + 1)%10;
+	r13 = (r13 + 1)%goal_amount;
 	}
 	
 	round[a][2]= roundtemp[r13];	
@@ -838,24 +842,14 @@ function shuffle(array) {
   return array;
 }	
 
-
+	$SCRIPT_ROOT = {{ request.script_root|tojson|safe }};
     socket.on('connect', function() {
         socket.emit('my event', "dest");
 		
-		setInterval(ping(),1200000);
+
     });	
 	
-    function ping(){
-       $.ajax({
-          url: "http://www.yorbskip.com",
-          success: function(result){
-             
-          },     
-          error: function(result){
-             
-          }
-       });
-    }	
+
 	
 	
 	
