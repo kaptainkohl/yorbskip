@@ -81,17 +81,19 @@
 
 
 <script>
+
+$SCRIPT_ROOT = {{ request.script_root|tojson|safe }};
 function meme(){
 window.location.href = "https://www.youtube.com/watch?v=LSmBRG3IWy8";
 }
 function battle(){
-window.location.href = "http://www.yorbskip.com/BattleBingo";
+window.location.href = $SCRIPT_ROOT +"/BattleBingo";
 }
 function stats(){
-window.location.href = "http://www.yorbskip.com/BingoStats";
+window.location.href = $SCRIPT_ROOT +"/BingoStats";
 }
 function hor(){
-window.location.href = "http://www.yorbskip.com/HorizontalGoals";
+window.location.href = $SCRIPT_ROOT +"/HorizontalGoals";
 }
 </script>
 
