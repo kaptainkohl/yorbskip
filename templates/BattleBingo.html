@@ -132,12 +132,12 @@ input:checked + .slider:before {
 		<span class="slider round"></span>
 	</label>
 	<br>
-
-<div id="info"  class="collapse" role="dialog">
-	<div class="form-inline" >
-	<button onclick="start_game()" class="btn btn-default" style="width:150px;">Generate</button>
-	<input type="number" id="seed" min="0" max="999999" style="width:150px;" class="form-control">
+<div class="form-inline" >
+	<div id="info"  class="collapse" role="dialog">		
+		<button onclick="start_game()" class="btn btn-default" style="width:150px;">Generate</button>
+		<input type="number" id="seed" min="0" max="999999" style="width:150px;" class="form-control">
 	</div>
+	
 </div>
 <br>
 <div class="form-inline" >
@@ -271,11 +271,11 @@ bingoList[1] = [
 
 bingoList[2] = [
 {name: "All Honeycombs in MT", types: ["MT", "Honeycombs"]},
+{name: "3 jiggies in MT", types: ["MT","MT jiggies"]},
 {name: "4 jiggies in MT", types: ["MT","MT jiggies"]},
-{name: "5 jiggies in MT", types: ["MT","MT jiggies"]},
 {name: "3 jiggies in GGM", types: ["GGM", "GGM jiggies"]},
 {name: "4 jiggies in GGM", types: ["GGM", "GGM jiggies"]},
-{name: "3 jiggies in WW", types: ["WW", "WW jiggies"]},
+{name: "2 jiggies in WW", types: ["WW", "WW jiggies"]},
 {name: "Inferno jiggy", types: ["WW", "WW jiggies"]},
 {name: "All Honeycombs in WW", types: ["WW", "Honeycombs"]},
 {name: "5 Glowbos", types:["Global", "Glowbos"]},
@@ -305,8 +305,8 @@ bingoList[4] = [
 {name: "5 jiggies in GGM", types: ["GGM jiggies"]},
 {name: "Ice Train jiggy", types: ["HFP jiggies"]},
 {name: "All Cheato Pages in HFP", types: ["Cheato pages"]},
-{name: "Dragon Kazooie", types: []},
-{name: "Chris P. Bacon Jiggy", types: []},
+{name: "Dragon Kazooie", types: ["GGM"]},
+{name: "Chris P. Bacon Jiggy", types: ["JRL"]},
 {name: "Old King Coal Jiggy", types: ["Train"]},
 {name: "Mr. Patch Jiggy", types: ["Bosses"]},
 {name: "Defeat Terry", types: ["TDL","TDL jiggies"]},
@@ -334,7 +334,6 @@ bingoList[5] = [
 {name: "Boggy’s Kids Jiggy", types: ["WW"]},
 {name: "All Train Switches", types: ["Train", "Global"]},
 {name: "Hatch Heggy’s 3 Eggs", types: ["Bash", "hatch"]},
-{name: "All Jinjos in GGM, JRL, and IoH/SM", types: ["Jinjos", "GGM", "JRL"]},
 {name: "Clinkers Cavern Jiggy", types: ["GI"]},
 {name: "Sabreman Jiggy", types: ["HFP"]},
 {name: "1 Jiggy in Every Level", types: ["Global", "jiggies"]},
@@ -352,7 +351,7 @@ bingoList[5] = [
 {name: "Oil Drill Jiggy", types: ["HFP", "GI"]},
 {name: "12 Cheato Pages", types: ["Cheatos", "Global"]},
 {name: "Jelly Castle Jiggy as Banjo", types: ["CCL", "Moves"]},
-{name: "Canary Mary Jiggy & CP in CCL", types: ["GGM", "CCL", "Cheatos"]},
+{name: "Canary Mary Jiggy CCL", types: ["GGM", "CCL", "Cheatos"]},
 {name: "6 Jiggies in HFP", types: ["HFP", "jiggies"]},
 {name: "6 Jiggies in GI", types: ["GI", "jiggies"]},
 {name: "Terry’s Kids Jiggy", types:["TDL", "hatch"]},
@@ -370,7 +369,6 @@ bingoList[6] = [
 {name: "Boggy’s Kids Jiggy", types: ["WW"]},
 {name: "All Train Switches", types: ["Train", "Global"]},
 {name: "Hatch Heggy’s 3 Eggs", types: ["Bash", "hatch"]},
-{name: "All Jinjos in GGM, JRL, and IoH/SM", types: ["Jinjos", "GGM", "JRL"]},
 {name: "Clinkers Cavern Jiggy", types: ["GI"]},
 {name: "Sabreman Jiggy", types: ["HFP"]},
 {name: "1 Jiggy in Every Level", types: ["Global", "jiggies"]},
@@ -388,7 +386,7 @@ bingoList[6] = [
 {name: "Oil Drill Jiggy", types: ["HFP", "GI"]},
 {name: "12 Cheato Pages", types: ["Cheatos", "Global"]},
 {name: "Jelly Castle Jiggy as Banjo", types: ["CCL", "Moves"]},
-{name: "Canary Mary Jiggy & CP in CCL", types: ["GGM", "CCL", "Cheatos"]},
+{name: "Canary Mary Jiggy CCL", types: ["GGM", "CCL", "Cheatos"]},
 {name: "6 Jiggies in HFP", types: ["HFP", "jiggies"]},
 {name: "6 Jiggies in GI", types: ["GI", "jiggies"]},
 {name: "Terry’s Kids Jiggy", types:["TDL", "hatch"]},
@@ -406,7 +404,6 @@ bingoList[7] = [
 {name: "Boggy’s Kids Jiggy", types: ["WW"]},
 {name: "All Train Switches", types: ["Train", "Global"]},
 {name: "Hatch Heggy’s 3 Eggs", types: ["Bash", "hatch"]},
-{name: "All Jinjos in GGM, JRL, and IoH/SM", types: ["Jinjos", "GGM", "JRL"]},
 {name: "Clinkers Cavern Jiggy", types: ["GI"]},
 {name: "Sabreman Jiggy", types: ["HFP"]},
 {name: "1 Jiggy in Every Level", types: ["Global", "jiggies"]},
@@ -424,7 +421,7 @@ bingoList[7] = [
 {name: "Oil Drill Jiggy", types: ["HFP", "GI"]},
 {name: "12 Cheato Pages", types: ["Cheatos", "Global"]},
 {name: "Jelly Castle Jiggy as Banjo", types: ["CCL", "Moves"]},
-{name: "Canary Mary Jiggy & CP in CCL", types: ["GGM", "CCL", "Cheatos"]},
+{name: "Canary Mary Jiggy CCL", types: ["GGM", "CCL", "Cheatos"]},
 {name: "6 Jiggies in HFP", types: ["HFP", "jiggies"]},
 {name: "6 Jiggies in GI", types: ["GI", "jiggies"]},
 {name: "Terry’s Kids Jiggy", types:["TDL", "hatch"]},
@@ -447,7 +444,7 @@ var round =[];
 	round[6] = [];
 	round[7] = [];
 	
-var goal_check = [{"name" : "MT jiggies","data":0},{"name" : "GGM jiggies","data":0},{"name" : "WW jiggies","data":0},{"name" : "Cheato pages","data":0},{"name" : "Glowbos","data":0},{"name" : "Honeycombs","data":0},{"name" : "Trebleclefs","data":0}]
+var goal_check = [{"name" : "MT jiggies","data":0,},{"name" : "GGM jiggies","data":0},{"name" : "WW jiggies","data":0},{"name" : "Cheato pages","data":0},{"name" : "Glowbos","data":0},{"name" : "Honeycombs","data":0},{"name" : "Trebleclefs","data":0}]
 
  
  
@@ -633,7 +630,21 @@ for (var a = 1; a< 8; a++){
 	
 	round[a][2]= roundtemp[r13];	
 	console.log(round[a][2]);
-		if(a<5){
+	
+	//un check all goals
+	if(a<5){	
+
+		for (var k = 0; k < goal_check.length; k++) {
+
+				goal_check[k].data = 0;
+
+		}				
+					
+	}	
+	
+	
+	// check goals
+	if(a<5){
 		for (var i = 0; i < round[a].length; i++) {
 				
 				for (var j = 0; j < round[a][i].types.length; j++) {
@@ -831,8 +842,23 @@ function shuffle(array) {
     socket.on('connect', function() {
         socket.emit('my event', "dest");
 		
-		
+		setInterval(ping(),1200000);
     });	
+	
+    function ping(){
+       $.ajax({
+          url: "http://www.yorbskip.com",
+          success: function(result){
+             
+          },     
+          error: function(result){
+             
+          }
+       });
+    }	
+	
+	
+	
 </script>
 </body>
 </html>
