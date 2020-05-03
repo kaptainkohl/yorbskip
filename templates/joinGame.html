@@ -144,6 +144,9 @@ input:checked + .slider:before {
 <script type="text/javascript" charset="utf-8">
    
 $SCRIPT_ROOT = {{ request.script_root|tojson|safe }};
+
+var room_array = [];
+
    var socket = io();
 	socket.on('connect', function() {
         socket.emit('getrooms', "dest");		
@@ -151,7 +154,7 @@ $SCRIPT_ROOT = {{ request.script_root|tojson|safe }};
 	
 	
 socket.on('showrooms', function(msg) {
-	
+	room_array = msg;
 	for (var a = 0; a < msg.length; a++) 
 	{
 		var place = document.getElementById("rooms");
@@ -172,10 +175,31 @@ function load(x){
 	window.location.href = $SCRIPT_ROOT +"/battle/"+x.innerHTML;
 }
 function join(){
-	socket.emit('createroom', document.getElementById("roomname").value);
 	
-	window.location.href = $SCRIPT_ROOT +"/battle/"+document.getElementById("roomname").value;
-
+		if (room_array.length <= 0){
+			if(document.getElementById("roomname").value != "")
+			{
+				socket.emit('createroom', document.getElementById("roomname").value);	
+				window.location.href = $SCRIPT_ROOT +"/battle/"+document.getElementById("roomname").value;		
+			}
+		}
+		else
+		{
+	var dupe = 0;
+	for (var a = 0; a < room_array.length; a++) 
+		{
+			if(document.getElementById("roomname").value == "" || document.getElementById("roomname").value == room_array[a][0])
+			{
+				dupe = 1;
+			}
+		}
+		
+	if (dupe == 0)
+		{
+			socket.emit('createroom', document.getElementById("roomname").value);	
+			window.location.href = $SCRIPT_ROOT +"/battle/"+document.getElementById("roomname").value;	
+		}
+		}
 }	
 </script>	
 	
