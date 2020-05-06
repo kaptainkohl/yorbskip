@@ -213,7 +213,7 @@ bingoList[15] = [
 ];
 
 bingoList[16] = [
-{name: "5 Jiggies in GI", types: ["GI", "GI Jiggies"]}
+{name: "5 Jiggies in GI", types: ["GI", "GI Jiggies"]},
 {name: "All Notes in GI", types: ["Notes", "GI"]},
 {name: "Kill All Minjos in GI", types: ["Minjos", "GI"]},
 {name: "All Purple Jinjos", types: ["Jinjos"]},
