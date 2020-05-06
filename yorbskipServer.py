@@ -21,7 +21,11 @@ def ping_mess():
     
 @app.route('/bingo',methods=['GET', 'POST'])
 def bingo_card():
-    return render_template('bingo.html')   
+    return render_template('bingo.html') 
+
+@app.route('/updategoals')
+def bingo_update():
+    return render_template('update.html')    
     
 @app.route('/popout',methods=['GET', 'POST'])
 def bingo_pop():

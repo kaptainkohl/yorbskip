@@ -1,0 +1,20 @@
+<!DOCTYPE html>
+<style>
+table, th, td {
+  border: 1px solid black;
+}
+.highlight {color:red;}
+</style>
+<html>
+<head>
+Tooie Bingo Goal Update 
+</head>
+
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.0/jquery.min.js"></script>
+<input id="btn1" type="button" value="Update Goals" onclick="generate();"  />
+
+<link rel="icon" type="image/png" href="{{ url_for('static', filename='6.png') }}"/>
+
+<textarea align="left" rows="80" cols="180"style="left:10px;position:fixed;height:800px;width:800px;font-size:14pt;" id="goals" type="text" name="goals">
+
+</textarea>
