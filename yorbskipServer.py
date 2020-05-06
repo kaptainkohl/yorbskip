@@ -19,6 +19,10 @@ def index():
 def ping_mess():
     return render_template('ping.html')    
     
+@app.route('/bingo',methods=['GET', 'POST'])
+def bingo_card():
+    return render_template('bingo.html')   
+    
 @app.route('/BattleBingo')
 def battle():
     return render_template('joinGame.html') 
