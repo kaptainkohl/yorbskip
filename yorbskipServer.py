@@ -23,6 +23,10 @@ def ping_mess():
 def bingo_card():
     return render_template('bingo.html')   
     
+@app.route('/popout',methods=['GET', 'POST'])
+def bingo_pop():
+    return render_template('popout.html')       
+    
 @app.route('/BattleBingo')
 def battle():
     return render_template('joinGame.html') 

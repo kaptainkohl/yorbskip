@@ -13,6 +13,7 @@
 
 	<script src="{{ url_for('static', filename='js/querystring.js') }}"></script>
 	<script type="text/javascript">
+		$SCRIPT_ROOT = {{ request.script_root|tojson|safe }};
 		var srl = {}; // javascript holder
 		function setcolor() {
 			var pathArray = window.location.href.split('/');

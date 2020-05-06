@@ -1,5 +1,5 @@
 function bingosetup() {
-	 $('.popout').click(function() {
+	$('.popout').click(function() {
         var mode = null;
         var line = $(this).attr('id');
         var name = $(this).html();
@@ -8,7 +8,7 @@ function bingosetup() {
         for (var i = 0; i < 5; i++) {
           items.push($(cells[i]).html());
         };
-        window.open('popout.html#'+ name +'='+ items.join(';;;'),"_blank","toolbar=no, location=no, directories=no, status=no, menubar=no, scrollbars=no, resizable=no, copyhistory=no, width=220, height=460");
+        window.open($SCRIPT_ROOT+'/popout#'+ name +'='+ items.join(';;;'),"_blank","toolbar=no, location=no, directories=no, status=no, menubar=no, scrollbars=no, resizable=no, copyhistory=no, width=220, height=460");
     });
   
     $("#bingo tr td:not(.popout), #selected td").toggle(
