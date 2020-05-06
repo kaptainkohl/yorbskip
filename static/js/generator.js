@@ -5,7 +5,6 @@ ootBingoGenerator = function(bingoList, opts) {
 	Math.seedrandom(SEED);
 	var MODE = opts.mode || 'normal';
   
-	//giuocob 16-8-12: lineCheckList[] has been replaced to allow for removal of all-child rows
 	//Note: the rowElements relation is simply the inverse of the rowCheckList relation
 	var rowElements = {};
 	rowElements["row1"] = [1,2,3,4,5];
@@ -39,14 +38,7 @@ ootBingoGenerator = function(bingoList, opts) {
 	function makeCard() {
 		var bingoBoard = []; //the board itself stored as an array first
 		for (var i=1;i<=25;i++) {
-			if(MODE == "short")
-			{
-		        bingoBoard[i] = {difficulty: difficulty(i), child: "yes"};
-		    }
-		    else
-		    {
-				bingoBoard[i] = {difficulty: difficulty(i), child: "no"};
-			}
+		    bingoBoard[i] = {difficulty: difficulty(i)};
 		}                                          // in order 1-25
 	  
 	  
@@ -82,8 +74,7 @@ ootBingoGenerator = function(bingoList, opts) {
 	    //Populate the bingo board in the array
 	    //giuocob 16-8-12: changed this section to:
 	    //1. Support uniform goal selection by shuffling arrays before checking goals
-	    //2. Remove all child rows by checking child tag
-	    //3. If no goal is suitable, instead of choosing goal with lowest synergy, now next difficulty up is checked
+	    //2. If no goal is suitable, instead of choosing goal with lowest synergy, now next difficulty up is checked
 	    for(var i=1;i<=25;i++)
 	    {
 			var sq = populationOrder[i];
@@ -118,7 +109,6 @@ ootBingoGenerator = function(bingoList, opts) {
 		    bingoBoard[sq].types = minSynObj.value.types;
 		    bingoBoard[sq].subtypes = minSynObj.value.subtypes;
 		    bingoBoard[sq].name = minSynObj.value[LANG] || minSynObj.value.name;
-		    bingoBoard[sq].child = minSynObj.value.child;
 		    bingoBoard[sq].synergy = minSynObj.synergy;
 	    }
 
@@ -234,11 +224,9 @@ ootBingoGenerator = function(bingoList, opts) {
 			var subtypesA = testsquare.subtypes || [];
 			var synergy = 0;
 			var rows = rowCheckList[i], elements = [];
-			var childCount = 0;
 			for(var k=0;k<rows.length;k++)
 			{
 				elements = rowElements[rows[k]];
-				childCount = 0;
 				for(var m=0;m<elements.length;m++)
 				{
 					var testsquare2 = bingoBoard[elements[m]];
@@ -257,33 +245,6 @@ ootBingoGenerator = function(bingoList, opts) {
 						matchArrays(typesA, typesB);
 						matchArrays(typesA, subtypesB);
 						matchArrays(subtypesA, typesB);
-					}
-					if(bingoBoard[elements[m]].child == "yes")
-					{
-						childCount++;
-					}
-				}
-				//Remove child-only rows, remove adult goals from short
-				if(MODE == "short")
-				{
-					if(testsquare.child == "no")
-					{
-						childCount--;
-					}
-					if(childCount < 5)
-					{
-						synergy += 3;
-					}
-				}
-				else
-				{
-					if(testsquare.child == "yes")
-					{
-						childCount++;
-					}
-					if(childCount > 4)
-					{
-						synergy += 3;
 					}
 				}
 			}
