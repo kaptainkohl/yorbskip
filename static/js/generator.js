@@ -102,6 +102,28 @@ ootBingoGenerator = function(bingoList, opts) {
 					    goalArray = getShuffledGoals(getDifficulty);
 					    j = 0;
 					}
+					
+				}
+				
+				if(synergy == 0) {
+					// Prevent two of the same goal appearing on the card
+					var duplicate = false;
+					for(var t=0;t<bingoBoard.length;t++)
+					{
+						if(bingoBoard[t])
+						{
+							if(bingoBoard[t].name == minSynObj.value.name)
+							{
+								duplicate = true;
+								break;
+							}
+						}
+					}
+					if(duplicate == true)
+					{
+						synergy = 100;
+						continue;
+					}
 				}
 			} while(synergy != 0);   //Perhaps increase to 1 if difficulty increases happen too often
 			
