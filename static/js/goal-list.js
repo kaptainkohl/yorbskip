@@ -22,16 +22,16 @@ bingoList[2] = [
     {name: "4 Honeycombs", types: ["Honeycombs"], subtypes: []},
     {name: "Get Double Air", types: ["Over"], subtypes: []},
     {name: "Dilberta Jiggy", types: ["MT", "GGM"], subtypes: []},
-    {name: "4 Trebleclefs", types: ["Global"], subtypes: ["Moves"]},
+    {name: "4 Trebleclefs", types: ["Moves"], subtypes: []},
     {name: "All Yellow Jinjos", types: ["Jinjos"], subtypes: []},
-    {name: "4 Cheato Pages", types: ["Global","Cheatos"], subtypes: []},
+    {name: "4 Cheato Pages", types: ["Cheatos"], subtypes: []},
     {name: "Pillars Jiggy", types: ["MT"], subtypes: []}
 ];
  
 bingoList[3] = [
     {name: "Stub Biggafoots Toe", types: ["HFP"], subtypes: []},
     {name: "Oxygenate JRL Water", types: ["JRL"], subtypes: []},
-    {name: "All Jinjos in 'MT", types: ["Jinjos", "MT"], subtypes: []},
+    {name: "All Jinjos in MT", types: ["Jinjos", "MT"], subtypes: []},
     {name: "Relic Jiggy", types: ["MT"], subtypes: []},
     {name: "Kill 6 Beehives", types: ["Global", "Over","Beehives"], subtypes: []},
     {name: "4 Jiggies in MT", types: ["MT"], subtypes: ["Jiggies"]},
@@ -55,14 +55,14 @@ bingoList[5] = [
     {name: "All Warp Pads in JRL", types: ["JRL"], subtypes: ["Warps"]},
     {name: "All Honeycombs in WW", types: ["WW"], subtypes: ["Honeycombs"]},
     {name: "All Notes in WW", types: ["WW"], subtypes: ["Notes"]},
-    {name: "Kill 5 Minjos", types: ["Global","Minjos"], subtypes: []},
+    {name: "Kill 5 Minjos", types: ["Minjos"], subtypes: []},
     {name: "Kill 9 Beehives", types: ["Global","Beehives"], subtypes: []},
     {name: "All Warp Pads in MT", types: ["MT"], subtypes: ["Warps"]},
     {name: "All Honeycombs in HFP", types: ["HFP"], subtypes: ["Honeycombs"]},
     {name: "Learn Breegull Bash", types: ["Bash"], subtypes: []},
     {name: "Ice Train Jiggy", types: ["HFP"], subtypes: []},
     {name: "Ice Wall Jiggy", types: ["HFP"], subtypes: []},
-    {name: "1 Jinjo from Every Family", types: ["Global","Jinjos"], subtypes: []},
+    {name: "1 Jinjo from Every Family", types: ["Jinjos"], subtypes: []},
     {name: "5 Jiggies in MT", types: ["MT"], subtypes: ["Jiggies"]}
 ];
  
@@ -76,7 +76,7 @@ bingoList[6] = [
     {name: "All Warp Pads in HFP", types: ["HFP"], subtypes: ["Warps"]},
     {name: "All CP, HC, and Glowbos in MT", types: ["MT"], subtypes: ["Cheatos", "Honeycombs", "Glowbos"]},
     {name: "6 Jiggies in MT", types: ["MT"], subtypes: ["Jiggies"]},
-    {name: "6 Cheato Pages", types: ["Global","Cheatos"], subtypes: []}
+    {name: "6 Cheato Pages", types: ["Cheatos"], subtypes: []}
 ];
  
 bingoList[7] = [
@@ -123,7 +123,7 @@ bingoList[9] = [
  
 bingoList[10] = [
     {name: "Zubba's Minigame Jiggy", types: ["CCL"], subtypes: []},
-    {name: "8 Cheato Pages", types: ["Global","Cheatos"], subtypes: []},
+    {name: "8 Cheato Pages", types: ["Cheatos"], subtypes: []},
     {name: "Open Superstash Deluxe Safe", types: ["CCL"], subtypes: []},
     {name: "Jiggy & CP in Pot O' Gold", types: ["CCL"], subtypes: ["Cheatos"]},
     {name: "5 Jiggies in GGM", types: ["GGM"], subtypes: ["Jiggies"]},
@@ -133,7 +133,7 @@ bingoList[10] = [
     {name: "All Cheato Pages in JRL", types: ["JRL"], subtypes: ["Cheatos"]},
     {name: "Oogle Boogle Jiggy", types: ["TDL"], subtypes: []},
     {name: "Spook the Unga Bunga", types: ["TDL"], subtypes: []},
-    {name: "Water Depot Jinjo from JRL", types: ["JRL", "GGM"], subtypes: ["Jinjos"]},
+    {name: "Water Depot Jinjo from JRL", types: ["GGM"], subtypes: ["Jinjos"]},
     {name: "Defeat 4 Bosses", types: ["Bosses"], subtypes: []},
     {name: "7 Jiggies in MT", types: ["MT"], subtypes: ["Jiggies"]}
 ];
@@ -148,7 +148,7 @@ bingoList[11] = [
     {name: "Pig Pool Jiggy", types: ["JRL"], subtypes: []},
     {name: "All Wumba Warp Pads", types: ["Warps","Global"], subtypes: []},
     {name: "4 Jiggies in HFP", types: ["HFP"], subtypes: ["Jiggies"]},
-    {name: "Toxic Waste Jinjo from JRL", types: ["JRL", "GI"], subtypes: ["Jinjos"]},
+    {name: "Toxic Waste Jinjo from JRL", types: ["GI"], subtypes: ["Jinjos"]},
     {name: "HFP Kickball Jiggy", types: ["HFP", "Kickball"], subtypes: []},
     {name: "8 Jiggies in MT", types: ["MT"], subtypes: ["Jiggies"]},
     {name: "All CP, HC, and Glowbos in TDL", types: ["TDL"], subtypes: ["Cheatos", "Honeycombs", "Glowbos"]},
@@ -190,7 +190,7 @@ bingoList[14] = [
     {name: "Dragon Brothers Jiggy", types: ["HFP"], subtypes: ["Bosses"]},
     {name: "5 Jiggies in TDL", types: ["TDL"], subtypes: ["Jiggies"]},
     {name: "12 Honeycombs", types: ["Global","Honeycombs"], subtypes: []},
-    {name: "Learn Claw Clamber Boots", types: ["GI", "Global"], subtypes: ["Moves"]},
+    {name: "Learn Claw Clamber Boots", types: ["GI"], subtypes: ["Moves"]},
     {name: "5 Jiggies in HFP", types: ["HFP"], subtypes: ["Jiggies"]},
     {name: "Bring Train to TDL", types: ["Train", "TDL"], subtypes: []},
     {name: "Both Toxic Waste Jiggies", types: ["GI"], subtypes: []},
@@ -218,12 +218,12 @@ bingoList[16] = [
     {name: "All Notes in GI", types: ["GI"], subtypes: ["Notes"]},
     {name: "Kill All Minjos in GI", types: ["GI"], subtypes: ["Minjos"]},
     {name: "All Purple Jinjos", types: ["Jinjos"], subtypes: []},
-    {name: "4 Jiggies in 3 Levels", types: ["Jiggies", "Global"], subtypes: []},
+    {name: "4 Jiggies in 3 Levels", types: ["Jiggies"], subtypes: []},
     {name: "Return the Lost Styracosaurus", types: ["Train", "TDL", "WW"], subtypes: []},
     {name: "Defeat Weldar", types: ["GI"], subtypes: []},
-    {name: "2 Jiggies in 6 Levels", types: ["Jiggies", "Global"], subtypes: []},
+    {name: "2 Jiggies in 6 Levels", types: ["Jiggies"], subtypes: []},
     {name: "Use 5 Mumbo Pads", types: ["Global","Mumbo"], subtypes: []},
-    {name: "Learn Leg Spring", types: ["GI", "Global"], subtypes: ["Moves"]},
+    {name: "Learn Leg Spring", types: ["GI"], subtypes: ["Moves"]},
     {name: "10 Jiggies Between MT and GGM", types: ["MT","GGM"], subtypes: ["Jiggies"]}
 ];
  
@@ -231,7 +231,7 @@ bingoList[17] = [
     {name: "Both Kickball Jiggies", types: ["HFP", "MT", "Kickball"], subtypes: []},
     {name: "All Jinjos in GI", types: ["GI"], subtypes: ["Jinjos"]},
     {name: "4 Jiggies in JRL", types: ["JRL"], subtypes: ["Jiggies"]},
-    {name: "3 Jiggies in 4 Levels", types: ["Jiggies", "Global"], subtypes: []},
+    {name: "3 Jiggies in 4 Levels", types: ["Jiggies"], subtypes: []},
     {name: "6 Jiggies in TDL", types: ["TDL"], subtypes: ["Jiggies"]},
     {name: "EMP the Crushers", types: ["GI"], subtypes: []},
     {name: "All Cheato Pages in GI", types: ["GI"], subtypes: ["Cheatos"]},
@@ -240,22 +240,22 @@ bingoList[17] = [
  
 bingoList[18] = [
     {name: "6 Jiggies in CCL", types: ["CCL", "CCL Jiggies"], subtypes: ["Jiggies"]},
-    {name: "Learn Snooze Pack", types: ["GI", "Global"], subtypes: ["Moves"]},
+    {name: "Learn Snooze Pack", types: ["GI"], subtypes: ["Moves"]},
     {name: "All Train Switches", types: ["Train", "Global"], subtypes: []},
     {name: "All Jinjos in GGM, JRL, and IoH/SM", types: ["GGM", "JRL"], subtypes: ["Jinjos"]},
     {name: "Clinkers Cavern Jiggy", types: ["GI"], subtypes: []},
     {name: "Sabreman Jiggy", types: ["HFP"], subtypes: []},
     {name: "8 Trebleclefs", types: ["Global","Moves"], subtypes: []},
     {name: "All Black Jinjos", types: ["Jinjos"], subtypes: []},
-    {name: "1 Jiggy in Every Level", types: ["Jiggies", "Global"], subtypes: []}
+    {name: "1 Jiggy in Every Level", types: ["Jiggies"], subtypes: []}
 ];
  
 bingoList[19] = [
-    {name: "Learn Shack Pack", types: ["HFP", "Shack", "Global"], subtypes: ["Moves"]},
+    {name: "Learn Shack Pack", types: ["HFP", "Shack"], subtypes: ["Moves"]},
     {name: "5 Jiggies in WW", types: ["WW", "Over"], subtypes: ["Jiggies"]},
     {name: "12 Cheato Pages", types: ["Global","Cheatos"], subtypes: []},
     {name: "15 Glowbos", types: ["Global","Glowbos"], subtypes: []},
-    {name: "2 Jiggies in 7 Levels", types: ["Jiggies", "Global"], subtypes: []},
+    {name: "2 Jiggies in 7 Levels", types: ["Jiggies"], subtypes: []},
     {name: "Kill 11 Minjos", types: ["Global","Minjos"], subtypes: []},
     {name: "8 Jiggies Between TDL and CCL", types: ["TDL","CCL"], subtypes: ["Jiggies"]},
     {name: "Hatch 7 Eggs", types: ["Hatch", "TDL"], subtypes: []}
@@ -264,11 +264,11 @@ bingoList[19] = [
 bingoList[20] = [
     {name: "Dodgem Dome Jiggy", types: ["WW"], subtypes: []},
     {name: "Twinkly Packaging Jiggy", types: ["GI"], subtypes: []},
-    {name: "Icicle Grotto CP w/ Shack Pack", types: ["HFP", "Shack", "Global"], subtypes: ["Cheatos", "Moves"]},
+    {name: "Icicle Grotto CP w/ Shack Pack", types: ["HFP", "Shack"], subtypes: ["Cheatos", "Moves"]},
     {name: "7 Jiggies in CCL", types: ["CCL"], subtypes: ["Jiggies"]},
     {name: "5 Jiggies in JRL", types: ["JRL"], subtypes: ["Jiggies"]},
     {name: "Defeat 6 Bosses", types: ["Bosses"], subtypes: []},
-    {name: "Learn Glide", types: ["Moves", "HFP", "Global"], subtypes: []},
+    {name: "Learn Glide", types: ["Moves", "HFP"], subtypes: []},
     {name: "8 Jiggies in GGM", types: ["GGM"], subtypes: ["Jiggies"]},
     {name: "16 Honeycombs", types: ["Global","Honeycombs"], subtypes: []},
     {name: "9 Trebleclefs", types: ["Global","Moves"], subtypes: []}
@@ -279,9 +279,9 @@ bingoList[21] = [
     {name: "Use 7 Mumbo Pads", types: ["Global","Mumbo"], subtypes: []},
     {name: "All CP, HC, and Glowbos in GI", types: ["GI"], subtypes: ["Cheatos", "Honeycombs", "Glowbos"]},
     {name: "All Cheato Pages in WW", types: ["WW"], subtypes: ["Cheatos"]},
-    {name: "Jelly Castle Jiggy as Banjo", types: ["CCL","Shack", "Global"], subtypes: ["Moves"]},
+    {name: "Jelly Castle Jiggy as Banjo", types: ["CCL","Shack"], subtypes: ["Moves"]},
     {name: "Defeat Hag 1", types: ["Over"], subtypes: ["Moves"]},
-    {name: "3 Jiggies in 5 Levels", types: ["Jiggies", "Global"], subtypes: []},
+    {name: "3 Jiggies in 5 Levels", types: ["Jiggies"], subtypes: []},
     {name: "Canary Mary Jiggy & CP in CCL", types: ["GGM", "CCL"], subtypes: ["Cheatos"]},
     {name: "6 Jiggies in HFP", types: ["HFP"], subtypes: ["Jiggies"]},
     {name: "6 Jiggies in GI", types: ["GI"], subtypes: ["Jiggies"]},
@@ -301,9 +301,9 @@ bingoList[22] = [
  
 bingoList[23] = [
     {name: "All Cheato Pages in CCL", types: ["CCL"], subtypes: ["Cheatos"]},
-    {name: "Kill 13 Minjos", types: ["Global","Minjos"], subtypes: []},
+    {name: "Kill 13 Minjos", types: ["Minjos"], subtypes: []},
     {name: "All Jinjos in MT, TDL, and GI", types: ["MT", "TDL", "GI"], subtypes: ["Jinjos"]},
-    {name: "Learn 4 Solo Banjo Moves", types: ["Global", "Shack"], subtypes: ["Moves"]},
+    {name: "Learn 4 Solo Banjo Moves", types: ["Shack"], subtypes: ["Moves"]},
     {name: "13 Jiggies Between MT and GGM", types: ["MT","GGM"], subtypes: ["Jiggies"]},
     {name: "8 Jiggies Between JRL and HFP", types: ["JRL", "HFP"], subtypes: ["Jiggies"]},
     {name: "Bring Train to Icy Side", types: ["HFP","Gobi"], subtypes: ["Train"]}
@@ -312,10 +312,10 @@ bingoList[23] = [
 bingoList[24] = [
     {name: "6 Jiggies in JRL", types: ["JRL"], subtypes: ["Jiggies"]},
     {name: "7 Jiggies in GI", types: ["GI"], subtypes: ["Jiggies"]},
-    {name: "5 Jiggies in 3 Levels", types: ["Jiggies", "Global"], subtypes: ["Jiggies"]},
+    {name: "5 Jiggies in 3 Levels", types: ["Jiggies"], subtypes: ["Jiggies"]},
     {name: "7 Jiggies in TDL", types: ["TDL"], subtypes: ["Jiggies"]},
     {name: "All Jinjos in WW, HFP, and CCL", types: ["WW", "HFP", "CCL"], subtypes: ["Jinjos"]},
-    {name: "Learn All 4 Solo Kazooie Moves", types: ["Global", "Hatch"], subtypes: ["Moves"]},
+    {name: "Learn All 4 Solo Kazooie Moves", types: ["Hatch"], subtypes: ["Moves"]},
     {name: "20 Honeycombs", types: ["Global"], subtypes: ["Honeycombs"]},
     {name: "7 Jiggies in WW", types: ["WW", "WW Jiggies", "Over"], subtypes: ["Jiggies"]}
 ];
