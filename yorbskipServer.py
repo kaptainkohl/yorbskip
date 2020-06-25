@@ -10,6 +10,7 @@ socketio = SocketIO(app)
 
 room_array = []
 
+bingo_array = []
 
 @app.route('/')
 def index():
@@ -26,6 +27,11 @@ def bingo_card():
 @app.route('/popout',methods=['GET', 'POST'])
 def bingo_pop():
     return render_template('popout.html')       
+
+@app.route('/sync',methods=['GET', 'POST'])
+def bingo_sync():
+    return render_template('synclobby.html') 
+
     
 @app.route('/BattleBingo')
 def battle():
@@ -35,7 +41,6 @@ def battle():
 @app.route('/battle/<room>', methods=['GET', 'POST'])
 def userpage(room=None):
 	return render_template('BattleBingo.html', room=room) 
-   
 
 @app.route('/BingoStats')
 def stats():

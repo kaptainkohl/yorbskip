@@ -55,16 +55,15 @@
 
 
 <body>
-<img src="{{ url_for('static', filename='yorbskiplogo.png') }}" style="height:250px;" alt="yorb"class="center">
+
+
+
+
+
+<img src="{{ url_for('static', filename='yorbskiplogo.png') }}" style="height:200px;" alt="yorb"class="center">
 
 <div class="center">
-<button type="button" class="btn btn-primary btn-lg" style="background-color:#f500dc;" onclick="bingo();" >Banjo-Tooie Bingo</button>
-<br>
-<br>
-<br>
-<button type="button" class="btn btn-primary btn-lg" style="background-color:#f500dc;" onclick="battle();" >Battle Bingo</button>
-<button type="button" class="btn btn-primary btn-lg" style="background-color:#f500dc;" onclick="stats();" >Bingo Stats</button>
-<button type="button" class="btn btn-primary btn-lg" style="background-color:#f500dc;" onclick="hor();" >Horizontal Goals</button>
+<canvas id="myCanvas" style="left:50px" width="900" height="600"></canvas>
 </div>
 <br>
 <br>
@@ -90,7 +89,7 @@
 
 $SCRIPT_ROOT = {{ request.script_root|tojson|safe }};
 function meme(){
-window.location.href = "https://www.youtube.com/watch?v=LSmBRG3IWy8";
+window.location.href = "https://youtu.be/fU_fuJXJmL4?t=18";
 }
 function bingo(){
 window.location.href = $SCRIPT_ROOT +"/bingo?seed="+Math.floor((Math.random()*1000000));
@@ -104,6 +103,210 @@ window.location.href = $SCRIPT_ROOT +"/BingoStats";
 function hor(){
 window.location.href = $SCRIPT_ROOT +"/HorizontalGoals";
 }
+
+
+var pos = 0;
+var click = 0
+var text_width = 0;
+var text_width2 = 0;
+var text_width3 = 0;
+var text_width4 = 0;
+var vertical = 0;
+
+var grunty = new Image(100, 100);
+grunty.src = "{{ url_for('static', filename='grunty.png') }}";
+
+var king = new Image(100, 100);
+king.src = "{{ url_for('static', filename='king.png') }}";
+
+var weldar = new Image(100, 100);
+weldar.src = "{{ url_for('static', filename='weldar.png') }}";
+
+var heggy = new Image(100, 100);
+heggy.src = "{{ url_for('static', filename='heggy.png') }}";
+
+var c = document.getElementById("myCanvas");
+var ctx = c.getContext("2d");
+c.addEventListener("mousemove", function(e) { 
+pos = getMousePos(c, e)
+});
+
+c.addEventListener("mousedown", function(e) { 
+click = getMousePos(c, e)
+});
+
+function refresh(){
+	
+	if (text_width < 750){
+		text_width += 50;
+	}
+	if (text_width2 < 750 && vertical > 150){
+		text_width2 += 50;
+	}
+	if (text_width3 < 750 && vertical > 310){
+		text_width3 += 50;
+	}	
+	if (text_width4 < 750 && vertical > 470){
+		text_width4 += 50;
+	}	
+	if (vertical < 750){
+		ctx.globalAlpha = 0.9;
+		ctx.fillStyle = "black";
+		ctx.beginPath();
+		ctx.arc(60, 60+ vertical, 50, 0, 2 * Math.PI);
+		ctx.fillStyle = "black";
+		ctx.fill();		
+		
+		vertical += 50;
+	}	
+	
+
+
+	ctx.fillStyle = "#2c2f33";
+	ctx.fillRect(0, 0, 900, 600);
+	
+	
+	if ( click.y > 10 && click.y < 110) {
+		bingo();
+	}	
+	if ( click.y > 160 && click.y < 260) {
+		battle();
+	}		
+	if ( click.y > 310 && click.y < 410) {
+		stats();
+	}		
+	if ( click.y > 470 && click.y < 570) {
+		hor();
+	}	
+	
+	// Draw 1
+	if ( pos.y > 10 && pos.y < 110) {
+	ctx.globalAlpha = 0.9;
+	}
+	else
+	{
+	ctx.globalAlpha = 0.5;
+	}
+	ctx.fillStyle = "black";
+	ctx.fillRect(60, 10, text_width, 100);
+	ctx.beginPath();
+	ctx.arc(60, 60, 50, 0.5 *Math.PI, 1.5 * Math.PI);
+	ctx.fillStyle = "black";
+	ctx.fill();
+	ctx.beginPath();
+	ctx.arc(60+ text_width, 60, 50, 1.5 * Math.PI, 2.5 * Math.PI);
+	ctx.fillStyle = "black";
+	ctx.fill();
+	ctx.globalAlpha = 1;
+	ctx.drawImage(grunty, 10, 10, 100, 100);
+	if (text_width >= 750){
+		ctx.fillStyle = "white"
+		ctx.font = "50px Open Sans";
+		ctx.fillText("Banjo-Tooie Bingo", 110, 80);
+		
+	}
+	
+	// Draw 2
+	if (vertical > 150 ){
+	
+		if ( pos.y > 160 && pos.y < 260) {
+		ctx.globalAlpha = 0.9;
+		}
+		else
+		{
+		ctx.globalAlpha = 0.5;
+		}
+		ctx.fillStyle = "black";
+		ctx.fillRect(60, 10 + 150, text_width2 , 100);
+		ctx.beginPath();
+		ctx.arc(60, 60 +150, 50, 0.5 *Math.PI, 1.5 * Math.PI);
+		ctx.fillStyle = "black";
+		ctx.fill();
+		ctx.beginPath();
+		ctx.arc(60+ text_width2, 60 +150, 50, 1.5 * Math.PI, 2.5 * Math.PI);
+		ctx.fillStyle = "black";
+		ctx.fill();
+		ctx.globalAlpha = 1;
+		ctx.drawImage(king, 10, 10 +150, 100, 100);
+		if (text_width2 >= 750){
+			ctx.fillStyle = "white"
+			ctx.font = "50px Open Sans";
+			ctx.fillText("Battle Bingo", 110, 80 +150);
+			
+		}	
+	}
+
+	// Draw 3
+	if (vertical > 310 ){
+	
+		if ( pos.y > 310 && pos.y < 410) {
+		ctx.globalAlpha = 0.9;
+		}
+		else
+		{
+		ctx.globalAlpha = 0.5;
+		}
+		ctx.fillStyle = "black";
+		ctx.fillRect(60, 10 + 310, text_width3 , 100);
+		ctx.beginPath();
+		ctx.arc(60, 60 +310, 50, 0.5 *Math.PI, 1.5 * Math.PI);
+		ctx.fillStyle = "black";
+		ctx.fill();
+		ctx.beginPath();
+		ctx.arc(60+ text_width3, 60 +310, 50, 1.5 * Math.PI, 2.5 * Math.PI);
+		ctx.fillStyle = "black";
+		ctx.fill();
+		ctx.globalAlpha = 1;
+		ctx.drawImage(weldar, 10, 10 +310, 100, 100);
+		if (text_width3 >= 750){
+			ctx.fillStyle = "white"
+			ctx.font = "50px Open Sans";
+			ctx.fillText("Bingo Stats", 110, 80 +310);
+			
+		}	
+	}
+
+	// Draw 4
+	if (vertical > 470 ){
+	
+		if ( pos.y > 470 && pos.y < 570) {
+		ctx.globalAlpha = 0.9;
+		}
+		else
+		{
+		ctx.globalAlpha = 0.5;
+		}
+		ctx.fillStyle = "black";
+		ctx.fillRect(60, 10 + 470, text_width4 , 100);
+		ctx.beginPath();
+		ctx.arc(60, 60 +470, 50, 0.5 *Math.PI, 1.5 * Math.PI);
+		ctx.fillStyle = "black";
+		ctx.fill();
+		ctx.beginPath();
+		ctx.arc(60+ text_width4, 60 +470, 50, 1.5 * Math.PI, 2.5 * Math.PI);
+		ctx.fillStyle = "black";
+		ctx.fill();
+		ctx.globalAlpha = 1;
+		ctx.drawImage(heggy, 10, 10 +470, 100, 100);
+		if (text_width4 >= 750){
+			ctx.fillStyle = "white"
+			ctx.font = "50px Open Sans";
+			ctx.fillText("Horizontal Goals", 110, 80 +470);
+			
+		}	
+	}
+}
+
+
+function getMousePos(canvas, evt) {
+	var rect = canvas.getBoundingClientRect();
+	return {
+	  x: evt.clientX - rect.left,
+	  y: evt.clientY - rect.top
+	};
+}
+
+setInterval(refresh, 60);
 </script>
 
 
