@@ -168,15 +168,19 @@ function refresh(){
 	
 	if ( click.y > 10 && click.y < 110) {
 		bingo();
+		click.y=0;
 	}	
 	if ( click.y > 160 && click.y < 260) {
 		battle();
+		click.y=0;
 	}		
 	if ( click.y > 310 && click.y < 410) {
 		stats();
+		click.y=0;
 	}		
 	if ( click.y > 470 && click.y < 570) {
 		hor();
+		click.y=0;
 	}	
 	
 	// Draw 1
