@@ -54,27 +54,25 @@
   border-radius: 50%;
 }
 
-    video {
-      object-fit: cover;
-    }
-
-    @media (min-width: 1000px) {
-      video {
-        height: 480px;
-      }
-    }
 </style>
 </head>
 <body>
-
-
+<input type="file" id="imageLoader" name="imageLoader"/>
+<textarea align="right" rows="40" cols="120"style="height:400px;width:50px;font-size:14pt;" id="goals" type="text" name="goals">
+35
+29
+18
+-35
+-29
+-18
+</textarea>
 	
 
 <canvas  id="myCanvas" ></canvas>
-<br>
 
 
-<input type="file" id="imageLoader" name="imageLoader"/>
+
+
 
 
 
@@ -171,23 +169,42 @@ function getFrame() {
   var scaleX = imageW/975;
   var scaleY = imageH/754;
   
+  var unit = scaleX * 4.75;
+  
 	ctx.clearRect(0, 0, img.width, img.height);
 	
-	//draw 35
-	ctx.fillStyle = "black";
-	ctx.fillRect((xc+270) * scaleX , (yc + (imageH/2))*scaleY - 50, 10, 100);
+	var obj = document.getElementById("goals").value.split('\n');
 	
-	ctx.fillRect((xc+693) * scaleX , (yc + (imageH/2))*scaleY - 50, 10, 100);
+	
+	for(var i = 0; i < obj.length ; i ++)
+	{
+		ctx.fillStyle = "black";
+		if (parseInt(obj[i]) <= 0 )
+		{		
+			ctx.fillRect( (xc +445) + (parseInt(obj[i]) * unit), (yc + (imageH/2))*scaleY - 50, -10, 100);	
+		}
+		else
+		{
+			ctx.fillRect( (xc +528) + (parseInt(obj[i]) * unit), (yc + (imageH/2))*scaleY - 50, 10, 100);	
+		}
+	
+	}
+	
+	//draw 35
+	//ctx.fillStyle = "black";
+	//ctx.fillRect((xc+280) * scaleX , (yc + (imageH/2))*scaleY - 50, -10, 100);
+	
+	//ctx.fillRect((xc+693) * scaleX , (yc + (imageH/2))*scaleY - 50, 10, 100);
 	
 	// 29
-	ctx.fillRect((xc+298)* scaleX, (yc + (imageH/2))*scaleY - 50, 10, 100);
+	//ctx.fillRect((xc+)* scaleX, (yc + (imageH/2))*scaleY - 50, -10, 100);
 	
-	ctx.fillRect((xc+665) * scaleX , (yc + (imageH/2))*scaleY - 50, 10, 100);
+	//ctx.fillRect((xc+665) * scaleX , (yc + (imageH/2))*scaleY - 50, 10, 100);
 	
 	//18
-	ctx.fillRect((xc+350)* scaleX,  (yc + (imageH/2))*scaleY - 50, 10, 100);
+	//ctx.fillRect((xc+)* scaleX,  (yc + (imageH/2))*scaleY - 50, -10, 100);
   
-	ctx.fillRect((xc+615) * scaleX , (yc + (imageH/2))*scaleY - 50, 10, 100);
+	//ctx.fillRect((xc+615) * scaleX , (yc + (imageH/2))*scaleY - 50, 10, 100);
   
   
   
@@ -201,6 +218,9 @@ function makepop(){
 function makelines(){
 setInterval(getFrame, 33);
 }
+
+
+
 </script>
 
 
