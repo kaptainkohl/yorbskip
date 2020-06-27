@@ -11,7 +11,7 @@
 	<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.0/jquery.min.js"></script>
 	<script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.0/js/bootstrap.min.js"></script>
 	<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.0/css/bootstrap.min.css">
-
+	<script "{{ url_for('static', filename='js/iframe2image.min.js') }}" type="text/javascript"></script>
 <link rel="icon" type="image/png" href="{{ url_for('static', filename='6.png') }}"/>
 
 <style>
@@ -67,22 +67,14 @@
 </head>
 <body>
 
-  <div class="select" >
-    <label for="audioSource">Audio source: </label><select id="audioSource"></select>
-  </div>
-  
-  <div class="select">
-    <label for="videoSource">Video source: </label><select id="videoSource"></select> 
-		<button type="button" class="btn btn-primary" style="background-color:#79E37E;" onclick="makepop();" >Generate popout</button>  
-<button type="button" class="btn btn-primary" style="background-color:#79E37E;" onclick="makelines();" >Generate Lines</button> 
-</div>
+
 	
-	<video  id = "vid1" autoplay playsinline></video>
-	
-	<canvas  id="myCanvas" ></canvas>
+
+<canvas  id="myCanvas" ></canvas>
 <br>
 
 
+<input type="file" id="imageLoader" name="imageLoader"/>
 
 
 
@@ -94,137 +86,110 @@ $SCRIPT_ROOT = {{ request.script_root|tojson|safe }};
 
 'use strict';
 const canvas = window.canvas = document.querySelector('canvas');
+var ctx = canvas.getContext("2d");
 var videoElement = document.getElementById("vid1");
 
-var audioSelect = document.querySelector('select#audioSource');
-var videoSelect = document.querySelector('select#videoSource');
 
-audioSelect.onchange = getStream;
-videoSelect.onchange = getStream;
+var imageLoader = document.getElementById('imageLoader');
+    imageLoader.addEventListener('change', handleImage, false);
 
-getStream().then(getDevices).then(gotDevices);
+var img = new Image();
 
-function getDevices() {
-  // AFAICT in Safari this only gets default devices until gUM is called :/
-  return navigator.mediaDevices.enumerateDevices();
-}
-
-function gotDevices(deviceInfos) {
-  window.deviceInfos = deviceInfos; // make available to console
-  console.log('Available input and output devices:', deviceInfos);
-  for (const deviceInfo of deviceInfos) {
-    const option = document.createElement('option');
-    option.value = deviceInfo.deviceId;
-    if (deviceInfo.kind === 'audioinput') {
-      option.text = deviceInfo.label || `Microphone ${audioSelect.length + 1}`;
-      audioSelect.appendChild(option);
-    } else if (deviceInfo.kind === 'videoinput') {
-      option.text = deviceInfo.label || `Camera ${videoSelect.length + 1}`;
-      videoSelect.appendChild(option);
+function handleImage(e){
+    var reader = new FileReader();
+    reader.onload = function(event){
+        
+        img.onload = function(){
+            canvas.width = img.width;
+            canvas.height = img.height;
+            ctx.drawImage(img,0,0);
+			getFrame();
+        }
+        img.src = event.target.result;
     }
-  }
+    reader.readAsDataURL(e.target.files[0]);     
 }
-
-function getStream() {
-  if (window.stream) {
-    window.stream.getTracks().forEach(track => {
-      track.stop();
-    });
-  }
-  const audioSource = audioSelect.value;
-  const videoSource = videoSelect.value;
-  const constraints = {
-    audio: true,
-    video: {deviceId: videoSource ? {exact: videoSource} : undefined}
-  };
-  return navigator.mediaDevices.getUserMedia(constraints).
-    then(gotStream).catch(handleError);
-}
-
-function gotStream(stream) {
-  window.stream = stream; // make stream available to console
-	audioSelect.selectedIndex = [...audioSelect.options].
-    findIndex(option => option.text === stream.getAudioTracks()[0].label);
-  videoSelect.selectedIndex = [...videoSelect.options].
-    findIndex(option => option.text === stream.getVideoTracks()[0].label);
-  videoElement.srcObject = stream;
-	videoElement.volume = 0.2;
-	console.log(videoElement.videoTracks)
-  audioSource.srcObject = stream;
-}
-
-function handleError(error) {
-  console.error('Error: ', error);
-}
-
 
 
 
 
 function getFrame() {
   
-	var ctx = canvas.getContext("2d");
-  canvas.width = videoElement.videoWidth;
-  canvas.height = videoElement.videoHeight;
-  ctx.drawImage(videoElement, 0, 0, canvas.width, canvas.height); 
-  
+	
   
   //find corner
   var xc = 0;
   var yc = 0;
   // top
-  var middle = videoElement.videoWidth / 2;
+  var middle = img.width / 2;
   var found = true;
   var i = 0;
   while(found){
 	var pixel = ctx.getImageData(middle,i,1,1);
   
-	if( pixel.data[0] < 20 && pixel.data[1] < 20 && pixel.data[2] < 20)
+	if( (pixel.data[0] > 70 && pixel.data[0] < 80) && (pixel.data[1] > 70 && pixel.data[1] < 80)&& (pixel.data[2] > 80 && pixel.data[2] < 90))
 	{
-		i++;
+	found = false;
+		yc = i;
+		
 	}
 	else{
-		found = false;
-		yc = i;
+		i++;
 	}
+	if (i > 1000){found = false}
   }
-  
+  //console.log(yc+ " "+ ctx.getImageData(img.width / 2,yc,1,1).data)
   //side
-  middle = videoElement.videoHeight / 2;
+  middle = yc;
   found = true;
   i = 0;
   while(found){
 	var pixel = ctx.getImageData(i,middle,1,1);
-  
-	if( pixel.data[0] <= 15 && pixel.data[1] <= 15 && pixel.data[2] <= 15)
+	//console.log(ctx.getImageData(i,middle,1,1).data)
+	if( (pixel.data[0] > 70 && pixel.data[0] < 80) && (pixel.data[1] > 70 && pixel.data[1] < 80)&& (pixel.data[2] > 80 && pixel.data[2] < 90))
 	{
-		i++;
+		found = false;
+		xc = i;		
 	}
 	else{
-		found = false;
-		xc = i;
+		i++;
 	}
-  }  
-  
-  
-  //console.log(xc+ " "+ ctx.getImageData(xc,middle,1,1).data)
 	
+	if (i > 1000){found = false}
+  } 
+
+
+  
+  console.log(xc+' '+yc)
+  
+  //get the scale of the image
+  var imageW = img.width - xc;
+  var imageH = img.height - yc;
+  
+  console.log(imageW+' '+imageH)
+  
+  var scaleX = imageW/975;
+  var scaleY = imageH/754;
+  
+	ctx.clearRect(0, 0, img.width, img.height);
 	
 	//draw 35
 	ctx.fillStyle = "black";
-	ctx.fillRect(xc+180, yc+180, 10, 100);
+	ctx.fillRect((xc+270) * scaleX , (yc + (imageH/2))*scaleY - 50, 10, 100);
 	
-	ctx.fillRect(xc+470, yc+180, 10, 100);
+	ctx.fillRect((xc+693) * scaleX , (yc + (imageH/2))*scaleY - 50, 10, 100);
 	
 	// 29
-	ctx.fillRect(xc+199, yc+180, 10, 100);
+	ctx.fillRect((xc+298)* scaleX, (yc + (imageH/2))*scaleY - 50, 10, 100);
 	
-	ctx.fillRect(xc+451, yc+180, 10, 100);
+	ctx.fillRect((xc+665) * scaleX , (yc + (imageH/2))*scaleY - 50, 10, 100);
 	
 	//18
-	ctx.fillRect(xc+234, yc+180, 10, 100);
+	ctx.fillRect((xc+350)* scaleX,  (yc + (imageH/2))*scaleY - 50, 10, 100);
   
-	ctx.fillRect(xc+416, yc+180, 10, 100);
+	ctx.fillRect((xc+615) * scaleX , (yc + (imageH/2))*scaleY - 50, 10, 100);
+  
+  
   
 }
 
