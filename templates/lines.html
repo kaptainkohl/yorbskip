@@ -1,0 +1,243 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+    <title>YorbSkip</title>
+
+    <!-- Style -->
+    <link href="{{ url_for('static', filename='css/bingo.css') }}" rel="stylesheet" type="text/css">
+    <link href="{{ url_for('static', filename='css/style.css') }}" rel="stylesheet" type="text/css">
+	<link href="https://fonts.googleapis.com/css2?family=Open+Sans&display=swap" rel="stylesheet">
+	<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.0/jquery.min.js"></script>
+	<script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.0/js/bootstrap.min.js"></script>
+	<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.0/css/bootstrap.min.css">
+
+<link rel="icon" type="image/png" href="{{ url_for('static', filename='6.png') }}"/>
+
+<style>
+	body{
+	display: block;
+	margin-left: auto;
+	margin-right: auto;
+		background:#2c2f33;
+		font-family: 'Open Sans', sans-serif;
+		color:#99aab5;
+	}
+
+.center {
+  display: block;
+  margin-left: auto;
+  margin-right: auto;
+	font-family: 'Open Sans', sans-serif;
+	color:#99aab5;
+}	
+#invite {
+	font-family: 'Open Sans', sans-serif;
+	background:#23272a;
+	border:2px #0a245a solid;
+	color:#99aab5;
+	font-size:100%;
+	font-weight:800;
+	line-height: 120%;
+
+}
+.circle {
+  height: 13px;
+  width: 13px;
+  background-color: #79E37E;
+  border-radius: 50%;
+}
+.circle2 {
+  height: 13px;
+  width: 13px;
+  background-color: #99aab5;
+  border-radius: 50%;
+}
+
+    video {
+      object-fit: cover;
+    }
+
+    @media (min-width: 1000px) {
+      video {
+        height: 480px;
+      }
+    }
+</style>
+</head>
+<body>
+
+  <div class="select" >
+    <label for="audioSource">Audio source: </label><select id="audioSource"></select>
+  </div>
+  
+  <div class="select">
+    <label for="videoSource">Video source: </label><select id="videoSource"></select> 
+		<button type="button" class="btn btn-primary" style="background-color:#79E37E;" onclick="makepop();" >Generate popout</button>  
+<button type="button" class="btn btn-primary" style="background-color:#79E37E;" onclick="makelines();" >Generate Lines</button> 
+</div>
+	
+	<video  id = "vid1" autoplay playsinline></video>
+	
+	<canvas  id="myCanvas" ></canvas>
+<br>
+
+
+
+
+
+
+
+  
+<script>
+$SCRIPT_ROOT = {{ request.script_root|tojson|safe }};
+
+'use strict';
+const canvas = window.canvas = document.querySelector('canvas');
+var videoElement = document.getElementById("vid1");
+
+var audioSelect = document.querySelector('select#audioSource');
+var videoSelect = document.querySelector('select#videoSource');
+
+audioSelect.onchange = getStream;
+videoSelect.onchange = getStream;
+
+getStream().then(getDevices).then(gotDevices);
+
+function getDevices() {
+  // AFAICT in Safari this only gets default devices until gUM is called :/
+  return navigator.mediaDevices.enumerateDevices();
+}
+
+function gotDevices(deviceInfos) {
+  window.deviceInfos = deviceInfos; // make available to console
+  console.log('Available input and output devices:', deviceInfos);
+  for (const deviceInfo of deviceInfos) {
+    const option = document.createElement('option');
+    option.value = deviceInfo.deviceId;
+    if (deviceInfo.kind === 'audioinput') {
+      option.text = deviceInfo.label || `Microphone ${audioSelect.length + 1}`;
+      audioSelect.appendChild(option);
+    } else if (deviceInfo.kind === 'videoinput') {
+      option.text = deviceInfo.label || `Camera ${videoSelect.length + 1}`;
+      videoSelect.appendChild(option);
+    }
+  }
+}
+
+function getStream() {
+  if (window.stream) {
+    window.stream.getTracks().forEach(track => {
+      track.stop();
+    });
+  }
+  const audioSource = audioSelect.value;
+  const videoSource = videoSelect.value;
+  const constraints = {
+    audio: true,
+    video: {deviceId: videoSource ? {exact: videoSource} : undefined}
+  };
+  return navigator.mediaDevices.getUserMedia(constraints).
+    then(gotStream).catch(handleError);
+}
+
+function gotStream(stream) {
+  window.stream = stream; // make stream available to console
+	audioSelect.selectedIndex = [...audioSelect.options].
+    findIndex(option => option.text === stream.getAudioTracks()[0].label);
+  videoSelect.selectedIndex = [...videoSelect.options].
+    findIndex(option => option.text === stream.getVideoTracks()[0].label);
+  videoElement.srcObject = stream;
+	videoElement.volume = 0.2;
+	console.log(videoElement.videoTracks)
+  audioSource.srcObject = stream;
+}
+
+function handleError(error) {
+  console.error('Error: ', error);
+}
+
+
+
+
+
+function getFrame() {
+  
+	var ctx = canvas.getContext("2d");
+  canvas.width = videoElement.videoWidth;
+  canvas.height = videoElement.videoHeight;
+  ctx.drawImage(videoElement, 0, 0, canvas.width, canvas.height); 
+  
+  
+  //find corner
+  var xc = 0;
+  var yc = 0;
+  // top
+  var middle = videoElement.videoWidth / 2;
+  var found = true;
+  var i = 0;
+  while(found){
+	var pixel = ctx.getImageData(middle,i,1,1);
+  
+	if( pixel.data[0] < 20 && pixel.data[1] < 20 && pixel.data[2] < 20)
+	{
+		i++;
+	}
+	else{
+		found = false;
+		yc = i;
+	}
+  }
+  
+  //side
+  middle = videoElement.videoHeight / 2;
+  found = true;
+  i = 0;
+  while(found){
+	var pixel = ctx.getImageData(i,middle,1,1);
+  
+	if( pixel.data[0] <= 15 && pixel.data[1] <= 15 && pixel.data[2] <= 15)
+	{
+		i++;
+	}
+	else{
+		found = false;
+		xc = i;
+	}
+  }  
+  
+  
+  //console.log(xc+ " "+ ctx.getImageData(xc,middle,1,1).data)
+	
+	
+	//draw 35
+	ctx.fillStyle = "black";
+	ctx.fillRect(xc+180, yc+180, 10, 100);
+	
+	ctx.fillRect(xc+470, yc+180, 10, 100);
+	
+	// 29
+	ctx.fillRect(xc+199, yc+180, 10, 100);
+	
+	ctx.fillRect(xc+451, yc+180, 10, 100);
+	
+	//18
+	ctx.fillRect(xc+234, yc+180, 10, 100);
+  
+	ctx.fillRect(xc+416, yc+180, 10, 100);
+  
+}
+
+function makepop(){
+	var dataURL = canvas.toDataURL();
+	window.open($SCRIPT_ROOT+'/lines_popout#'+ name +'='+ dataURL,"_blank","toolbar=no, location=no, directories=no, status=no, menubar=no, scrollbars=no, resizable=no, copyhistory=no, width=704, height=480");
+
+}
+function makelines(){
+setInterval(getFrame, 33);
+}
+</script>
+
+
+</body>
+</html>

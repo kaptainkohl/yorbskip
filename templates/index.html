@@ -26,7 +26,8 @@
   display: block;
   margin-left: auto;
   margin-right: auto;
-
+	font-family: 'Open Sans', sans-serif;
+	color:#99aab5;
 }	
 #invite {
 	font-family: 'Open Sans', sans-serif;
@@ -60,10 +61,12 @@
 
 
 
-<img src="{{ url_for('static', filename='yorbskiplogo.png') }}" style="height:200px;" alt="yorb"class="center">
+<img src="{{ url_for('static', filename='yorbskiplogo.png') }}" style="height:250px;" alt="yorb"class="center">
 
 <div class="center">
-<canvas id="myCanvas" style="left:50px" width="900" height="600"></canvas>
+<p>"Your one stop place for all your Tooie Web Apps or something" - Konditoner (probably)</p>
+
+<canvas id="myCanvas" style="left:50px" width="900" height="900"></canvas>
 </div>
 <br>
 <br>
@@ -103,7 +106,12 @@ window.location.href = $SCRIPT_ROOT +"/BingoStats";
 function hor(){
 window.location.href = $SCRIPT_ROOT +"/HorizontalGoals";
 }
-
+function line(){
+window.location.href = $SCRIPT_ROOT +"/lines";
+}
+function sr(){
+window.location.href = "https://banjospeedruns.com/home.html";
+}
 
 var pos = 0;
 var click = 0
@@ -111,6 +119,8 @@ var text_width = 0;
 var text_width2 = 0;
 var text_width3 = 0;
 var text_width4 = 0;
+var text_width5 = 0;
+var text_width6 = 0;
 var vertical = 0;
 
 var grunty = new Image(100, 100);
@@ -124,6 +134,12 @@ weldar.src = "{{ url_for('static', filename='weldar.png') }}";
 
 var heggy = new Image(100, 100);
 heggy.src = "{{ url_for('static', filename='heggy.png') }}";
+
+var al = new Image(100, 100);
+al.src = "{{ url_for('static', filename='al.png') }}";
+
+var roy = new Image(100, 100);
+roy.src = "{{ url_for('static', filename='roy.png') }}";
 
 var c = document.getElementById("myCanvas");
 var ctx = c.getContext("2d");
@@ -148,8 +164,14 @@ function refresh(){
 	}	
 	if (text_width4 < 750 && vertical > 470){
 		text_width4 += 50;
+	}
+	if (text_width5 < 750 && vertical > 630){
+		text_width5 += 50;
+	}
+	if (text_width6 < 750 && vertical > 790){
+		text_width6 += 50;
 	}	
-	if (vertical < 750){
+	if (vertical < 900){
 		ctx.globalAlpha = 0.9;
 		ctx.fillStyle = "black";
 		ctx.beginPath();
@@ -162,8 +184,7 @@ function refresh(){
 	
 
 
-	ctx.fillStyle = "#2c2f33";
-	ctx.fillRect(0, 0, 900, 600);
+ctx.clearRect(0, 0, 900, 900);
 	
 	
 	if ( click.y > 10 && click.y < 110) {
@@ -179,9 +200,17 @@ function refresh(){
 		click.y=0;
 	}		
 	if ( click.y > 470 && click.y < 570) {
-		hor();
+		line();
 		click.y=0;
 	}	
+	if ( click.y > 630 && click.y < 730) {
+		hor();
+		click.y=0;
+	}
+	if ( click.y > 790 && click.y < 890) {
+		sr();
+		click.y=0;
+	}
 	
 	// Draw 1
 	if ( pos.y > 10 && pos.y < 110) {
@@ -295,10 +324,79 @@ function refresh(){
 		if (text_width4 >= 750){
 			ctx.fillStyle = "white"
 			ctx.font = "50px Open Sans";
-			ctx.fillText("Horizontal Goals", 110, 80 +470);
+			ctx.fillText("Bit Clip Line Generator", 110, 80 +470);
 			
 		}	
 	}
+	
+	// Draw 5
+	if (vertical > 630 ){
+	
+		if ( pos.y > 630 && pos.y < 730) {
+		ctx.globalAlpha = 0.9;
+		}
+		else
+		{
+		ctx.globalAlpha = 0.5;
+		}
+		ctx.fillStyle = "black";
+		ctx.fillRect(60, 10 + 630, text_width5 , 100);
+		ctx.beginPath();
+		ctx.arc(60, 60 +630, 50, 0.5 *Math.PI, 1.5 * Math.PI);
+		ctx.fillStyle = "black";
+		ctx.fill();
+		ctx.beginPath();
+		ctx.arc(60+ text_width5, 60 +630, 50, 1.5 * Math.PI, 2.5 * Math.PI);
+		ctx.fillStyle = "black";
+		ctx.fill();
+		ctx.globalAlpha = 1;
+		ctx.drawImage(al, 10, 10 +630, 100, 100);
+		if (text_width5 >= 750){
+			ctx.fillStyle = "white"
+			ctx.font = "50px Open Sans";
+			ctx.fillText("Horizontal Goals", 110, 80 +630);
+			
+		}	
+	}	
+
+	// Draw 6
+	if (vertical > 790 ){
+	
+		if ( pos.y > 790 && pos.y < 890) {
+		ctx.globalAlpha = 0.9;
+		}
+		else
+		{
+		ctx.globalAlpha = 0.5;
+		}
+		ctx.fillStyle = "black";
+		ctx.fillRect(60, 10 + 790, text_width6 , 100);
+		ctx.beginPath();
+		ctx.arc(60, 60 +790, 50, 0.5 *Math.PI, 1.5 * Math.PI);
+		ctx.fillStyle = "black";
+		ctx.fill();
+		ctx.beginPath();
+		ctx.arc(60+ text_width6, 60 +790, 50, 1.5 * Math.PI, 2.5 * Math.PI);
+		ctx.fillStyle = "black";
+		ctx.fill();
+		ctx.globalAlpha = 1;
+		ctx.drawImage(roy, 10, 10 +790, 100, 100);
+		if (text_width6 >= 750){
+			ctx.fillStyle = "white"
+			ctx.font = "50px Open Sans";
+			ctx.fillText("Banjo Speedruns Website", 110, 80 +790);
+			
+		}	
+	}	
+	
+	
+	
+	
+	
+	
+	
+	
+	
 }
 
 

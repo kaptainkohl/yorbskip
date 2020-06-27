@@ -26,11 +26,19 @@ def bingo_card():
   
 @app.route('/popout',methods=['GET', 'POST'])
 def bingo_pop():
-    return render_template('popout.html')       
+    return render_template('popout.html')      
+
+@app.route('/lines_popout',methods=['GET', 'POST'])
+def line_pop():
+    return render_template('lines_popout.html')       
 
 @app.route('/sync',methods=['GET', 'POST'])
 def bingo_sync():
     return render_template('synclobby.html') 
+    
+@app.route('/lines',methods=['GET', 'POST'])
+def lines():
+    return render_template('lines.html') 
 
     
 @app.route('/BattleBingo')
