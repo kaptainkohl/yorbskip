@@ -67,6 +67,7 @@ function bingosetup() {
 	} else {
 		alert('Card could not be generated');
 	}
+	goals_done();
 }
 
 $(bingosetup);
