@@ -248,10 +248,14 @@ input:checked + .slider:before {
 //parse
 var bingo = '{{data}}';
 bingo = bingo.split('$');
-for( var i = 0; i< bingo.length-1;i++){
+bingo.pop(); //remove nothing in last value
+for( var i = 0; i< bingo.length;i++){
 	bingo[i] = bingo[i].split('@');
 	bingo[i][6] = bingo[i][6].split('%');
+	bingo[i][6].pop();//remove nothing in last value
 }
+
+
 
 //indexed by id -- changed to an array to it can be sorted
 var bingoStats = [];
@@ -259,9 +263,14 @@ for (var i = 1; i <= 25; i++){
 	for (var j = 0; j < bingoList[i].length; j++){
 		var name = bingoList[i][j].name;
 		var id = bingoList[i][j].id;
-		bingoStats[id] = {"name": name, "tier" : i, "cards_appeared" : [], "cards_picked" : []};
+		bingoStats[id] = {"id" : id, "name": name, "tier" : i, "cards_appeared" : [], "cards_picked" : []};
 	}
 }
+console.log(bingoStats.length);
+console.log(bingoStats[0]);
+console.log(bingoStats[253]);
+console.log(bingoStats[254]);
+console.log(bingoStats);
 
 //fastest
 var fast_time = 999999
@@ -291,15 +300,16 @@ document.getElementById("fast").innerHTML = "Card Info:<br>Player: "+bingo[time_
 var current_card = 0;
 function nextCard(dir){
 	current_card = current_card + dir;
-	if (current_card > bingo.length-2){
+	if (current_card > bingo.length-1){
 		current_card =0;
 	}
 	if (current_card < 0){
-		current_card = bingo.length-2;
+		current_card = bingo.length-1;
 	}
+	bingoStats.sort(function(a, b){return a["id"]-b["id"]});
 	//Build Card
 	for( var i = 1; i<= 25 ;i++){
-		document.getElementById("2slot"+i).innerHTML = bingoStats[parseInt(bingo[current_card][6][i-1])]["name"];
+		document.getElementById("2slot"+i).innerHTML = bingoStats[parseInt(bingo[current_card][6][i-1])-1]["name"];
 		document.getElementById("2slot"+i).style.backgroundColor = "#000811";
 		document.getElementById("2slot"+i).style.color = "#3c70df";	
 	}
@@ -442,7 +452,9 @@ function count_all_goals(){
 	bingoStats.sort(function(a, b){return b["cards_appeared"].length-a["cards_appeared"].length});
 	document.getElementById("goal_data").innerHTML = "";
 	for( var i = 0; i< bingoStats.length ;i++){
-		document.getElementById("goal_data").innerHTML = document.getElementById("goal_data").innerHTML+ bingoStats[i]["name"]+" :: "+bingoStats[i]["cards_appeared"].length+"<br>";
+			if (bingoStats[i] != null){
+				document.getElementById("goal_data").innerHTML = document.getElementById("goal_data").innerHTML+ bingoStats[i]["name"]+" :: "+bingoStats[i]["cards_appeared"].length+"<br>";
+			}
 		}
 }
 
@@ -450,8 +462,11 @@ function count_all_goals(){
 function count_chosen_goals(){	
 	bingoStats.sort(function(a, b){return b["cards_picked"].length-a["cards_picked"].length});
 	document.getElementById("goal_data").innerHTML = "";
+	console.log(bingoStats.length)
 	for( var i = 0; i< bingoStats.length ;i++){
-		document.getElementById("goal_data").innerHTML = document.getElementById("goal_data").innerHTML+ bingoStats[i]["name"]+" :: "+bingoStats[i]["cards_picked"].length+"<br>";
+		if (bingoStats[i] != null){
+			document.getElementById("goal_data").innerHTML = document.getElementById("goal_data").innerHTML+ bingoStats[i]["name"]+" :: "+bingoStats[i]["cards_picked"].length+"<br>";
+			}
 		}
 }
 

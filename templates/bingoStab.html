@@ -43,11 +43,17 @@
 function goals_done(){
 	//grab goals as string
 	var card_data = "";
-	for( var x = 1; x <26;x++){
-		card_data= card_data+document.getElementById("slot"+x).innerHTML+"%";
-	}
-	card_data = card_data.replace("'","");
-	card_data = card_data.replace("&","and");
+			for( var x = 1; x <26;x++){
+					for( var i = 1; i<= 25 ;i++){
+						for( var j = 0; j< bingoList[i].length ;j++){
+							
+							if (document.getElementById("slot"+x).innerHTML.replace("&amp;","&").replace("&apos;","'") == bingoList[i][j].name){							
+								card_data= card_data+bingoList[i][j].id+"%";
+								}
+							}
+						}
+				}
+			console.log(card_data);
 	document.getElementById("card").value = card_data;
 	document.getElementById("version").value = bingoversion;
 	document.getElementById("cardseed").value = bingseed;

@@ -61,7 +61,8 @@
 			for( var x = 1; x <26;x++){
 					for( var i = 1; i<= 25 ;i++){
 						for( var j = 0; j< bingoList[i].length ;j++){
-							if (document.getElementById("slot"+x).innerHTML == bingoList[i][j].name){
+							
+							if (document.getElementById("slot"+x).innerHTML.replace("&amp;","&").replace("&apos;","'") == bingoList[i][j].name){							
 								card_data= card_data+bingoList[i][j].id+"%";
 								}
 							}

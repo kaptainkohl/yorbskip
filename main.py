@@ -72,6 +72,8 @@ def sendData():
         file_to_write = file + version+"@"+date.strftime("%c")+"@"+seed+"@"+rowcol+"@"+timestamp+"@"+user+"@"+card+'$'
         while file_to_write[0] == 'b' or file_to_write[0] == "'" or file_to_write[0] == '"':
             file_to_write = file_to_write[1:]
+        file_to_write = file_to_write.replace("\\","")
+        file_to_write = file_to_write.replace("'","")
         blob.upload_from_string(file_to_write)
     return render_template('dataSent.html') 
 

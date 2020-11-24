@@ -327,6 +327,6 @@ bingoList[25] = [
     {id: 251,name: "7 Jiggies in HFP", types: ["HFP"], subtypes: ["Jiggies"]},
     {id: 252,name: "Defeat 7 Bosses", types: ["Bosses"], subtypes: []},
     {id: 253,name: "All CP, HC, and Glowbos in CCL", types: ["CCL"], subtypes: ["Cheatos", "Honeycombs", "Glowbos"]},
-    {id: 254,name: "Open all 4 Battery Doors in GI", types: ["GI"], subtypes: []}
+    {id: 190,name: "Open all 4 Battery Doors in GI", types: ["GI"], subtypes: []}
 ];
 
