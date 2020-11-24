@@ -16,10 +16,11 @@ app = Flask(__name__)
 app.config['SECRET_KEY'] = 'This is a super secret hash for my logins'
 socketio = SocketIO(app)
 
-
 room_array = []
-
 bingo_array = []
+
+time_delay = datetime.datetime.now()
+user_delay = ""
 
 @app.route('/')
 def index():
@@ -55,17 +56,20 @@ def lines():
 
 @app.route('/sendData',methods=['GET', 'POST'])
 def sendData():
-    timestamp = request.form['time']
-    rowcol = request.form['rowcol']
-    card = request.form['card']
-    seed = request.form['cardseed']
-    version = request.form['version']
-    user = request.form['user']
+    global time_delay 
     date = datetime.datetime.now()
-    blob = bucket.get_blob('bingo_data.txt')
-    blob2 = bucket.get_blob('bingo_data.txt')
-    file = str(blob2.download_as_string())
-    blob.upload_from_string(file + version+"@"+date.strftime("%c")+"@"+seed+"@"+rowcol+"@"+timestamp+"@"+user+"@"+card+'$')
+    if date > time_delay:
+        time_delay = date + datetime.timedelta(seconds=(5))        
+        timestamp = request.form['time']
+        rowcol = request.form['rowcol']
+        card = request.form['card']
+        seed = request.form['cardseed']
+        version = request.form['version']
+        user = request.form['user']
+        blob = bucket.get_blob('bingo_data.txt')
+        blob2 = bucket.get_blob('bingo_data.txt')
+        file = str(blob2.download_as_string())
+        blob.upload_from_string(file + version+"@"+date.strftime("%c")+"@"+seed+"@"+rowcol+"@"+timestamp+"@"+user+"@"+card+'$')
     return render_template('dataSent.html') 
 
 
