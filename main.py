@@ -69,7 +69,10 @@ def sendData():
         blob = bucket.get_blob('bingo_data.txt')
         blob2 = bucket.get_blob('bingo_data.txt')
         file = str(blob2.download_as_string())
-        blob.upload_from_string(file + version+"@"+date.strftime("%c")+"@"+seed+"@"+rowcol+"@"+timestamp+"@"+user+"@"+card+'$')
+        file_to_write = file + version+"@"+date.strftime("%c")+"@"+seed+"@"+rowcol+"@"+timestamp+"@"+user+"@"+card+'$'
+        while file_to_write[0] == 'b' or file_to_write[0] == "'" or file_to_write[0] == '"':
+            file_to_write = file_to_write[1:]
+        blob.upload_from_string(file_to_write)
     return render_template('dataSent.html') 
 
 

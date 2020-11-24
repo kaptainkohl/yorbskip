@@ -11,7 +11,7 @@
 	<script type="text/javascript" src="https://www.google.com/jsapi"></script> <!-- google libraries API -->	
 	<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.0/jquery.min.js"></script>
 	<script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.0/js/bootstrap.min.js"></script>
-	
+	<script src="{{ url_for('static', filename='js/goal-list.js') }}" type="text/javascript"></script>
 	<script src="{{ url_for('static', filename='js/querystring.js') }}"></script>
 	<style>
 	.middle {
@@ -59,10 +59,15 @@
 			//grab goals as string
 			var card_data = "";
 			for( var x = 1; x <26;x++){
-				card_data= card_data+document.getElementById("slot"+x).innerHTML+"%";
-			}
-			card_data = card_data.replace("'","");
-			card_data = card_data.replace("&","and");
+					for( var i = 1; i<= 25 ;i++){
+						for( var j = 0; j< bingoList[i].length ;j++){
+							if (document.getElementById("slot"+x).innerHTML == bingoList[i][j].name){
+								card_data= card_data+bingoList[i][j].id+"%";
+								}
+							}
+						}
+				}
+			console.log(card_data);
 			document.getElementById("card").value = card_data;
 			document.getElementById("version").value = bingoversion;
 			document.getElementById("cardseed").value = bingseed;
@@ -117,7 +122,6 @@
 <div id="wrap"><div id="main">
 	<div class="container" id="pageContent">
 		<script src="{{ url_for('static', filename='js/seedrandom-min.js') }}" type="text/javascript"></script>
-		<script src="{{ url_for('static', filename='js/goal-list.js') }}" type="text/javascript"></script>
 		<script src="{{ url_for('static', filename='js/generator.js') }}" type="text/javascript"></script>
 		<script src="{{ url_for('static', filename='js/bingosetup.js') }}" type="text/javascript"></script>
 		<div  id="bingoPage" style="display:flex;">

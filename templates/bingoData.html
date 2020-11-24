@@ -245,12 +245,22 @@ input:checked + .slider:before {
 <button onclick="count_all_goals();" type="button" style="color:black;">Count All Goals</button><button onclick="count_chosen_goals();" type="button" style="color:black;">Count Goals Chosen</button>
 <p id="goal_data"></p>
 <script>
+//parse
 var bingo = '{{data}}';
 bingo = bingo.split('$');
-
 for( var i = 0; i< bingo.length-1;i++){
 	bingo[i] = bingo[i].split('@');
 	bingo[i][6] = bingo[i][6].split('%');
+}
+
+//indexed by id -- changed to an array to it can be sorted
+var bingoStats = [];
+for (var i = 1; i <= 25; i++){
+	for (var j = 0; j < bingoList[i].length; j++){
+		var name = bingoList[i][j].name;
+		var id = bingoList[i][j].id;
+		bingoStats[id] = {"name": name, "tier" : i, "cards_appeared" : [], "cards_picked" : []};
+	}
 }
 
 //fastest
@@ -265,7 +275,7 @@ for( var i = 0; i< bingo.length-1;i++){
 }
 //Build Card
 for( var i = 1; i<= 25 ;i++){
-	document.getElementById("slot"+i).innerHTML = bingo[time_index][6][i-1];
+	document.getElementById("slot"+i).innerHTML = bingoStats[parseInt(bingo[time_index][6][i-1])]["name"];
 }
 //Highlight Row
 for( var i = 1; i<= 25 ;i++){
@@ -289,7 +299,7 @@ function nextCard(dir){
 	}
 	//Build Card
 	for( var i = 1; i<= 25 ;i++){
-		document.getElementById("2slot"+i).innerHTML = bingo[current_card][6][i-1];
+		document.getElementById("2slot"+i).innerHTML = bingoStats[parseInt(bingo[current_card][6][i-1])]["name"];
 		document.getElementById("2slot"+i).style.backgroundColor = "#000811";
 		document.getElementById("2slot"+i).style.color = "#3c70df";	
 	}
@@ -304,79 +314,144 @@ function nextCard(dir){
 
 }
 
-//Count Goals
-var calc_cg = 0;
-function count_all_goals(){
-sort_goals = [];
-document.getElementById("goal_data").innerHTML = "";
-if (calc_cg==0){
-	for( var i = 1; i<= 25 ;i++){
-		for( var j = 0; j<= bingoList[i].length-1 ;j++){
-			
-			for( var x = 0; x<= bingo.length-2 ;x++){
-				for( var y = 0; y < 25 ;y++){
-					if( bingoList[i][j].total == null){
-						bingoList[i][j].total = 0;
-					}
-					if (bingoList[i][j].name.replace("'","").replace("&","and") == bingo[x][6][y]){
-						
-							bingoList[i][j].total += 1;
+//Mumbo Stuff
 
-					}
-				}
+
+//get iindices of goals on card based on row name
+function get_indicies_from_row(row_name){
+	if (row_name == "bltr"){
+		return [4,8,12,16,20];
+	}
+
+	if (row_name == "tlbr"){
+		return [0,6,12,18,24];
+	}
+
+	if (row_name.substr(0,3) == "row"){
+		var row_num = parseInt(row_name[3]);
+		var offset = 5*row_num-5;
+		return [offset, offset+1, offset+2, offset+3, offset+4];
+	}
+
+	if (row_name.substr(0,3) == "col"){
+		var col_num = parseInt(row_name[3]);
+		var offset = col_num;
+		return [offset-1, offset+4, offset+9, offset+14, offset+19];
+	}
+
+	else{
+		console.log("row_name error");
+		return -1;
+	}
+
+}
+
+function time_hhmmss_to_seconds(time){
+	total_time = 0;
+	total_time += parseInt(time.substr(0,2))*3600;
+	total_time += parseInt(time.substr(3,2))*60;
+	total_time += parseInt(time.substr(6,2));
+	return total_time;
+}
+
+function time_seconds_to_hhmmss(time){
+	var hours = Math.floor(time/3600);
+	if (hours < 10){
+		hours = "0".concat(hours.toString())
+	}
+	time = time % 3600;
+	var minutes = Math.floor(time/60);
+	if (minutes < 10){
+		minutes = "0".concat(minutes.toString())
+	}
+	time = time % 60;
+	var seconds = Math.floor(time);
+	if (seconds < 10){
+		seconds = "0".concat(seconds.toString())
+	}
+	return `${hours}:${minutes}:${seconds}`;
+
+}
+
+//Fills bingoStats with cards each goal appeared on and cards each goal was picked on
+function fill_bingoStats_with_cards(){
+	for (var i = 0; i < bingo.length-1; i++){
+		// console.log(i);
+		var card = bingo[i];
+		// console.log(card);
+		var row_name = card[3];
+		var picked_goals = get_indicies_from_row(row_name);
+
+		for (var j = 0; j < 25; j++){
+			bingoStats[card[6][j]]["cards_appeared"].push(i);
+		}
+
+		for (var k = 0; k < 5; k++){
+			var j = picked_goals[k];
+			bingoStats[card[6][j]]["cards_picked"].push(i);
+		}
+	}
+}
+
+function generate_basic_stats(){
+	var goal_names = Object.keys(bingoStats)
+	for (var i = 0; i < goal_names.length; i++){
+		
+		var goal_name = goal_names[i];
+		
+		var appeared = bingoStats[goal_name]["cards_appeared"].length
+		bingoStats[goal_name]["appeared"] = appeared;
+		
+		var picked = bingoStats[goal_name]["cards_picked"].length
+		bingoStats[goal_name]["picked"] = picked;
+		
+		var pick_rate = 0;
+		if (appeared > 0){
+			pick_rate = picked/appeared;
+		}
+		bingoStats[goal_name]["pick_rate"] = pick_rate
+
+		var total_time = 0;		
+		bingoStats[goal_name]["cards_picked"].forEach(calc_row_time);
+		function calc_row_time(value, index, array){
+			var card = bingo[value];
+			var card_time = card[4];
+			if (card_time.length == 5){
+				card_time = "00:".concat(card_time);
 			}
+			var xtime = time_hhmmss_to_seconds(card_time);
+			total_time += xtime;
 		}
+		bingoStats[goal_name]["total_time"] = total_time;
+
+
+		var average_time = 0;
+		if (picked > 0){
+			average_time = total_time/picked;
+		}
+		bingoStats[goal_name]["average_time"] = average_time;
+		bingoStats[goal_name]["average_time_hhmmss"] = time_seconds_to_hhmmss(average_time);
 	}
-	calc_cg =1;
 }
-	for( var i = 1; i<= 25 ;i++){
-		for( var j = 0; j<= bingoList[i].length-1 ;j++){
-			sort_goals.push({name : bingoList[i][j].name, total : bingoList[i][j].total});
-		}
-	}
-	sort_goals.sort(function(a, b){return b.total-a.total});
 
-	for( var i = 0; i< sort_goals.length ;i++){
-		document.getElementById("goal_data").innerHTML = document.getElementById("goal_data").innerHTML+ sort_goals[i].name+" :: "+sort_goals[i].total+"<br>";
+fill_bingoStats_with_cards();
+//generate_basic_stats();
+
+// Button to display all goals stats
+function count_all_goals(){	
+	bingoStats.sort(function(a, b){return b["cards_appeared"].length-a["cards_appeared"].length});
+	document.getElementById("goal_data").innerHTML = "";
+	for( var i = 0; i< bingoStats.length ;i++){
+		document.getElementById("goal_data").innerHTML = document.getElementById("goal_data").innerHTML+ bingoStats[i]["name"]+" :: "+bingoStats[i]["cards_appeared"].length+"<br>";
 		}
 }
 
-//Count Goals
-var goal_map ={"row1" :[1,2,3,4,5],"row2":[6,7,8,9,10], "row3": [11,12,13,14,15], "row4": [16,17,18,19,20], "row5":[21,22,23,24,25],"col1": [1,6,11,16,21], "col2":[2,7,12,17,22], "col3":[3,8,13,18,23],"col4": [4,9,14,19,24],"col5": [5,10,15,20,25], "tlbr":[1,7,13,19,25], "bltr": [21,17,13,9,5]};
-var calc_ccg = 0;
-function count_chosen_goals(){
-sort_goals = [];
-document.getElementById("goal_data").innerHTML = "";
-if (calc_ccg==0){	
-	for( var i = 1; i<= 25 ;i++){
-		for( var j = 0; j<= bingoList[i].length-1 ;j++){
-			
-			for( var x = 0; x<= bingo.length-2 ;x++){
-				for( var y = 0; y < 25 ;y++){
-					if( bingoList[i][j].pick == null){
-						bingoList[i][j].pick = 0;
-					}
-					
-					if (bingoList[i][j].name.replace("'","").replace("&","and") == bingo[x][6][y] && goal_map[bingo[x][3]].includes(y+1)){
-						
-							bingoList[i][j].pick += 1;
-
-					}
-				}
-			}
-		}
-	}
-	calc_ccg =1;
-}
-	for( var i = 1; i<= 25 ;i++){
-		for( var j = 0; j<= bingoList[i].length-1 ;j++){
-			sort_goals.push({name : bingoList[i][j].name, pick : bingoList[i][j].pick});
-		}
-	}
-	sort_goals.sort(function(a, b){return b.pick-a.pick});
-
-	for( var i = 0; i< sort_goals.length ;i++){
-		document.getElementById("goal_data").innerHTML = document.getElementById("goal_data").innerHTML+ sort_goals[i].name+" :: "+sort_goals[i].pick+"<br>";
+//button to display all picked stats
+function count_chosen_goals(){	
+	bingoStats.sort(function(a, b){return b["cards_picked"].length-a["cards_picked"].length});
+	document.getElementById("goal_data").innerHTML = "";
+	for( var i = 0; i< bingoStats.length ;i++){
+		document.getElementById("goal_data").innerHTML = document.getElementById("goal_data").innerHTML+ bingoStats[i]["name"]+" :: "+bingoStats[i]["cards_picked"].length+"<br>";
 		}
 }
 

@@ -178,7 +178,7 @@ var old_goal= document.getElementById("slot"+stab.toString()).innerHTML;
 			<form action='/sendData' method="post">
 					
 					<input class="newcard" id="user" name="user" value="username" type="text">
-					<input class="newcard" id="time" name="time" value="00:00:00" type="text">
+					<input class="newcard" id="time" name="time" value="00:00:00" type="text" pattern="[0-9]{2}[:][0-9]{2}[:][0-9]{2}" title="00:00:00 Format">
 					<select class="newcard" id="rowcol" name="rowcol">			  
 					  <option value="col1">Col 1</option>
 					  <option value="col2">Col 2</option>
