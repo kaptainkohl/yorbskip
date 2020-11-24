@@ -11,17 +11,17 @@ function bingosetup() {
         window.open($SCRIPT_ROOT+'/popout#'+ name +'='+ items.join(';;;'),"_blank","toolbar=no, location=no, directories=no, status=no, menubar=no, scrollbars=no, resizable=no, copyhistory=no, width=220, height=460");
     });
   
-    $("#bingo tr td:not(.popout), #selected td").toggle(
-		function () {
-		  $(this).addClass("greensquare");
-		},
-		function () {
-		  $(this).addClass("redsquare").removeClass("greensquare");
-		},
-		function () {
-		  $(this).removeClass("redsquare");
+    $("#bingo tr td:not(.popout), #selected td").click(function(){
+		if ($(this).hasClass("greensquare")){
+			$(this).addClass("redsquare").removeClass("greensquare");
 		}
-    
+		else if ($(this).hasClass("redsquare")){
+		   $(this).removeClass("redsquare");
+		}
+		else {
+		  $(this).addClass("greensquare");
+		}
+	}     
   );
   
 	$("#row1").hover(function() { $(".row1").addClass("hover"); }, function() {	$(".row1").removeClass("hover"); });
@@ -56,6 +56,8 @@ function bingosetup() {
 	results.append ("<p>BT Bingo <strong>" + bingoList["info"].version + "</strong>&emsp;Seed: <strong>" + 
 		bingoOpts.seed + "</strong>&emsp;Card type: <strong>" + cardType + "</strong></p>");
 
+	bingoversion=bingoList["info"].version;
+	bingseed=bingoOpts.seed;
 	
 	var bingoFunc = ootBingoGenerator;
 	
