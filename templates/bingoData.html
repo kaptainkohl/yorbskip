@@ -22,7 +22,7 @@
 	#bingo td {
 	background:#000811;
 	border:2px #0a245a solid;
-	color:#3c70df;
+	color:#bec7d2;
 	font-size:100%;
 	font-weight:400;
 	height:100px;
@@ -32,6 +32,24 @@
 	text-align:center;
 
 }
+	#bingo tr:first-child td,#bingo tr:last-child td {
+		background:#000811;
+		border:1px #0a245a solid;
+		color:#3c70df;
+		font-size:75%;
+		font-weight:700;
+		height:30px;
+	}
+	#bingo tr td:first-child {
+		background:#000811;
+		border:1px #0a245a solid;
+		color:#3c70df;
+		font-size:75%;
+		font-weight:700;
+		width:40px;
+		min-width:40px;
+		max-width:40px;
+	}
 
 #bingo td:hover {
 	background:#1448b3;
@@ -123,7 +141,7 @@ input:checked + .slider:before {
 </head>
 <body>
 <div style="display:flex;">	
-	<div>
+	<div style="margin:10px;">
 	<p> The Fastest Card on the v2020 Patch </p>
 				<table id="bingo">
 					<tr>
@@ -181,7 +199,8 @@ input:checked + .slider:before {
 
 	<p id = "fast"></p>
 	</div>
-	<div>
+
+	<div style="margin:10px;">
 		<p> All Cards </p>
 		<table id="bingo">
 					<tr>
@@ -237,14 +256,69 @@ input:checked + .slider:before {
 					</tr>
 				</table>
 		<p id = "all"></p>
-		<button onclick="nextCard(-1);" type="button" style="color:black;">Prev</button><button onclick="nextCard(1);" type="button" style="color:black;">Next</button>
+		<button class="btn btn-primary" onclick="nextCard(-1);" type="button" style="color:black;">Prev</button>
+		<button class="btn btn-primary"  onclick="nextCard(1);" type="button" style="color:black;">Next</button><br>
+		<button class="btn btn-primary" onclick="sort_runner();" type="button" style="color:black;">Sort Runner</button>
+		<button class="btn btn-primary" onclick="sort_date();" type="button" style="color:black;">Sort Date</button>
+		<button class="btn btn-primary" onclick="sort_time();" type="button" style="color:black;">Sort Time</button>
+	</div>
+	<div style="margin:10px;">
+		<p> Rankings </p>
+		<table id="rank_names">
+			<tr>
+				<td style="width:150px;"> Player </td>
+				<td style="width:100px;"> Average Time </td>
+				<td style="width:100px;"> Fastest Time </td>
+				<td style="width:100px;"> # of Bingos </td>
+				<td style="width:100px;"> Total Time </td>
+			</tr>
+		</table>
+		<br>
+		<div id="rank">
+
+		</div>
 	</div>
 </div>
 <br>
 <br>
-<button onclick="count_all_goals();" type="button" style="color:black;">Count All Goals</button><button onclick="count_chosen_goals();" type="button" style="color:black;">Count Goals Chosen</button>
+<table id="sort_goals">
+	<tr>
+		<td> <button class="btn btn-primary" onclick="goal_name();" type="button" style="width:250px;color:black;">Goal Name</button> </td>
+		<td> <button class="btn btn-primary" onclick="goal_rank();" type="button" style="width:150px;color:black;">Rank</button> </td>
+ 		<td> <button class="btn btn-primary" onclick="count_all_goals();" type="button" style="width:150px;color:black;">Cards Appeared </button> </td>
+		<td> <button class="btn btn-primary" onclick="count_chosen_goals();" type="button" style="width:150px;color:black;">Cards Chosen</button> </td>
+		<td> <button  class="btn btn-primary"onclick="pick_rate();" type="button" style="width:150px;color:black;">Pick Rate</button> </td>
+		<td> <button class="btn btn-primary" onclick="average_time();" type="button" style="width:150px;color:black;">Average Time</button> </td>
+	</tr>
+</table>
 <p id="goal_data"></p>
 <script>
+function time_hhmmss_to_seconds(time){
+	total_time = 0;
+	total_time += parseInt(time.substr(0,2))*3600;
+	total_time += parseInt(time.substr(3,2))*60;
+	total_time += parseInt(time.substr(6,2));
+	return total_time;
+}
+
+function time_seconds_to_hhmmss(time){
+	var hours = Math.floor(time/3600);
+	if (hours < 10){
+		hours = "0".concat(hours.toString())
+	}
+	time = time % 3600;
+	var minutes = Math.floor(time/60);
+	if (minutes < 10){
+		minutes = "0".concat(minutes.toString())
+	}
+	time = time % 60;
+	var seconds = Math.floor(time);
+	if (seconds < 10){
+		seconds = "0".concat(seconds.toString())
+	}
+	return `${hours}:${minutes}:${seconds}`;
+
+}
 //parse
 var bingo = '{{data}}';
 bingo = bingo.split('$');
@@ -253,9 +327,24 @@ for( var i = 0; i< bingo.length;i++){
 	bingo[i] = bingo[i].split('@');
 	bingo[i][6] = bingo[i][6].split('%');
 	bingo[i][6].pop();//remove nothing in last value
+	bingo[i].push(i);
 }
 
+// make an array of players, to perform ranking
+var bingo_rank = [];
+for( var i = 0; i< bingo.length;i++) {
+	if (bingo_rank[bingo[i][5]] == null){
 
+		bingo_rank[bingo[i][5]]= {"name":bingo[i][5],"cards": 1, "fastest": time_hhmmss_to_seconds(bingo[i][4]), "total" : time_hhmmss_to_seconds(bingo[i][4])};
+	}
+	else{
+		bingo_rank[bingo[i][5]]["cards"] = bingo_rank[bingo[i][5]]["cards"] + 1;
+		bingo_rank[bingo[i][5]]["total"] = bingo_rank[bingo[i][5]]["total"] + time_hhmmss_to_seconds(bingo[i][4]);
+		if (time_hhmmss_to_seconds(bingo[i][4])< bingo_rank[bingo[i][5]]["fastest"]){
+			bingo_rank[bingo[i][5]]["fastest"] = time_hhmmss_to_seconds(bingo[i][4]);
+		}
+	}
+}
 
 //indexed by id -- changed to an array to it can be sorted
 var bingoStats = [];
@@ -263,34 +352,36 @@ for (var i = 1; i <= 25; i++){
 	for (var j = 0; j < bingoList[i].length; j++){
 		var name = bingoList[i][j].name;
 		var id = bingoList[i][j].id;
-		bingoStats[id] = {"id" : id, "name": name, "tier" : i, "cards_appeared" : [], "cards_picked" : []};
+		bingoStats.push({"id" : id, "name": name, "tier" : i, "cards_appeared" : [], "cards_picked" : [],"pick_rate": 0, "average_time": 0});
 	}
 }
-console.log(bingoStats.length);
-console.log(bingoStats[0]);
-console.log(bingoStats[253]);
-console.log(bingoStats[254]);
-console.log(bingoStats);
 
 //fastest
 var fast_time = 999999
 var time_index = -1;
-for( var i = 0; i< bingo.length-1;i++){
-	var time = parseInt(bingo[i][4].replace(":",""));
+for( var i = 0; i< bingo.length;i++){
+	var raw = bingo[i][4].replaceAll(":","");
+	var time = parseInt(raw);
 	if (time< fast_time){
 		fast_time = time;
 		time_index = i;
 	}
 }
+
 //Build Card
 for( var i = 1; i<= 25 ;i++){
-	document.getElementById("slot"+i).innerHTML = bingoStats[parseInt(bingo[time_index][6][i-1])]["name"];
+	for( var j = 0; j < bingoStats.length; j ++){
+		if(parseInt(bingo[time_index][6][i-1]) == bingoStats[j]["id"]){
+			document.getElementById("slot"+i).innerHTML = bingoStats[j]["name"];
+
+		}
+	}
 }
 //Highlight Row
 for( var i = 1; i<= 25 ;i++){
 	if (document.getElementById("slot"+i).className.includes(bingo[time_index][3])){
 		document.getElementById("slot"+i).style.backgroundColor = "green";
-		document.getElementById("slot"+i).style.color = "white";
+		document.getElementById("slot"+i).style.color = "#bec7d2";
 	}
 }
 document.getElementById("fast").innerHTML = "Card Info:<br>Player: "+bingo[time_index][5]+"<br>Time: "+bingo[time_index][4]+"<br>Seed: "+bingo[time_index][2]+"<br>Date: "+bingo[time_index][1];
@@ -306,12 +397,17 @@ function nextCard(dir){
 	if (current_card < 0){
 		current_card = bingo.length-1;
 	}
-	bingoStats.sort(function(a, b){return a["id"]-b["id"]});
+
 	//Build Card
 	for( var i = 1; i<= 25 ;i++){
-		document.getElementById("2slot"+i).innerHTML = bingoStats[parseInt(bingo[current_card][6][i-1])-1]["name"];
-		document.getElementById("2slot"+i).style.backgroundColor = "#000811";
-		document.getElementById("2slot"+i).style.color = "#3c70df";	
+		for( var j = 0; j < bingoStats.length; j ++){
+			if(parseInt(bingo[current_card][6][i-1]) == bingoStats[j]["id"]){
+				document.getElementById("2slot"+i).innerHTML = bingoStats[j]["name"];
+				document.getElementById("2slot"+i).style.backgroundColor = "#000811";
+				document.getElementById("2slot"+i).style.color = "#bec7d2";
+			}
+		}
+
 	}
 	//Highlight Row
 	for( var i = 1; i<= 25 ;i++){
@@ -320,8 +416,27 @@ function nextCard(dir){
 			document.getElementById("2slot"+i).style.color = "white";
 		}
 	}
-	document.getElementById("all").innerHTML = "Card Info:<br>Player: "+bingo[current_card][5]+"<br>Time: "+bingo[current_card][4]+"<br>Seed: "+bingo[current_card][2]+"<br>Date: "+bingo[current_card][1];
+	document.getElementById("all").innerHTML = "Card " +(current_card+1)+" Info:<br>Player: "+bingo[current_card][5]+"<br>Time: "+bingo[current_card][4]+"<br>Seed: "+bingo[current_card][2]+"<br>Date: "+bingo[current_card][1];
 
+}
+// All Cards sort Functions
+// Sort cards by username
+function sort_runner(){
+	bingo.sort(function(a, b){if(a[5].toLowerCase() < b[5].toLowerCase()){return -1;}if(a[5].toLowerCase() > b[5].toLowerCase()){return 1;}return 0;});
+	current_card = 0;
+	nextCard(0);
+}
+// Sort cards by Date
+function sort_date(){
+	bingo.sort(function(a, b){return a[7]-b[7]});
+	current_card = 0;
+	nextCard(0);
+}
+// Sort cards by Time
+function sort_time(){
+	bingo.sort(function(a, b){return time_hhmmss_to_seconds(a[4])-time_hhmmss_to_seconds(b[4])});
+	current_card = 0;
+	nextCard(0);
 }
 
 //Mumbo Stuff
@@ -356,36 +471,11 @@ function get_indicies_from_row(row_name){
 
 }
 
-function time_hhmmss_to_seconds(time){
-	total_time = 0;
-	total_time += parseInt(time.substr(0,2))*3600;
-	total_time += parseInt(time.substr(3,2))*60;
-	total_time += parseInt(time.substr(6,2));
-	return total_time;
-}
 
-function time_seconds_to_hhmmss(time){
-	var hours = Math.floor(time/3600);
-	if (hours < 10){
-		hours = "0".concat(hours.toString())
-	}
-	time = time % 3600;
-	var minutes = Math.floor(time/60);
-	if (minutes < 10){
-		minutes = "0".concat(minutes.toString())
-	}
-	time = time % 60;
-	var seconds = Math.floor(time);
-	if (seconds < 10){
-		seconds = "0".concat(seconds.toString())
-	}
-	return `${hours}:${minutes}:${seconds}`;
-
-}
 
 //Fills bingoStats with cards each goal appeared on and cards each goal was picked on
 function fill_bingoStats_with_cards(){
-	for (var i = 0; i < bingo.length-1; i++){
+	for (var i = 0; i < bingo.length; i++){
 		// console.log(i);
 		var card = bingo[i];
 		// console.log(card);
@@ -393,82 +483,245 @@ function fill_bingoStats_with_cards(){
 		var picked_goals = get_indicies_from_row(row_name);
 
 		for (var j = 0; j < 25; j++){
-			bingoStats[card[6][j]]["cards_appeared"].push(i);
+			for( var a = 0; a < bingoStats.length; a++){
+				if(card[6][j] == bingoStats[a]["id"]) {
+					bingoStats[a]["cards_appeared"].push(i);
+					}
+				}
+
 		}
 
 		for (var k = 0; k < 5; k++){
 			var j = picked_goals[k];
-			bingoStats[card[6][j]]["cards_picked"].push(i);
+			for( var a = 0; a < bingoStats.length; a++) {
+				if (card[6][j] == bingoStats[a]["id"]) {
+					bingoStats[a]["cards_picked"].push(i);
+				}
+			}
 		}
 	}
+	
 }
 
 function generate_basic_stats(){
-	var goal_names = Object.keys(bingoStats)
-	for (var i = 0; i < goal_names.length; i++){
-		
-		var goal_name = goal_names[i];
-		
-		var appeared = bingoStats[goal_name]["cards_appeared"].length
-		bingoStats[goal_name]["appeared"] = appeared;
-		
-		var picked = bingoStats[goal_name]["cards_picked"].length
-		bingoStats[goal_name]["picked"] = picked;
-		
-		var pick_rate = 0;
-		if (appeared > 0){
-			pick_rate = picked/appeared;
-		}
-		bingoStats[goal_name]["pick_rate"] = pick_rate
+    for (var i = 0; i < bingoStats.length; i++){
 
-		var total_time = 0;		
-		bingoStats[goal_name]["cards_picked"].forEach(calc_row_time);
-		function calc_row_time(value, index, array){
-			var card = bingo[value];
-			var card_time = card[4];
-			if (card_time.length == 5){
-				card_time = "00:".concat(card_time);
-			}
-			var xtime = time_hhmmss_to_seconds(card_time);
-			total_time += xtime;
-		}
-		bingoStats[goal_name]["total_time"] = total_time;
+        var appeared = bingoStats[i]["cards_appeared"].length;
+        bingoStats[i]["appeared"] = appeared;
 
+        var picked = bingoStats[i]["cards_picked"].length;
+        bingoStats[i]["picked"] = picked;
 
-		var average_time = 0;
-		if (picked > 0){
-			average_time = total_time/picked;
-		}
-		bingoStats[goal_name]["average_time"] = average_time;
-		bingoStats[goal_name]["average_time_hhmmss"] = time_seconds_to_hhmmss(average_time);
-	}
+        var pick_rate = "-1";
+        if (appeared > 0){
+            pick_rate = picked/appeared;
+        }
+        bingoStats[i]["pick_rate"] = pick_rate;
+
+        var total_time = 0;        
+        bingoStats[i]["cards_picked"].forEach(calc_row_time);
+        function calc_row_time(value, index, array){
+            var card = bingo[value];
+            var card_time = card[4];
+            if (card_time.length == 5){
+                card_time = "00:".concat(card_time);
+            }
+            var xtime = time_hhmmss_to_seconds(card_time);
+            total_time += xtime;
+        }
+        bingoStats[i]["total_time"] = total_time;
+
+        var average_time = '359999';
+        if (picked > 0){
+            average_time = total_time/picked;
+        }
+        bingoStats[i]["average_time"] = average_time;
+        bingoStats[i]["average_time_hhmmss"] = time_seconds_to_hhmmss(average_time);
+    }
 }
 
 fill_bingoStats_with_cards();
-//generate_basic_stats();
+generate_basic_stats();
 
 // Button to display all goals stats
 function count_all_goals(){	
 	bingoStats.sort(function(a, b){return b["cards_appeared"].length-a["cards_appeared"].length});
 	document.getElementById("goal_data").innerHTML = "";
-	for( var i = 0; i< bingoStats.length ;i++){
-			if (bingoStats[i] != null){
-				document.getElementById("goal_data").innerHTML = document.getElementById("goal_data").innerHTML+ bingoStats[i]["name"]+" :: "+bingoStats[i]["cards_appeared"].length+"<br>";
-			}
-		}
+	tableCreate("goal_data","goalData");
 }
 
 //button to display all picked stats
 function count_chosen_goals(){	
 	bingoStats.sort(function(a, b){return b["cards_picked"].length-a["cards_picked"].length});
 	document.getElementById("goal_data").innerHTML = "";
-	console.log(bingoStats.length)
-	for( var i = 0; i< bingoStats.length ;i++){
-		if (bingoStats[i] != null){
-			document.getElementById("goal_data").innerHTML = document.getElementById("goal_data").innerHTML+ bingoStats[i]["name"]+" :: "+bingoStats[i]["cards_picked"].length+"<br>";
-			}
-		}
+	tableCreate("goal_data","goalData");
 }
+
+//button pickrate
+function pick_rate(){	
+	bingoStats.sort(function(a, b){return b["pick_rate"]-a["pick_rate"]});
+	document.getElementById("goal_data").innerHTML = "";
+	tableCreate("goal_data","goalData");
+}
+//button average_time
+function average_time(){	
+	bingoStats.sort(function(a, b){return a["average_time"]-b["average_time"]});
+	document.getElementById("goal_data").innerHTML = "";
+	tableCreate("goal_data","goalData");
+}
+//button goal_name
+function goal_name(){
+	bingoStats.sort(function(a, b){if(a["name"].toLowerCase() < b["name"].toLowerCase()){return -1;}if(a["name"].toLowerCase() > b["name"].toLowerCase()){return 1;}return 0;});
+	document.getElementById("goal_data").innerHTML = "";
+	tableCreate("goal_data","goalData");
+}
+//button goal_rank
+function goal_rank(){
+	bingoStats.sort(function(a, b){return a["tier"]-b["tier"]});
+	document.getElementById("goal_data").innerHTML = "";
+	tableCreate("goal_data","goalData");
+}
+
+function tableCreate(name,id) {
+	var a = 0;
+	var place = document.getElementById(name);
+	var tbl = document.createElement('table');
+	tbl.setAttribute('id',id)
+	var tbdy = document.createElement('tbody');
+	for (var i = 0; i < bingoStats.length; i++) {
+		var tr = document.createElement('tr');
+		tr.setAttribute('id',name +" tr " +i);
+
+		var td = document.createElement('td');
+		td.appendChild(document.createTextNode(bingoStats[i]["name"]))
+		td.setAttribute('id',name +" cell " +a)
+		td.setAttribute('height', '10px');
+		td.setAttribute('width', '250px');
+		td.setAttribute('onclick','clicked(this)')
+		tr.appendChild(td)
+		a++;
+		td = document.createElement('td');
+		td.appendChild(document.createTextNode(bingoStats[i]["tier"]))
+		td.setAttribute('id',name +" cell " +a)
+		td.setAttribute('height', '10px');
+		td.setAttribute('width', '150px');
+		td.setAttribute('text-align', 'center');
+		td.setAttribute('onclick','clicked(this)')
+		tr.appendChild(td)
+		a++;
+		td = document.createElement('td');
+		td.appendChild(document.createTextNode(bingoStats[i]["cards_appeared"].length))
+		td.setAttribute('id',name +" cell " +a)
+		td.setAttribute('height', '10px');
+		td.setAttribute('width', '150px');
+		td.setAttribute('text-align', 'center');
+		td.setAttribute('onclick','clicked(this)')
+		tr.appendChild(td)
+		a++;
+		td = document.createElement('td');
+		td.appendChild(document.createTextNode(bingoStats[i]["cards_picked"].length))
+		td.setAttribute('id',name +" cell " +a)
+		td.setAttribute('height', '10px');
+		td.setAttribute('width', '150px');
+		td.setAttribute('text-align', 'center');
+		td.setAttribute('onclick','clicked(this)')
+		tr.appendChild(td)
+		a++;
+		td = document.createElement('td');
+		td.appendChild(document.createTextNode(Math.round(bingoStats[i]["pick_rate"]*10000)/100+"%"))
+		td.setAttribute('id',name +" cell " +a)
+		td.setAttribute('height', '10px');
+		td.setAttribute('width', '150px');
+		td.setAttribute('text-align', 'center');
+		td.setAttribute('onclick','clicked(this)')
+		tr.appendChild(td)
+		a++;
+		td = document.createElement('td');
+		td.appendChild(document.createTextNode(bingoStats[i]["average_time_hhmmss"]))
+		td.setAttribute('id',name +" cell " +a)
+		td.setAttribute('height', '10px');
+		td.setAttribute('width', '150px');
+		td.setAttribute('text-align', 'center');
+		td.setAttribute('onclick','clicked(this)')
+		tr.appendChild(td)
+		a++;
+		tbdy.appendChild(tr);
+	}
+	tbl.appendChild(tbdy);
+	place.appendChild(tbl);
+}
+
+
+function tableRankings(name,id) {
+	var a = 0;
+	var place = document.getElementById(name);
+	var tbl = document.createElement('table');
+	tbl.setAttribute('id',id)
+	var tbdy = document.createElement('tbody');
+	for (var i = 0; i < rankings.length; i++) {
+		var tr = document.createElement('tr');
+		tr.setAttribute('id',name +" tr " +i);
+
+		var td = document.createElement('td');
+		td.appendChild(document.createTextNode(rankings[i]["name"]))
+		td.setAttribute('id',name +" cell " +a)
+		td.setAttribute('height', '10px');
+		td.setAttribute('width', '150px');
+		td.setAttribute('onclick','clicked(this)')
+		tr.appendChild(td)
+		a++;
+		td = document.createElement('td');
+		td.appendChild(document.createTextNode(time_seconds_to_hhmmss(rankings[i]["total"]/rankings[i]["cards"])))
+		td.setAttribute('id',name +" cell " +a)
+		td.setAttribute('height', '10px');
+		td.setAttribute('width', '100px');
+		td.setAttribute('text-align', 'center');
+		td.setAttribute('onclick','clicked(this)')
+		tr.appendChild(td)
+		a++;
+		td = document.createElement('td');
+		td.appendChild(document.createTextNode(time_seconds_to_hhmmss(rankings[i]["fastest"])));
+		td.setAttribute('id',name +" cell " +a)
+		td.setAttribute('height', '10px');
+		td.setAttribute('width', '100px');
+		td.setAttribute('text-align', 'center');
+		td.setAttribute('onclick','clicked(this)')
+		tr.appendChild(td)
+		a++;
+		td = document.createElement('td');
+		td.appendChild(document.createTextNode(rankings[i]["cards"]))
+		td.setAttribute('id',name +" cell " +a)
+		td.setAttribute('height', '10px');
+		td.setAttribute('width', '100px');
+		td.setAttribute('text-align', 'center');
+		td.setAttribute('onclick','clicked(this)')
+		tr.appendChild(td)
+		a++;
+		td = document.createElement('td');
+		td.appendChild(document.createTextNode(time_seconds_to_hhmmss(rankings[i]["total"])))
+		td.setAttribute('id',name +" cell " +a)
+		td.setAttribute('height', '10px');
+		td.setAttribute('width', '100px');
+		td.setAttribute('text-align', 'center');
+		td.setAttribute('onclick','clicked(this)')
+		tr.appendChild(td)
+		a++;
+		tbdy.appendChild(tr);
+	}
+	tbl.appendChild(tbdy);
+	place.appendChild(tbl);
+}
+
+//build ranking
+var rankings = [];
+for(var i in bingo_rank)
+	rankings.push(bingo_rank[i]);
+rankings.sort(function(a, b){return (a["total"]/a["cards"])-(b["total"]/b["cards"])});
+tableRankings("rank","user_rank");
+
+//build initial goal_data
+bingoStats.sort(function(a, b){return a["tier"]-b["tier"]});
+tableCreate("goal_data","goalData");
 
 </script>
 </body>

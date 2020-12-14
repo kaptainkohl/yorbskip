@@ -7,9 +7,12 @@
     <!-- Style -->
     <link href="{{ url_for('static', filename='css/bingo.css') }}" rel="stylesheet" type="text/css">
     <link href="{{ url_for('static', filename='css/style.css') }}" rel="stylesheet" type="text/css">
-<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.0/jquery.min.js"></script>
-<link rel="icon" type="image/png" href="{{ url_for('static', filename='5.png') }}"/>
-
+	<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.0/jquery.min.js"></script>
+	<link rel="icon" type="image/png" href="{{ url_for('static', filename='5.png') }}"/>
+	<script src="{{ url_for('static', filename='js/MumboGen2.js') }}" type="text/javascript"></script>
+	<script src="{{ url_for('static', filename='js/querystring.js') }}"></script>
+	<script src="{{ url_for('static', filename='js/seedrandom-min.js') }}" type="text/javascript"></script>
+	<script src="{{ url_for('static', filename='js/mumboSetup.js') }}" type="text/javascript"></script>
     <style>
 	body{
 		 padding-right: 30px;
@@ -18,9 +21,12 @@
 	
 	}
 	#bingo td {
-	background:#000811;
-	border:2px #0a245a solid;
-	color:#3c70df;
+	-moz-box-shadow:inset 0 0 50px rgba(0,0,0,0.6);
+	-webkit-box-shadow:inset 0 0 50px rgba(0,0,0,0.6);
+	box-shadow:inset 0 0 50px rgba(0,0,0,0.6);
+	background:#4f4f4f;
+	border:2px #000000 solid;
+	color:#9c9c9c;
 	font-size:200%;
 	font-weight:700;
 	height:130px;
@@ -55,79 +61,160 @@
             <table class = "bingoPage" id="bingo"><tbody>
 			
 			<tr>
-			<td colspan = "6" class="bingo" id="slot1asd" style="height:700px;"></td>
-			<td colspan = "6" class="bingo" id="slot1asasdd" style="height:700px;"></td>
-			</tr>
-			<tr>
-				<td colspan = "5" class="bingo" id="slot1" style="height:35px;color:red;">Name</td>
+				<td colspan = "5" class="bingo" id="slotname" style="height:35px;color:red;"></td>
 				<td colspan = "1" rowspan="3" class="bingo" id="row7f" style="height:35px;border:0px;"></td>
 				<td colspan = "1" rowspan="3" class="bingo" id="row7f" style="height:35px;border:0px;"></td>
-				<td colspan = "5" class="bingo" id="slot8" style="height:35px;color:red;">Name</td>				
+				<td colspan = "5" class="bingo" id="slotname2" style="height:35px;color:red;"></td>				
 				
 			</tr>
 			<tr>
-				<td colspan = "5" class="bingo" id="slot2" style="height:35px;">Col 5</td>
+				<td colspan = "5" class="bingo" id="slotrow1" style="height:35px;"></td>
 
-				<td colspan = "5" class="bingo" id="slot9" style="height:35px;">Col 5</td>
+				<td colspan = "5" class="bingo" id="slotrow2" style="height:35px;"></td>
 			
             <tr>
                 
-                <td class="bingo" id="slot3" onclick ="clicked(this);">9-Health BK</td>
-                <td class="bingo" id="slot4" onclick ="clicked(this);">Canary Mary Jiggy & CP in GGM</td>
-                <td class="bingo" id="slot5" onclick ="clicked(this);">Trash Can Jiggy</td>
-                <td class="bingo" id="slot6" onclick ="clicked(this);">Double Air</td>
-                <td class="bingo" id="slot7" onclick ="clicked(this);">Hag 1</td>
+                <td class="bingo" id="slot1_1" onclick ="clicked(this);"></td>
+                <td class="bingo" id="slot1_2" onclick ="clicked(this);"></td>
+                <td class="bingo" id="slot1_3" onclick ="clicked(this);"></td>
+                <td class="bingo" id="slot1_4" onclick ="clicked(this);"></td>
+                <td class="bingo" id="slot1_5" onclick ="clicked(this);"></td>
 				
 
 				
 				
-                <td class="bingo" id="slot10" onclick ="clicked(this);">9-Health BK</td>
-                <td class="bingo" id="slot11" onclick ="clicked(this);">Canary Mary Jiggy & CP in GGM</td>
-                <td class="bingo" id="slot12" onclick ="clicked(this);">Trash Can Jiggy</td>
-                <td class="bingo" id="slot13" onclick ="clicked(this);">Double Air</td>
-                <td class="bingo" id="slot14" onclick ="clicked(this);">Hag 1</td>
+                <td class="bingo" id="slot2_1" onclick ="clicked(this);"></td>
+                <td class="bingo" id="slot2_2" onclick ="clicked(this);"></td>
+                <td class="bingo" id="slot2_3" onclick ="clicked(this);"></td>
+                <td class="bingo" id="slot2_4" onclick ="clicked(this);"></td>
+                <td class="bingo" id="slot2_5" onclick ="clicked(this);"></td>
             </tr>
             </tbody></table>
         </div>
 	<br>
 	<br>
-<textarea align="right" rows="40" cols="120"style="height:400px;width:800px;font-size:14pt;" id="goals" type="text" name="goals">
-Name
-ROW
-Goal 1
-Goal 2
-Goal 3
-Goal 4
-Goal 5
-Name
-ROW
-Goal 1
-Goal 2
-Goal 3
-Goal 4
-Goal 5
-</textarea>
 
-<button onclick = "goals();">Place Rows </button>
+<input  id="user1" value="username1" type="text">
+<input  id="user2" value="username2" type="text">
+<br>
+<select  id="p1" >			  
+  <option value="col1">Col 1</option>
+  <option value="col2">Col 2</option>
+  <option value="col3">Col 3</option>
+  <option value="col4">Col 4</option>
+  <option value="col5">Col 5</option>
+  <option value="row1">Row 1</option>
+  <option value="row2">Row 2</option>
+  <option value="row3">Row 3</option>
+  <option value="row4">Row 4</option>
+  <option value="row5">Row 5</option>
+  <option value="tlbr">TL-BR</option>
+  <option value="bltr">BL-TR</option>					  
+</select>
+<select  id="p2" >			  
+  <option value="col1">Col 1</option>
+  <option value="col2">Col 2</option>
+  <option value="col3">Col 3</option>
+  <option value="col4">Col 4</option>
+  <option value="col5">Col 5</option>
+  <option value="row1">Row 1</option>
+  <option value="row2">Row 2</option>
+  <option value="row3">Row 3</option>
+  <option value="row4">Row 4</option>
+  <option value="row5">Row 5</option>
+  <option value="tlbr">TL-BR</option>
+  <option value="bltr">BL-TR</option>					  
+</select>
+<input  id="seeding"  value="" type="number">
+<button onclick = "goals();">Place Goals</button>
+
+	<div id="results"style="margin:10px;width:500px;visibility:hidden;" >
+				<table id="bingo">
+					<tr>
+						<td class="choice" id="tlbr">TL-BR</td>
+						<td class="choice" id="col1">COL1</td>
+						<td class="choice" id="col2">COL2</td>
+						<td class="choice" id="col3">COL3</td>
+						<td class="choice" id="col4">COL4</td>
+						<td class="choice" id="col5">COL5</td>
+					</tr>
+					<tr>
+						<td class="choice" id="row1">ROW1</td>
+						<td class="row1 col1 tlbr" id="slot1"></td> 
+						<td class="row1 col2" id="slot2"></td> 
+						<td class="row1 col3" id="slot3"></td> 
+						<td class="row1 col4" id="slot4"></td> 
+						<td class="row1 col5 bltr" id="slot5"></td> 
+					</tr>
+					<tr> 
+						<td class="choice" id="row2">ROW2</td>
+						<td class="row2 col1" id="slot6"></td> 
+						<td class="row2 col2 tlbr" id="slot7"></td> 
+						<td class="row2 col3" id="slot8"></td> 
+						<td class="row2 col4 bltr" id="slot9"></td> 
+						<td class="row2 col5" id="slot10"></td> 
+					</tr>
+					<tr> 
+						<td class="choice" id="row3">ROW3</td>
+						<td class="row3 col1" id="slot11"></td> 
+						<td class="row3 col2" id="slot12"></td> 
+						<td class="row3 col3 tlbr bltr" id="slot13"></td> 
+						<td class="row3 col4" id="slot14"></td> 
+						<td class="row3 col5" id="slot15"></td> 
+					</tr>
+					<tr> 
+						<td class="choice" id="row4">ROW4</td>
+						<td class="row4 col1" id="slot16"></td> 
+						<td class="row4 col2 bltr" id="slot17"></td> 
+						<td class="row4 col3" id="slot18"></td> 
+						<td class="row4 col4 tlbr" id="slot19"></td> 
+						<td class="row4 col5" id="slot20"></td> 
+					</tr>
+					<tr> 
+						<td class="choice" id="row5">ROW5</td>
+						<td class="row5 col1 bltr" id="slot21"></td> 
+						<td class="row5 col2" id="slot22"></td> 
+						<td class="row5 col3" id="slot23"></td> 
+						<td class="row5 col4" id="slot24"></td> 
+						<td class="row5 col5 tlbr" id="slot25"></td> 
+					</tr>
+					<tr>
+						<td class="choice" id="bltr">BL-TR</td>
+					</tr>
+				</table>
+			</div>
+
 
 <script>
 
 
 function goals(){
-	var obj = document.getElementById("goals").value.split('\n');
-	for (i = 0; i < obj.length;i++)
-		{
-		document.getElementById("slot"+(i+1)).innerHTML = obj[i];
-
-		}
+	window.location = "?seed="+document.getElementById("seeding").value + "&pu1="+document.getElementById("user1").value+"&p1="+document.getElementById("p1").value+"&pu2="+document.getElementById("user2").value+ "&p2="+document.getElementById("p2").value;
 }
 
+function goals_done(){
+	var p1_row=getUrlParameter('p1');
+	var p2_row=getUrlParameter('p2');
+	
+		document.getElementById("slotname").innerHTML = getUrlParameter('pu1');
+		document.getElementById("slotname2").innerHTML = getUrlParameter('pu2');
+        var cells = $('#bingo .'+ p1_row);
+        $('#slotrow1').html(p1_row);
+		for (var i = 0; i < 5; i++) {
+          $('#slot1_'+(i+1)).html($(cells[i]).html());
+        }	
+        var cells = $('#bingo .'+ p2_row);
+        $('#slotrow2').html(p2_row);
+		for (var i = 0; i < 5; i++) {
+          $('#slot2_'+(i+1)).html($(cells[i]).html());
+        }
+}
 function clicked(x) {
     
 	if(x.style.backgroundColor == 'green')
 	{
-	 x.style.backgroundColor="#000811";
-	 x.style.color= "#3c70df";
+	 x.style.backgroundColor="#4f4f4f";
+	 x.style.color= "#9c9c9c";
 	}
 	else {
 	x.style.backgroundColor='green';

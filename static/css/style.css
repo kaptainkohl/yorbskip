@@ -214,6 +214,7 @@ th {
 	-o-user-select:none;
 	-webkit-user-select:none;
 	margin-top:16px;
+	table-layout: fixed;
 }
 
 #bingoPage #bingo .rowcol {
@@ -254,6 +255,7 @@ th {
 	padding:0 5px;
 	text-align:center;
 	width:95px;
+	min-width:95px;
     max-width:95px;
 }
 
@@ -263,7 +265,9 @@ th {
 	color:#3c70df;
 	font-size:75%;
 	font-weight:700;
-	width:35px;
+	width:40px;
+	min-width:40px;
+	max-width:40px;
 }
 
 #bingoPage #bingo tr td:first-child:hover {
@@ -289,6 +293,89 @@ th {
 }
 
 #bingoPage #bingo tr td.redsquare:hover,#bingoPage #bingo tr td.redsquare.hover {
+	background:#702;
+}
+
+#bingoPage #about_bingo {
+	float:right;
+	width:365px;
+}
+
+#bingoPage #time_id {
+	-khtml-user-select:none;
+	-moz-user-select:none;
+	-o-user-select:none;
+	-webkit-user-select:none;
+	margin-top:16px;
+}
+
+#bingoPage #time_id .rowcol {
+	background:#000811;
+	border:1px #0a245a solid;
+	color:#3c70df;
+	font-size:75%;
+	font-weight:700;
+}
+
+#bingoPage #time_id .rowcol:hover {
+	background:#1448b3;
+	color:#fff;
+}
+
+#bingoPage #time_id tr:first-child td {
+	background:#000811;
+	border:1px #0a245a solid;
+	color:#3c70df;
+	font-size:75%;
+	font-weight:700;
+	height:30px;
+}
+
+#bingoPage #time_id tr:first-child td:hover{
+	background:#1448b3;
+	color:#fff;
+}
+
+#bingoPage #time_id tr td {
+	-moz-box-shadow:inset 0 0 50px rgba(0,0,0,0.6);
+	-webkit-box-shadow:inset 0 0 50px rgba(0,0,0,0.6);
+	background:#000;
+	border:1px #424242 solid;
+	box-shadow:inset 0 0 50px rgba(0,0,0,0.6);
+	cursor:pointer;
+	height:90px;
+	padding:0 5px;
+	text-align:center;
+	width:135px;
+	min-width:135px;
+    max-width:135px;
+}
+
+
+
+#bingoPage #time_id tr td:first-child:hover {
+	background:#1448b3;
+	color:#fff;
+}
+
+#bingoPage #time_id tr td:hover,#bingoPage #time_id tr td.hover {
+	background:#001a36;
+	color:#fff;
+}
+
+#bingoPage #time_id tr td.greensquare {
+	background:#051;
+}
+
+#bingoPage #time_id tr td.greensquare:hover,#bingoPage #time_id tr td.greensquare.hover {
+	background:#072;
+}
+
+#bingoPage #time_id tr td.redsquare {
+	background:#501;
+}
+
+#bingoPage #time_id tr td.redsquare:hover,#bingoPage #time_id tr td.redsquare.hover {
 	background:#702;
 }
 
@@ -340,9 +427,19 @@ th {
 
 .container {
 	margin:0 auto;
-	overflow:auto;
+	overflow-y: scroll;
+	scrollbar-width: none;
 	padding:8px 0 16px 16px;
-	width:976px;
+	
+}
+.container::-webkit-scrollbar { /* WebKit */
+    width: 0;
+    height: 0;
+}
+.container_main {
+	overflow:hidden;
+	padding:8px 0 16px 16px;
+	
 }
 
 .red	{ color:#fa5050; }

@@ -1,0 +1,247 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<title>Banjo-Tooie Bingo</title>
+	<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+	<link rel="icon" type="image/png" href="{{ url_for('static', filename='5.png') }}"/>
+	<link href='https://fonts.googleapis.com/css?family=Roboto:400,700,400italic,700italic' rel='stylesheet' type='text/css'>
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.0/css/bootstrap.min.css">
+	<link href="{{ url_for('static', filename='css/style.css') }}" rel="stylesheet" type="text/css">
+	<script type="text/javascript" src="https://www.google.com/jsapi"></script> <!-- google libraries API -->	
+	<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.0/jquery.min.js"></script>
+	<script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.0/js/bootstrap.min.js"></script>
+	<script src="{{ url_for('static', filename='js/goal-list.js') }}" type="text/javascript"></script>
+	<script src="{{ url_for('static', filename='js/querystring.js') }}"></script>
+	<style>
+	.middle {
+	display: block;
+	margin-left: auto;
+	margin-right: auto;
+	}
+	.grid-container {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    grid-gap: 20px;
+
+	}
+	</style>
+	
+	<script type="text/javascript">
+		$SCRIPT_ROOT = {{ request.script_root|tojson|safe }};
+		function getCookie(cname) {
+		  var name = cname + "=";
+		  var decodedCookie = decodeURIComponent(document.cookie);
+		  var ca = decodedCookie.split(';');
+		  for(var i = 0; i <ca.length; i++) {
+			var c = ca[i];
+			while (c.charAt(0) == ' ') {
+			  c = c.substring(1);
+			}
+			if (c.indexOf(name) == 0) {
+			  return c.substring(name.length, c.length);
+			}
+		  }
+		  return "";
+		}		
+		var srl = {}; // javascript holder
+		function setcolor() {
+			var pathArray = window.location.href.split('/');
+			if (pathArray[3].toLowerCase() == 'races') { return 'racesborder'}
+			else if (pathArray[3].toLowerCase() == 'leaderboards') { return 'leaderboardsborder' }
+			else if (pathArray[3].toLowerCase() == 'channel') { return 'channelborder' }
+			else if (!pathArray[3]) { return 'streamsborder' }
+			else { return 'defaultborder' }
+		}
+		bingoversion="v2020";
+		bingseed=getUrlParameter('seed');
+		function goals_done(){
+			//grab goals as string
+			var card_data = "";
+			for( var x = 1; x <26;x++){
+					for( var i = 1; i<= 25 ;i++){
+						for( var j = 0; j< bingoList[i].length ;j++){
+							
+							if (document.getElementById("slot"+x).innerHTML.replace("&amp;","&").replace("&apos;","'") == bingoList[i][j].name){							
+								card_data= card_data+bingoList[i][j].id+"%";
+								}
+							}
+						}
+				}
+			console.log(card_data);
+			document.getElementById("card").value = card_data;
+			document.getElementById("version").value = bingoversion;
+			document.getElementById("cardseed").value = bingseed;
+			document.getElementById("user").value= getCookie("username");
+		}
+		
+
+	</script>
+</head>
+<body>
+ <!-- Modal -->
+  <div class="modal fade" id="myModal" role="dialog">
+    <div class="modal-dialog">
+
+      <!-- Modal content-->
+      <div class="modal-content">
+        <div class="modal-header">
+          <button type="button" class="close" data-dismiss="modal">&times;</button>
+          <h4 style="color:red;"><span class="glyphicon glyphicon-time"></span> Submit Bingo</h4>
+        </div>
+        <div class="modal-body" style="color:black;">
+			<p> Enter your Username, Time, and Row/Col to submit your bingo!
+			<form action='/sendData' method="post">
+					
+					<input class="newcard" id="user" name="user" value="username" type="text">
+					<input class="newcard" id="time" name="time" value="00:00:00" type="text" pattern="[0-9]{2}[:][0-9]{2}[:][0-9]{2}" title="00:00:00 Format">
+					<select class="newcard" id="rowcol" name="rowcol">			  
+					  <option value="col1">Col 1</option>
+					  <option value="col2">Col 2</option>
+					  <option value="col3">Col 3</option>
+					  <option value="col4">Col 4</option>
+					  <option value="col5">Col 5</option>
+					  <option value="row1">Row 1</option>
+					  <option value="row2">Row 2</option>
+					  <option value="row3">Row 3</option>
+					  <option value="row4">Row 4</option>
+					  <option value="row5">Row 5</option>
+					  <option value="tlbr">TL-BR</option>
+					  <option value="bltr">BL-TR</option>					  
+					</select>
+					<input class="newcard" type="submit" value="Submit Data">
+					<input class="newcard" id="card" name="card" value="" type="hidden">
+					<input class="newcard" id="cardseed" name="cardseed" value="" type="hidden">
+					<input class="newcard" id="version" name="version" value="" type="hidden">
+				</form>
+        </div>
+        <div class="modal-footer">
+        </div>
+      </div>
+    </div>
+  </div>
+<div id="wrap"><div id="main">
+	<div class="container" id="pageContent">
+		<script src="{{ url_for('static', filename='js/seedrandom-min.js') }}" type="text/javascript"></script>
+		<script src="{{ url_for('static', filename='js/generator.js') }}" type="text/javascript"></script>
+		<script src="{{ url_for('static', filename='js/bingosetup.js') }}" type="text/javascript"></script>
+		<div  id="bingoPage" style="display:flex;">
+
+			<div id="results" >
+				<table id="bingo">
+					<tr>
+						<td class="popout" id="tlbr">TL-BR</td>
+						<td class="popout" id="col1">COL1</td>
+						<td class="popout" id="col2">COL2</td>
+						<td class="popout" id="col3">COL3</td>
+						<td class="popout" id="col4">COL4</td>
+						<td class="popout" id="col5">COL5</td>
+					</tr>
+					<tr>
+						<td class="popout" id="row1">ROW1</td>
+						<td class="row1 col1 tlbr" id="slot1"></td> 
+						<td class="row1 col2" id="slot2"></td> 
+						<td class="row1 col3" id="slot3"></td> 
+						<td class="row1 col4" id="slot4"></td> 
+						<td class="row1 col5 bltr" id="slot5"></td> 
+					</tr>
+					<tr> 
+						<td class="popout" id="row2">ROW2</td>
+						<td class="row2 col1" id="slot6"></td> 
+						<td class="row2 col2 tlbr" id="slot7"></td> 
+						<td class="row2 col3" id="slot8"></td> 
+						<td class="row2 col4 bltr" id="slot9"></td> 
+						<td class="row2 col5" id="slot10"></td> 
+					</tr>
+					<tr> 
+						<td class="popout" id="row3">ROW3</td>
+						<td class="row3 col1" id="slot11"></td> 
+						<td class="row3 col2" id="slot12"></td> 
+						<td class="row3 col3 tlbr bltr" id="slot13"></td> 
+						<td class="row3 col4" id="slot14"></td> 
+						<td class="row3 col5" id="slot15"></td> 
+					</tr>
+					<tr> 
+						<td class="popout" id="row4">ROW4</td>
+						<td class="row4 col1" id="slot16"></td> 
+						<td class="row4 col2 bltr" id="slot17"></td> 
+						<td class="row4 col3" id="slot18"></td> 
+						<td class="row4 col4 tlbr" id="slot19"></td> 
+						<td class="row4 col5" id="slot20"></td> 
+					</tr>
+					<tr> 
+						<td class="popout" id="row5">ROW5</td>
+						<td class="row5 col1 bltr" id="slot21"></td> 
+						<td class="row5 col2" id="slot22"></td> 
+						<td class="row5 col3" id="slot23"></td> 
+						<td class="row5 col4" id="slot24"></td> 
+						<td class="row5 col5 tlbr" id="slot25"></td> 
+					</tr>
+					<tr>
+						<td class="popout" id="bltr">BL-TR</td>
+					</tr>
+				</table>
+			</div>
+			
+			<div  id="about_bingo" >
+				<h1>BT Bingo</h1>
+							
+				<h2>Generate a new card</h2>
+				<p id="sortButtons">
+					<a class="newcard" href="#" onclick="reseedPage()" >Normal Card</a>	
+					<a class="newcard" href="#" onclick="reseedPage('short');" style="width:100px">Short Card</a>
+					<a class="newcard" href="#" onclick="reseedPage('long');" style="width:100px">Long Card</a>					
+					<br>
+				</p>				
+				<h2>About Banjo-Tooie Bingo</h2>
+				<ul>
+					<li>Bingo starts from either an unmanipulated new file or the current Jinjo manipulation file that is used for speedruns.(White in Jade Snake Grove, Orange on Kickball Stadium and Bridge)</li>
+					<li>You may use the Cheato cheat "JIGGYWIGGYSPECIAL" to open all the levels.</li>
+					<li>You may use DCW (Delayed Cutscene Warp) to advance to areas/bosses early.</li>
+					<li>You are not allowed to look at the Bingo card until it begins.</li>
+					<li>All of your bingo goals must be accomplished on one game file.</li>
+					<li>Any version of the official game is allowed, but NTSC N64 version is highly recommended.</li>
+					<li>Timing begins when you enter your file and ends depending on your final goal.</li>
+				</ul>
+
+				<p>To win a "Bingo" race, you must complete 5 of the tasks in a row horizontally, vertically, or diagonally.</p>
+				<p>The seed number is used to generate the board. Changing the seed will make a new board.</p>
+				<p>You can click on the squares to turn them green and red. This may help you organize your route planning.</p>
+				<p>
+				<a class="newcard" href="https://pastebin.com/HYusXWkU" target="_blank">Rules Doc</a>	
+				<a class="newcard" href="https://docs.google.com/document/d/1g1p-ajc_ze5aIi49mb0AY94q4FRVvcf9WQF7il-XXmQ/edit" target="_blank">Cheat Sheet</a>
+				<a class="newcard" href="https://banjospeedruns.com/bingo-toolie" target="_blank">Bingo-Toolie</a>
+				</p>
+				<br>
+				<p></p>
+				<a class="newcard" data-toggle="modal" data-target="#myModal">Submit Bingo</a>
+			</div>
+			
+		</div>
+	</div>
+	</div>
+</div>
+<script>
+		//setup before functions
+		var typingTimer;                //timer identifier
+		var doneTypingInterval = 1000;  //time in ms, 5 second for example
+		var $input = $('#user');
+
+		//on keyup, start the countdown
+		$input.on('keyup', function () {
+		  clearTimeout(typingTimer);
+		  typingTimer = setTimeout(doneTyping, doneTypingInterval);
+		});
+
+		//on keydown, clear the countdown 
+		$input.on('keydown', function () {
+		  clearTimeout(typingTimer);
+		});
+
+		//user is "finished typing," do something
+		function doneTyping () {
+		  console.log("cookie created");
+		  document.cookie = "username="+document.getElementById("user").value;
+		}
+</script>
+</body>
+</html>

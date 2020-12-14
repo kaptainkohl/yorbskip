@@ -32,7 +32,11 @@ def ping_mess():
     
 @app.route('/bingo',methods=['GET', 'POST'])
 def bingo_card():
-    return render_template('bingo.html') 
+    return render_template('bingo.html')
+
+@app.route('/bingoTEST',methods=['GET', 'POST'])
+def bingo_Test():
+    return render_template('testBingo.html') 
 
 @app.route('/bingoShot',methods=['GET', 'POST'])
 def bingoStab_card():
@@ -59,7 +63,7 @@ def sendData():
     global time_delay 
     date = datetime.datetime.now()
     if date > time_delay:
-        time_delay = date + datetime.timedelta(seconds=(5))        
+        time_delay = date + datetime.timedelta(seconds=(2))        
         timestamp = request.form['time']
         rowcol = request.form['rowcol']
         card = request.form['card']
