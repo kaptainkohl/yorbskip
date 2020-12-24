@@ -49,9 +49,16 @@ function bingosetup() {
 	$("#tlbr").hover(function() { $(".tlbr").addClass("hover"); }, function() {	$(".tlbr").removeClass("hover"); });
 	$("#bltr").hover(function() { $(".bltr").addClass("hover"); }, function() {	$(".bltr").removeClass("hover"); });
 
+	let special = null;
+	if (getUrlParameter('short')){
+		special = "short";
+	}
+	if (getUrlParameter('long')){
+		special = "long";
+	}
 	var bingoOpts = {
 		seed: getUrlParameter('seed') || Math.ceil(999999 * Math.random()).toString(),
-		mode: getUrlParameter('mode') || 'normal',
+		mode: special || 'normal',
 		lang: getUrlParameter('lang') || 'name'
 	};
 
@@ -62,9 +69,7 @@ function bingosetup() {
 	};
 
 	var cardType = prettyMode[bingoOpts.mode];
-	var results = $("#card_info");
-	results.append ("<p>BT Bingo <strong>" + bingoList["info"].version + "</strong>&emsp;Seed: <strong>" + 
-		bingoOpts.seed + "</strong>&emsp;Card type: <strong>" + cardType + "</strong></p>");
+
 
 	bingoversion=bingoList["info"].version;
 	bingseed=bingoOpts.seed;

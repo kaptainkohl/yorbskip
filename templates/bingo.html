@@ -14,6 +14,8 @@
 	<script src="{{ url_for('static', filename='js/querystring.js') }}"></script>
 	<script src="{{ url_for('static', filename='js/seedrandom-min.js') }}" type="text/javascript"></script>
 	<script src="{{ url_for('static', filename='js/mumboSetup.js') }}" type="text/javascript"></script>
+	<script src="{{ url_for('static', filename='js/gimmick.js') }}" type="text/javascript"></script>
+	<script src="{{ url_for('static', filename='js/shot.js') }}" type="text/javascript"></script>
 	<style>
 	.middle {
 	display: block;
@@ -42,6 +44,7 @@
 	  width: 0;
 	  height: auto;
 	}
+
 	</style>
 	<script type="text/javascript">
 		function getCookie(cname) {
@@ -59,21 +62,71 @@
 		  }
 		  return "";
 		}		
-		bingoversion="v2020.3";
-		bingseed=getUrlParameter('seed');
-		var race=getUrlParameter('race');
+
+		let bingoseed=getUrlParameter('seed');
+		let race=getUrlParameter('race');
+		let gim=getUrlParameter('gimmick');
+		let shot=getUrlParameter('shot');
+		let shit=getUrlParameter('shit');
+		let short=getUrlParameter('short');
+		let long=getUrlParameter('long');
+
+		let bingoversion="";
+		if (race == "True"){
+			bingoversion = bingoversion+"_race";
+		}
+		if (gim == "True"){
+			bingoversion = bingoversion+"_gimmick";
+		}
+		if (shot == "True"){
+			bingoversion = bingoversion+"_shot";
+		}
+		if (shit == "True"){
+			bingoversion = bingoversion+"_shit";
+		}
+		if (short == "True"){
+			bingoversion = bingoversion+"_short";
+		}
+		if (long == "True"){
+			bingoversion = bingoversion+"_long";
+		}
 
 	function startBingo() {
 		for (i=0; i<25; i++) {  
 			$('#slot'+(i+1)).css("color","#bec7d2");
+		}
+		if (shot == "True") {
+			start_fire();
 		}
 	}
 	function hideBingo() {
 		for (i=0; i<25; i++) {  
 			$('#slot'+(i+1)).css("color","transparent");
 		}
-	}	
-	
+	}
+	function gim_match_arrays(arrA, arrB){
+		for (var i = 0; i < arrA.length; i++){
+			for (var j = 0; j < arrB.length; j++){
+				if (arrA[i] == arrB[j] && arrA[i] != "" && arrB[j] != ""){
+					return true;
+				}
+			}
+		}
+
+		return false;
+	}
+	function showGim() {
+		let gimC = ((getUrlParameter('seed') ) %gim_cant.length);
+		let gimM = ((getUrlParameter('seed') *31 ) %gim_must.length);
+		let a = 1;
+		while (gim_match_arrays(gim_cant[gimC]["tags"],gim_must[gimM]["tags"])){
+			gimM = (((getUrlParameter('seed')+a) *31 ) %gim_must.length);
+			a++;
+		}
+
+		document.getElementById("must").innerHTML = gim_must[gimM]["name"];
+		document.getElementById("cant").innerHTML = gim_cant[gimC]["name"];
+	}
 	
 	function start_race() {
 		document.getElementById("stop").innerHTML = "Stop";
@@ -86,12 +139,26 @@
 		
 	function reseedPage(mode) {
 		var qSeed = "?seed=" + Math.ceil(999999 * Math.random());
-		var qMode = (mode == "short" || mode == "long") ? "&mode=" + mode : "";
-		
-		if (mode == "race"){
-			qMode = "&race=True";
+		var qMode = "";
+
+		if (mode.includes("short")){
+			qMode = qMode + "&short=True";
 		}
-		
+		if (mode.includes("long")){
+			qMode = qMode + "&long=True";
+		}
+		if (mode.includes("race")){
+			qMode = qMode + "&race=True";
+		}
+		if (mode.includes("gim")){
+			qMode = qMode + "&gimmick=True";
+		}
+		if (mode.includes("shot")){
+			qMode = qMode + "&shot=True";
+		}
+		if (mode.includes("shit")){
+			qMode = qMode + "&shit=True";
+		}
 		window.location = qSeed + qMode;
 		return false;
 	}
@@ -111,14 +178,40 @@
 			}
 
 		document.getElementById("card").value = card_data;
-		document.getElementById("version").value = bingoList["info"].version;
-		document.getElementById("cardseed").value = bingseed;
+		document.getElementById("version").value = bingoList["info"].version+bingoversion;
+		document.getElementById("cardseed").value = bingoseed;
 		document.getElementById("user").value= getCookie("username");
+
+		if (shot == "True"){
+			old_goal= document.getElementById("slot"+stab.toString()).innerHTML;
+			document.getElementById("slot"+stab.toString()).innerHTML = '';
+			document.getElementById("slot"+stab.toString()).appendChild(canvas);
+		}
+		if (shit == "True"){
+			//build bad list
+			let shit_list = [];
+			let shit_card = [];
+			for( var i = 23; i<= 26 ;i++){
+				for( var j = 0; j< bingoList[i].length ;j++) {
+					shit_list.push(bingoList[i][j].name);
+				}
+			}
+			for(var x = 1; x <26;x++){
+				let a = 0;
+				while (shit_card.includes(shit_list[((bingseed*x)+a)%(shit_list.length)])){
+				 	a++;
+				 }
+				shit_card.push(shit_list[((bingseed*x)+a)%(shit_list.length)]);
+				document.getElementById("slot"+x).innerHTML = shit_card[x-1];
+			}
+		}
+
 	}
 	function change_settings(){
 		let bg = document.getElementById("bg").value;
 		let font = document.getElementById("bodyfont").value;
 		let textc = document.getElementById("textc").value;
+		let bgc = document.getElementById("bgc").value;
 
 		document.getElementsByTagName("html")[0].style.background=bg;
 		document.getElementsByTagName("body")[0].style.background=bg;
@@ -129,7 +222,9 @@
 			document.getElementById("slot"+i).style.setProperty('color',textc);
 		}
 
+
 	}
+
 	
 	</script>
 
@@ -140,18 +235,22 @@
   <div class="modal fade" id="myModal" role="dialog">
     <div class="modal-dialog">
       <!-- Modal content-->
-      <div class="modal-content">
+      <div class="modal-content" style="background:#2c2f33;">
         <div class="modal-header">
           <button type="button" class="close" data-dismiss="modal">&times;</button>
-          <h4 style="color:red;"><span class="glyphicon glyphicon-time"></span> Submit Bingo</h4>
+          <h4 style="color:red;background:#2c2f33;"><span class="glyphicon glyphicon-time"></span> Submit Bingo</h4>
         </div>
-        <div class="modal-body" style="color:black;">
-			<p> Enter your Username, Time, and Row/Col to submit your bingo!</p>
+        <div class="modal-body" style="color:#bec7d2;background:#2c2f33;">
+			<h1> Enter your Username, Time, and Row/Col to submit your bingo!</h1>
+			<br><br>
 			<form action='/sendData' method="post">
-					
-					<input class="newcard" id="user" name="user" value="username" type="text">
-					<input class="newcard" id="time" name="time" value="00:00:00" type="text" pattern="[0-9]{2}[:][0-9]{2}[:][0-9]{2}" title="00:00:00 Format">
-					<select class="newcard" id="rowcol" name="rowcol">			  
+				<h2>Username:</h2>
+				<input class="form-control" id="user" name="user" value="username" type="text" style="background:#5e5e5e;color:white;">
+				<br><br>
+				<h2>Time:</h2>
+					<input class="form-control" id="time" name="time" value="00:00:00" type="text" pattern="[0-9]{2}[:][0-9]{2}[:][0-9]{2}" title="00:00:00 Format" style="background:#5e5e5e;color:white;">
+				<br><br>
+				<select class="form-control" id="rowcol" name="rowcol" style="background:#5e5e5e;color:white;">
 					  <option value="col1">Col 1</option>
 					  <option value="col2">Col 2</option>
 					  <option value="col3">Col 3</option>
@@ -165,13 +264,14 @@
 					  <option value="tlbr">TL-BR</option>
 					  <option value="bltr">BL-TR</option>					  
 					</select>
-					<input class="newcard" type="submit" value="Submit Data">
+				<br><br>
+					<input class="btn btn-primary" type="submit" value="Submit Data" style="background:#5e5e5e;color:white;">
 					<input class="newcard" id="card" name="card" value="" type="hidden">
 					<input class="newcard" id="cardseed" name="cardseed" value="" type="hidden">
 					<input class="newcard" id="version" name="version" value="" type="hidden">
 				</form>
         </div>
-        <div class="modal-footer">
+        <div class="modal-footer" style="background:#2c2f33;">
         </div>
       </div>
     </div>
@@ -180,26 +280,52 @@
  <div class="modal fade" id="settings" role="dialog">
 	 <div class="modal-dialog">
 		 <!-- Modal content-->
-		 <div class="modal-content">
+		 <div class="modal-content" style="background:#2c2f33;">
 			 <div class="modal-header">
 				 <button type="button" class="close" data-dismiss="modal">&times;</button>
-				 <h4 style="color:red;"><span class="glyphicon glyphicon-question-sign"></span>Page Settings</h4>
+				 <h4 style="color:red;background:#2c2f33;"><span class="glyphicon glyphicon-question-sign"></span> Secret Settings</h4>
 			 </div>
-			 <div class="modal-body" style="color:black;">
-				 <p>Background</p>
-				 <input class="newcard" id="bg"  value="#2c2f33" type="text">
-				 <p>Font</p>
-				 <input class="newcard" id="bodyfont"  value="Helvetica" type="text">
+			 <div class="modal-body" style="color:#bec7d2;background:#2c2f33;">
+				 <h2>Page Settings</h2>
+				 <p>Page Background</p>
+				 <input class="form-control" id="bg"  value="#2c2f33" type="text" style="background:#5e5e5e;color:white;">
+				 <p>Page Font</p>
+				 <input class="form-control" id="bodyfont"  value="Helvetica" type="text" style="background:#5e5e5e;color:white;">
 				 <p>Text Color</p>
-				 <input class="newcard" id="textc"  value="#fff" type="text">
-				 <button class="newcard" id="setting_change" style="width:180px" onclick="change_settings();">Confirm</button>
+				 <input class="form-control" id="textc"  value="#fff" type="text" style="background:#5e5e5e;color:white;">
+				 <p>Card Background</p>
+				 <input class="form-control" id="bgc"  value="#fff" type="text" style="background:#5e5e5e;color:white;">
+				 <br>
+				 <button class="btn btn-default" id="setting_change" style="width:180px" onclick="change_settings();">Confirm Settings</button>
+				 <br>
+				 <br>
+				 <h2>Beta: Gimmick Bingo</h2>
+				 <p>Generates a new card. At the Bottom there will be 2 new squares, red and green. These are the arbitrary rules you must follow on the card.</p>
+				 <p>You <span style="color:red;">CANNOT</span> do what the red says. You <span style="color:green;">MUST</span> do what the green says. Not all rows will be completable.</p>
+				 <br>
+				 <a class="btn btn-default" href="#" onclick="reseedPage('gim');" style="width:150px;">Gimmick Seed</a>
+				 <br>
+				 <br>
+				 <h2>Multi-Modes</h2>
+				 <p>You can build any combination of modes for a seed, if you put all the flags into the URL.</p>
+				 <p>Use &[Type]=True or just press these buttons.</p>
+				 <a class="btn btn-default" href="#" onclick="reseedPage('shot_race');" style="width:150px;">Shot Race</a>
+				 <a class="btn btn-default" href="#" onclick="reseedPage('gim_race');" style="width:150px;">Gimmick Race</a>
+				 <a class="btn btn-default" href="#" onclick="reseedPage('gim_shot_race');" style="width:150px;">Gimmick Shot Race</a>
+				 <br>
+				 <br>
+				 <h2>Shit Seed</h2>
+				 <p>Generate a card with goals 23-26 with no tagging done. Try to find something to do in this shit show</p>
+				 <a class="btn btn-default" href="#" onclick="reseedPage('shit');" style="width:150px;">Shit</a>
+				 <a class="btn btn-default" href="#" onclick="reseedPage('shit_race');" style="width:150px;">Shit Race</a>
+
 			 </div>
-			 <div class="modal-footer">
+			 <div class="modal-footer" style="background:#2c2f33;">
 			 </div>
 		 </div>
 	 </div>
  </div>
- <a class="glyphicon glyphicon-question-sign" data-toggle="modal" data-target="#settings" style="position:fixed;right:0px;bottom:0px;color:black;">?</a>
+ <a class="glyphicon glyphicon-question-sign" data-toggle="modal" data-target="#settings" style="position:fixed;right:0px;bottom:0px;color:black;"></a>
 <div id="wrap"><div id="main">
 	<div class="container_main" id="pageContent">
 		<div  id="bingoPage" style="display:flex">
@@ -225,12 +351,30 @@
 						<td class="row6" id="CR_5"></td> 
 					</tr>
 				</table>		
-			<h1 id="timer_time" style="font-size:350%;width:230px;"><time >00:00:00</time></h1>
+			<h1 id="timer_time" style="font-size:350%;width:230px;">00:00:00</h1>
 			<p></p>
 			<div style="width:230px;">
 				<button class="newcard" id="stop" style="width:80px">Start</button>
 				<button class="newcard" id="clear" style="width:80px">Reset</button>
 			</div>
+			<br><br>
+			<div id = "gimmicks" style="display:flex">
+				<div style="margin:10px;">
+					<table  id="gimgoal1" >
+						<tr>
+							<td  id="must" style="background:green;color:white;height:95px;min-width:95px;width:95px;">Do this</td>
+						</tr>
+					</table>
+				</div>
+				<div style="margin:10px;">
+					<table  id="gimgoal2" >
+						<tr>
+							<td  id="cant" style="background:red;color:white;height:95px;min-width:95px;width:95px;">Not this</td>
+						</tr>
+					</table>
+				</div>
+			</div>
+
 			</div>
 			<div id="results"style="margin:10px;width:500px;" >				
 
@@ -247,7 +391,7 @@
 					</tr>
 					<tr>
 						<td class="choice" id="row1">ROW1</td>
-						<td class="row1 col1 tlbr" id="slot1"></td> 
+						<td class="row1 col1 tlbr" id="slot1"></td>
 						<td class="row1 col2" id="slot2"></td> 
 						<td class="row1 col3" id="slot3"></td> 
 						<td class="row1 col4" id="slot4"></td> 
@@ -292,15 +436,22 @@
 			<div id="card_info"></div>
 			<h2 style="text-align:left;">Generate a new card</h2>
 				<p id="sortButtons">
-					<a class="newcard" href="#" onclick="reseedPage()" >Normal Card</a>	
+					<a class="newcard" href="#" onclick="reseedPage('')" >Standard Card</a>
+					<a class="newcard" href="#" onclick="reseedPage('race');" style="width:100px;">Race</a>
 					<a class="newcard" href="#" onclick="reseedPage('short');" style="width:50px">Short</a>
 					<a class="newcard" href="#" onclick="reseedPage('long');" style="width:50px;">Long</a>
-					<a class="newcard" href="#" onclick="reseedPage('race');" style="width:50px;">Race</a>
-					<a class="newcard" data-toggle="modal" data-target="#myModal" style="float:right;">Submit Bingo</a>
+					<a class="newcard" href="#" onclick="reseedPage('shot');" style="width:50px;">Shot</a>
 				</p>
 				<p><br></p>
-				<button role="button" class="newcard" data-toggle="collapse" data-target="#time_id" style="width:30px"><</button>
-				<button role="button" class="newcard" data-toggle="collapse" data-target="#about_bingo" style="width:30px;float:right;"> > </button>
+				<p>
+
+					<a class="newcard" data-toggle="modal" data-target="#myModal" style="width:500px;">Submit Bingo</a>
+				</p>
+				<p><br></p>
+				<div style="width:500px;">
+					<button role="button" class="newcard" data-toggle="collapse" data-target="#time_id" style="width:30px"><</button>
+					<button role="button" class="newcard" data-toggle="collapse" data-target="#about_bingo" style="width:30px;float:right">></button>
+				</div>
 				<p><br></p>
 				<p><br></p>
 				<div class ="overlay" id ="over">
@@ -396,15 +547,42 @@
 </div>
 <script>
 	var Start_Time =0;
+	if (race == "True" && gim == "True"){
 
-	if (race == "True"){
+		showGim();
 		hideBingo();
 	}
-	else {
-		document.getElementById("over").style.display= "none";
+	else if (race == null && gim == "True"){
+			showGim();
+			startBingo();
+			document.getElementById("race_s").style.display= "none";
+	}
+	else if (race == "True" && gim == null){
+		document.getElementById("gimmicks").style.display= "none";
+		hideBingo();
+	}
+	else
+	{
+		document.getElementById("gimmicks").style.display= "none";
+		document.getElementById("race_s").style.display= "none";
 		startBingo();
-	}	
-	
+	}
+
+	var results = $("#card_info");
+
+	let cardType = "";
+	let types = bingoversion.split("_");
+	if (types.length == 1){
+		cardType = "Standard";
+	}
+	for (let i = 1; i < types.length ; i++){
+		cardType = cardType + " " + types[i].charAt(0).toUpperCase()+types[i].slice(1);
+	}
+
+	results.append ("<p>BT Bingo <strong>" + bingoList["info"].version + "</strong>&emsp;Seed: <strong>" +
+			bingoseed + "</strong>&emsp;Types: <strong>" + cardType + "</strong></p>");
+
+
 	//setup before functions
 	var typingTimer;                //timer identifier
 	var doneTypingInterval = 1000;  //time in ms, 5 second for example
@@ -427,7 +605,7 @@
 	  document.cookie = "username="+document.getElementById("user").value;
 	}
 		
-	var h1 = document.getElementsByTagName('h1')[0],
+	var h1 = document.getElementById("timer_time"),
 		stop = document.getElementById('stop'),
 		clear = document.getElementById('clear'),
 		seconds = 0, minutes = 0, hours = 0,
@@ -442,8 +620,7 @@
 		
 		
 		
-		h1.textContent = (hours ? (hours > 9 ? hours : "0" + hours) : "00") + ":" + (minutes ? (minutes > 9 ? minutes : "0" + minutes) : "00") + ":" + (seconds > 9 ? seconds : "0" + seconds);
-
+		h1.innerHTML = (hours ? (hours > 9 ? hours : "0" + hours) : "00") + ":" + (minutes ? (minutes > 9 ? minutes : "0" + minutes) : "00") + ":" + (seconds > 9 ? seconds : "0" + seconds);
 		timer();
 	}
 	function timer() {
@@ -458,7 +635,7 @@
 	stop.onclick = function() {
 		if (go ==1){
 			document.getElementById("time").value=document.getElementById("timer_time").innerHTML;
-			document.getElementById("rowcol").value= $('#CR_name').html().toLowerCase();
+			document.getElementById("rowcol").value= $('#CR_name').html().toLowerCase().replace("-","");
 			clearTimeout(t);
 			go = 0;
 			document.getElementById("stop").innerHTML = "Start";
@@ -474,7 +651,7 @@
 
 	/* Clear button */
 	clear.onclick = function() {
-		h1.textContent = "00:00:00";
+		h1.innerHTML = "00:00:00";
 		seconds = 0; minutes = 0; hours = 0;
 		$('#CR_name').html("");
 		for (var i = 0; i < 5; i++) {
