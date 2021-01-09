@@ -1,0 +1,278 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+    <style>
+        canvas {
+            zindex:1;
+            border:0px solid #d3d3d3;
+            background-color: #f1f1f1;
+        }
+    </style>
+</head>
+<body onload="startScreen()">
+<script src="https://code.jquery.com/jquery-2.1.1.min.js"></script>
+<div id = "gameTimer" class="stopwatch" style="display: none;"></div>
+<div id="username" style="display: none;">{{ name }}</div>
+<div id="stats">BK=0 BT=0 DK=0</div>
+
+<button type="button" onclick="current_user.BKprogress+=1;update = true;document.getElementById('stats').innerHTML='BK='+current_user.BKprogress+' BT='+current_user.BTprogress+' DK='+current_user.DKprogress;">BK+1</button>
+<button type="button" onclick="current_user.BTprogress+=1;update = true;document.getElementById('stats').innerHTML='BK='+current_user.BKprogress+' BT='+current_user.BTprogress+' DK='+current_user.DKprogress;">BT+1</button>
+<button type="button" onclick="current_user.DKprogress+=1;update = true;document.getElementById('stats').innerHTML='BK='+current_user.BKprogress+' BT='+current_user.BTprogress+' DK='+current_user.DKprogress;">DK+1</button>
+<br> <br>
+<button type="button" onclick="current_user.BKprogress-=1;update = true;document.getElementById('stats').innerHTML='BK='+current_user.BKprogress+' BT='+current_user.BTprogress+' DK='+current_user.DKprogress;">BK-1</button>
+<button type="button" onclick="current_user.BTprogress-=1;update = true;document.getElementById('stats').innerHTML='BK='+current_user.BKprogress+' BT='+current_user.BTprogress+' DK='+current_user.DKprogress;">BT-1</button>
+<button type="button" onclick="current_user.DKprogress-=1;update = true;document.getElementById('stats').innerHTML='BK='+current_user.BKprogress+' BT='+current_user.BTprogress+' DK='+current_user.DKprogress;">DK-1</button>
+<br> <br> <br> <br>
+<button id="racebutton" type="button" onclick="grab_time()">Start Race Mode</button>
+<div id="race_status">Press Start only when everyone is readied on SRL <br> Press the buttons to add/sub collectables, or Press 1, 2, or 3 Key</div>
+<button id="timestop" style="display:hidden"type="button" onclick="stop_time()">.done</button>
+<script>
+    $SCRIPT_ROOT = {{ request.script_root|tojson|safe }};
+    var list_people = [];
+    var list_place = [];
+    var update = false;
+    var race_time = 0;
+    var bac_image = new Image();
+    bac_image.src = "{{ url_for('static', filename = 'tracker.png') }}";
+    function startScreen() {
+
+        layout.start();
+    }
+    var layout = {
+        canvas : document.createElement("canvas"),
+        start : function() {
+            this.canvas.width = 200;
+            this.canvas.height = 54;
+            this.context = this.canvas.getContext("2d");
+            document.body.insertBefore(this.canvas, document.body.childNodes[0]);
+            this.interval = setInterval(updateScreen, 20);
+            this.stream = setInterval(updateStats, 30000);
+            this.stream = setInterval(delaySend, 2000);
+
+        },
+        clear : function() {
+            this.context.clearRect(0, 0, this.canvas.width, this.canvas.height);
+
+        }
+    }
+
+
+
+    function delaySend()
+    {
+        if (update){
+            updateStats();
+            update = false;
+        }
+    }
+    function updateScreen() {
+        layout.clear();
+        list_place = list_people.slice();
+        list_place.sort(function(a, b){return b.totals-a.totals});
+        for ( var j = 0; j< list_place.length;j++)
+        {
+            list_place[j].place=j+1;
+
+        }
+        current_user.draw();
+
+
+    }
+
+    function updateStats(){
+        $.getJSON($SCRIPT_ROOT + '/_socket', {
+            username:current_user.username,BK:current_user.BKprogress,BT:current_user.BTprogress,DK:current_user.DKprogress
+        }, function(data) {
+            console.log(data.result);
+            dataarray = data.result;
+            if (dataarray){
+                playerarray = dataarray.split('$')
+                for ( var i = 0; i< list_people.length;i++)
+                {
+                    player_data = playerarray[i].split(',');
+                    list_people[i].BKprogress = parseInt(player_data[1])
+                    list_people[i].BTprogress = parseInt(player_data[2])
+                    list_people[i].DKprogress = parseInt(player_data[3])
+                    list_people[i].totals = list_people[i].BKprogress+list_people[i].BTprogress+list_people[i].DKprogress;
+                    if (player_data[0] == current_user.name){
+                        current_user.totals = list_people[i].BKprogress+list_people[i].BTprogress+list_people[i].DKprogress;
+                    }
+                };
+            }
+        });
+        return false;
+
+    }
+    var timerstart =0;
+    function grab_time(){
+        setInterval(grab_time_socket, 1000);
+        document.getElementById('racebutton').style="display: none;";
+        document.getElementById('timestop').style="display: Visable;";
+        document.getElementById('race_status').innerHTML="Player Ready";
+    }
+
+    var inttimmer = 0;
+    function grab_time_socket(){
+        if (timerstart==0)
+        {
+            $.getJSON($SCRIPT_ROOT + '/_time', {
+                username:current_user.username
+            }, function(data) {
+                var temp_time = parseInt(data.result);
+
+                if (temp_time!=0)
+                {
+                    race_time = parseInt(data.result);
+                    inttimmer = setInterval(add_time, 1000);
+                    timerstart=1;
+                    document.getElementById('race_status').innerHTML="";
+                }
+
+            });
+            return false;
+        }
+    }
+
+    function add_time(){
+        race_time +=1;
+    }
+    function stop_time(){
+        clearInterval(inttimmer)
+    }
+
+
+    function card(x , y , name) {
+        this.xpos = x;
+        this.ypos = y;
+        this.username=name;
+        this.place=1
+        this.BKprogress=0;
+        this.BTprogress=0;
+        this.DKprogress=0;
+        this.totals=0;
+        this.scrollpos = 0;
+        this.scrollpos2 = 7*150;
+        this.picture = new Image();
+        this.picture.src = "{{ url_for('static', filename = 'serverIcons/')}}"+name+'.png';
+        this.draw = function(){
+            var ctx = layout.context;
+            ctx.fillStyle = "#3fff00";
+            ctx.fillRect(0,0, 200, 54);
+            ctx.drawImage(bac_image,0,0,200,54);
+            //time
+            ctx.fillStyle = "black";
+            var time = ""+parseInt(race_time);
+            ctx.font = "16px Impact";
+            ctx.fillText(time.toHHMMSS(),7, 19);
+            //user
+            this.totals= this.BKprogress+this.BTprogress+this.DKprogress;
+            ctx.drawImage(this.picture,75,0,25,25);
+            ctx.font = "11px Century";
+            ctx.fillStyle = "black";
+            ctx.lineWidth = 3;
+            ctx.strokeText(this.username+"\t\t"+parseInt((this.totals/391)*100)+"%", 105 , 12);
+            ctx.fillStyle = "white";
+            ctx.fillText(this.username+"\t\t"+parseInt((this.totals/391)*100)+"%", 105 , 12);
+            ctx.fillStyle = "black";
+            var grdRed = ctx.createLinearGradient(105,19,195,23);
+            grdRed.addColorStop(0,"#ff000c");
+            grdRed.addColorStop(0.37,"#00d0ff");
+            grdRed.addColorStop(0.75,"#ff6e00");
+            ctx.fillStyle = grdRed;
+            ctx.fillRect(105,19, 90 *(this.totals/391), 4);
+
+            // display scrolling bar of people
+            for ( var i = 0; i< list_people.length;i++)
+            {
+
+
+                ctx.fillStyle = "black";
+                ctx.font = "16px Impact";
+                ctx.fillText(""+list_people[i].place+" : ",this.scrollpos + 5 + (i*150), 48); //list_place to have sorted list
+
+                ctx.drawImage(list_people[i].picture,this.scrollpos + 15+ (i*150),33,16,16);
+                ctx.font = "13px Century";
+                ctx.fillText(list_people[i].username+"\t\t"+parseInt((list_people[i].totals/391)*100)+"%", this.scrollpos + 35 + (i*150), 43);
+                var grdBar = ctx.createLinearGradient(this.scrollpos + 40 + (i*150),46, this.scrollpos + 40 + (i*150)+90,50);
+                grdBar.addColorStop(0,"#ff000c");
+                grdBar.addColorStop(0.37,"#00d0ff");
+                grdBar.addColorStop(0.75,"#ff6e00");
+                ctx.fillStyle = grdBar;
+                ctx.fillRect(this.scrollpos + 40 + (i*150),46, 90 *(list_people[i].totals/391), 4);
+
+            };
+            ctx.fillStyle = "black";
+            ctx.font = "16px Impact";
+            ctx.fillText("Rareware 301 Race 2019",this.scrollpos2,48);
+
+
+            this.scrollpos-=1;
+            this.scrollpos2-=1;
+
+            if (this.scrollpos < ((list_people.length)*-150))
+            {
+                this.scrollpos=200;
+            }
+            if (this.scrollpos2 < -150)
+            {
+                this.scrollpos2=7*150+50;
+            }
+
+
+        };
+    };
+
+    var current_user = new card(0,0,document.getElementById('username').innerHTML);
+
+    var player1 = new card(-1 *256,5*120,"Hagginater");
+    var player2 = new card(1 *256,4*120,"FalconxFalcon1");
+    var player11 = new card(0 *256,5*120,"Secrethumorman");
+    var player3 = new card(1 *256,5*120,"ElectricFortune");
+    var player7 = new card(1 *256,0*120,"Icupspeedruns_");
+    var player8 = new card(1 *256,1*120,"MutantsAbyss");
+    var player9 = new card(1 *256,2*120,"Xafication");
+
+    list_people.push(player1);
+    list_people.push(player2);
+    list_people.push(player11);
+    list_people.push(player3);
+
+
+    list_people.push(player7);
+    list_people.push(player8);
+    list_people.push(player9);
+
+
+    document.addEventListener("keydown", function(e) {
+
+        if (e.keyCode == 49) {
+            current_user.BKprogress+=1;update = true;document.getElementById('stats').innerHTML='BK='+current_user.BKprogress+' BT='+current_user.BTprogress+' DK='+current_user.DKprogress;
+        }
+        if (e.keyCode == 50) {
+            current_user.BTprogress+=1;update = true;document.getElementById('stats').innerHTML='BK='+current_user.BKprogress+' BT='+current_user.BTprogress+' DK='+current_user.DKprogress;
+        }
+        if (e.keyCode == 51) {
+            current_user.DKprogress+=1;update = true;document.getElementById('stats').innerHTML='BK='+current_user.BKprogress+' BT='+current_user.BTprogress+' DK='+current_user.DKprogress;
+        }
+    });
+
+
+
+
+
+
+    String.prototype.toHHMMSS = function () {
+        var sec_num = parseInt(this, 10); // don't forget the second param
+        var hours   = Math.floor(sec_num / 3600);
+        var minutes = Math.floor((sec_num - (hours * 3600)) / 60);
+        var seconds = sec_num - (hours * 3600) - (minutes * 60);
+
+        if (hours   < 10) {hours   = "0"+hours;}
+        if (minutes < 10) {minutes = "0"+minutes;}
+        if (seconds < 10) {seconds = "0"+seconds;}
+        return hours+':'+minutes+':'+seconds;
+    }
+</script>
+</body>
+</html>
