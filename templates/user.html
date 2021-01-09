@@ -1,8 +1,17 @@
 <!DOCTYPE html>
 <html>
 <head>
+    <link rel="icon" type="image/png" href="{{ url_for('static', filename='5.png') }}"/>
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.0/css/bootstrap.min.css">
     <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
     <style>
+        body{
+            padding-right: 30px;
+            padding-left: 30px;
+            padding-top: 5px;
+            background:#2c2f33;
+            color:#9c9c9c;
+        }
         canvas {
             zindex:1;
             border:0px solid #d3d3d3;
@@ -16,17 +25,17 @@
 <div id="username" style="display: none;">{{ name }}</div>
 <div id="stats">BK=0 BT=0 DK=0</div>
 
-<button type="button" onclick="current_user.BKprogress+=1;update = true;document.getElementById('stats').innerHTML='BK='+current_user.BKprogress+' BT='+current_user.BTprogress+' DK='+current_user.DKprogress;">BK+1</button>
-<button type="button" onclick="current_user.BTprogress+=1;update = true;document.getElementById('stats').innerHTML='BK='+current_user.BKprogress+' BT='+current_user.BTprogress+' DK='+current_user.DKprogress;">BT+1</button>
-<button type="button" onclick="current_user.DKprogress+=1;update = true;document.getElementById('stats').innerHTML='BK='+current_user.BKprogress+' BT='+current_user.BTprogress+' DK='+current_user.DKprogress;">DK+1</button>
+<button  class="btn btn-success" type="button" onclick="current_user.BKprogress+=1;update = true;document.getElementById('stats').innerHTML='BK='+current_user.BKprogress+' BT='+current_user.BTprogress+' DK='+current_user.DKprogress;">BK+1</button>
+<button class="btn btn-success" type="button" onclick="current_user.BTprogress+=1;update = true;document.getElementById('stats').innerHTML='BK='+current_user.BKprogress+' BT='+current_user.BTprogress+' DK='+current_user.DKprogress;">BT+1</button>
+<button class="btn btn-success" type="button" onclick="current_user.DKprogress+=1;update = true;document.getElementById('stats').innerHTML='BK='+current_user.BKprogress+' BT='+current_user.BTprogress+' DK='+current_user.DKprogress;">DK+1</button>
 <br> <br>
-<button type="button" onclick="current_user.BKprogress-=1;update = true;document.getElementById('stats').innerHTML='BK='+current_user.BKprogress+' BT='+current_user.BTprogress+' DK='+current_user.DKprogress;">BK-1</button>
-<button type="button" onclick="current_user.BTprogress-=1;update = true;document.getElementById('stats').innerHTML='BK='+current_user.BKprogress+' BT='+current_user.BTprogress+' DK='+current_user.DKprogress;">BT-1</button>
-<button type="button" onclick="current_user.DKprogress-=1;update = true;document.getElementById('stats').innerHTML='BK='+current_user.BKprogress+' BT='+current_user.BTprogress+' DK='+current_user.DKprogress;">DK-1</button>
+<button class="btn btn-danger" type="button" onclick="current_user.BKprogress-=1;update = true;document.getElementById('stats').innerHTML='BK='+current_user.BKprogress+' BT='+current_user.BTprogress+' DK='+current_user.DKprogress;">BK-1</button>
+<button class="btn btn-danger" type="button" onclick="current_user.BTprogress-=1;update = true;document.getElementById('stats').innerHTML='BK='+current_user.BKprogress+' BT='+current_user.BTprogress+' DK='+current_user.DKprogress;">BT-1</button>
+<button class="btn btn-danger" type="button" onclick="current_user.DKprogress-=1;update = true;document.getElementById('stats').innerHTML='BK='+current_user.BKprogress+' BT='+current_user.BTprogress+' DK='+current_user.DKprogress;">DK-1</button>
 <br> <br> <br> <br>
-<button id="racebutton" type="button" onclick="grab_time()">Start Race Mode</button>
-<div id="race_status">Press Start only when everyone is readied on SRL <br> Press the buttons to add/sub collectables, or Press 1, 2, or 3 Key</div>
-<button id="timestop" style="display:hidden"type="button" onclick="stop_time()">.done</button>
+<button class="btn btn-primary" id="racebutton" type="button" onclick="grab_time()">Start Race Mode</button>
+<div id="race_status">Press Start only when everyone is readied on SRL (pings the server a ton) <br> Press the buttons to add/sub collectables, or Press 1, 2, or 3 Key</div>
+<button class="btn btn-warning" id="timestop" style="display:hidden"type="button" onclick="stop_time()">.done</button>
 <script>
     $SCRIPT_ROOT = {{ request.script_root|tojson|safe }};
     var list_people = [];
@@ -68,11 +77,10 @@
     }
     function updateScreen() {
         layout.clear();
-        list_place = list_people.slice();
-        list_place.sort(function(a, b){return b.totals-a.totals});
-        for ( var j = 0; j< list_place.length;j++)
+        list_people.sort(function(a, b){return b.totals-a.totals});
+        for ( var j = 0; j< list_people.length;j++)
         {
-            list_place[j].place=j+1;
+            list_people[j].place=j+1;
 
         }
         current_user.draw();
@@ -84,20 +92,35 @@
         $.getJSON($SCRIPT_ROOT + '/_socket', {
             username:current_user.username,BK:current_user.BKprogress,BT:current_user.BTprogress,DK:current_user.DKprogress
         }, function(data) {
-            console.log(data.result);
+
             dataarray = data.result;
             if (dataarray){
                 playerarray = dataarray.split('$')
-                for ( var i = 0; i< list_people.length;i++)
+
+                for ( var i = 0; i< playerarray.length-1;i++)
                 {
                     player_data = playerarray[i].split(',');
-                    list_people[i].BKprogress = parseInt(player_data[1])
-                    list_people[i].BTprogress = parseInt(player_data[2])
-                    list_people[i].DKprogress = parseInt(player_data[3])
-                    list_people[i].totals = list_people[i].BKprogress+list_people[i].BTprogress+list_people[i].DKprogress;
-                    if (player_data[0] == current_user.name){
-                        current_user.totals = list_people[i].BKprogress+list_people[i].BTprogress+list_people[i].DKprogress;
+                    let found = 0;
+                    for ( var j = 0; j< list_people.length;j++) {
+                        if (list_people[j].username == player_data[0] ){
+                            found = 1;
+                            list_people[j].BKprogress = parseInt(player_data[1])
+                            list_people[j].BTprogress = parseInt(player_data[2])
+                            list_people[j].DKprogress = parseInt(player_data[3])
+                            list_people[j].totals = list_people[j].BKprogress+list_people[j].BTprogress+list_people[j].DKprogress;
+                            if (player_data[0] == current_user.name){
+                                current_user.totals = list_people[j].BKprogress+list_people[j].BTprogress+list_people[j].DKprogress;
+                            }
+                        }
                     }
+                    if (found == 0){
+                        var newplayer = new card(-1 *256,5*120,player_data[0]);
+                        list_people.push(newplayer);
+
+                    }
+
+
+
                 };
             }
         });
@@ -113,6 +136,7 @@
     }
 
     var inttimmer = 0;
+    var fixtimmer = 0;
     function grab_time_socket(){
         if (timerstart==0)
         {
@@ -125,6 +149,7 @@
                 {
                     race_time = parseInt(data.result);
                     inttimmer = setInterval(add_time, 1000);
+                    fixtimmer = setInterval(fix_time, 60000);
                     timerstart=1;
                     document.getElementById('race_status').innerHTML="";
                 }
@@ -139,6 +164,19 @@
     }
     function stop_time(){
         clearInterval(inttimmer)
+        clearInterval(fixtimmer)
+    }
+    function fix_time(){
+        $.getJSON($SCRIPT_ROOT + '/_time', {
+            username:current_user.username
+        }, function(data) {
+            if (parseInt(data.result)==0){
+                stop_time()
+                return 0;
+            }
+            race_time = parseInt(data.result);
+
+        });
     }
 
 
@@ -152,7 +190,7 @@
         this.DKprogress=0;
         this.totals=0;
         this.scrollpos = 0;
-        this.scrollpos2 = 7*150;
+        this.scrollpos2 = 0;
         this.picture = new Image();
         this.picture.src = "{{ url_for('static', filename = 'serverIcons/')}}"+name+'.png';
         this.draw = function(){
@@ -167,7 +205,12 @@
             ctx.fillText(time.toHHMMSS(),7, 19);
             //user
             this.totals= this.BKprogress+this.BTprogress+this.DKprogress;
-            ctx.drawImage(this.picture,75,0,25,25);
+            try {
+                ctx.drawImage(this.picture,75,0,25,25);
+            } catch (error){
+                this.picture.src = "{{ url_for('static', filename = 'serverIcons/unknown.png')}}";
+                ctx.drawImage(this.picture,75,0,25,25);
+            }
             ctx.font = "11px Century";
             ctx.fillStyle = "black";
             ctx.lineWidth = 3;
@@ -190,8 +233,13 @@
                 ctx.fillStyle = "black";
                 ctx.font = "16px Impact";
                 ctx.fillText(""+list_people[i].place+" : ",this.scrollpos + 5 + (i*150), 48); //list_place to have sorted list
+                try {
+                    ctx.drawImage(list_people[i].picture,this.scrollpos + 15+ (i*150),33,16,16);
+                } catch (error){
+                    list_people[i].picture.src = "{{ url_for('static', filename = 'serverIcons/unknown.png')}}";
+                    ctx.drawImage(list_people[i].picture,this.scrollpos + 15+ (i*150),33,16,16);
+                }
 
-                ctx.drawImage(list_people[i].picture,this.scrollpos + 15+ (i*150),33,16,16);
                 ctx.font = "13px Century";
                 ctx.fillText(list_people[i].username+"\t\t"+parseInt((list_people[i].totals/391)*100)+"%", this.scrollpos + 35 + (i*150), 43);
                 var grdBar = ctx.createLinearGradient(this.scrollpos + 40 + (i*150),46, this.scrollpos + 40 + (i*150)+90,50);
@@ -204,19 +252,19 @@
             };
             ctx.fillStyle = "black";
             ctx.font = "16px Impact";
-            ctx.fillText("Rareware 301 Race 2019",this.scrollpos2,48);
+            ctx.fillText("Rareware 301 Race 2019",this.scrollpos +25 + ((list_people.length) * 150) ,48);
 
 
             this.scrollpos-=1;
             this.scrollpos2-=1;
 
-            if (this.scrollpos < ((list_people.length)*-150))
+            if (this.scrollpos < ((list_people.length)*-150)-175)
             {
                 this.scrollpos=200;
             }
-            if (this.scrollpos2 < -150)
+            if (this.scrollpos2 < ((list_people.length)*-150)-50)
             {
-                this.scrollpos2=7*150+50;
+                this.scrollpos2=(list_people.length*150)+200;
             }
 
 
@@ -225,23 +273,8 @@
 
     var current_user = new card(0,0,document.getElementById('username').innerHTML);
 
-    var player1 = new card(-1 *256,5*120,"Hagginater");
-    var player2 = new card(1 *256,4*120,"FalconxFalcon1");
-    var player11 = new card(0 *256,5*120,"Secrethumorman");
-    var player3 = new card(1 *256,5*120,"ElectricFortune");
-    var player7 = new card(1 *256,0*120,"Icupspeedruns_");
-    var player8 = new card(1 *256,1*120,"MutantsAbyss");
-    var player9 = new card(1 *256,2*120,"Xafication");
-
-    list_people.push(player1);
-    list_people.push(player2);
-    list_people.push(player11);
-    list_people.push(player3);
 
 
-    list_people.push(player7);
-    list_people.push(player8);
-    list_people.push(player9);
 
 
     document.addEventListener("keydown", function(e) {

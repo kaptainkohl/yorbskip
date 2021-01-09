@@ -1,4 +1,4 @@
-from flask import Flask, render_template
+from flask import Flask, render_template, jsonify
 from flask import request
 from flask_socketio import SocketIO
 from flask_socketio import send, emit
@@ -22,25 +22,55 @@ bingo_array = []
 time_delay = datetime.datetime.now()
 user_delay = ""
 
+player_data = []
+
+start_time = 0
+
+
+def start_timer():
+    global start_time
+    start_time = datetime.datetime.now()
+
+
+def stop_timer():
+    global start_time
+    start_time = 0
+
+def read_timer():
+    if start_time == 0:
+        return 0
+    return int(datetime.datetime.now().timestamp() - start_time.timestamp())
+
 @app.route('/')
 def index():
     return render_template('index.html')
     
 @app.route('/ping')
 def ping_mess():
-    return render_template('ping.html')    
-    
+    return render_template('ping.html')
+
+@app.route('/_timerStart')
+def time_mess():
+    start_timer()
+    return jsonify(result="start")
+
+@app.route('/_timerStop')
+def timestop_mess():
+    stop_timer()
+    return jsonify(result="stop")
+
+
+@app.route('/usercontrol')
+def user_control():
+    return render_template('usercontrol.html')
+
 @app.route('/bingo',methods=['GET', 'POST'])
 def bingo_card():
     return render_template('bingo.html')
 
 @app.route('/bingoTEST',methods=['GET', 'POST'])
 def bingo_Test():
-    return render_template('testBingo.html') 
-
-@app.route('/bingoShot',methods=['GET', 'POST'])
-def bingoStab_card():
-    return render_template('bingoStab.html') 
+    return render_template('testBingo.html')
   
 @app.route('/popout',methods=['GET', 'POST'])
 def bingo_pop():
@@ -177,8 +207,40 @@ def handle_start(data):
     current_room[1]['var_seed'] = data['data']
     current_room[1]['running'] = data['start']
     
-    emit("startgame", data , broadcast=True, room=data['room'])   
+    emit("startgame", data , broadcast=True, room=data['room'])
 
+
+@app.route('/user/', methods=['GET', 'POST'])
+@app.route('/user/<name>', methods=['GET', 'POST'])
+def userstats(name=None):
+    return render_template('user.html', name=name)
+
+
+@app.route('/_time')
+def updateTime():
+    a = request.args.get('username', 'Konditioner')
+    return jsonify(result=read_timer())
+
+
+@app.route('/_socket', methods=['GET', 'POST'])
+def startsocket():
+    a = request.args.get('username', 'Konditioner')
+    b = request.args.get('BK', 0, type=int)
+    c = request.args.get('BT', 1,type=int)
+    d = request.args.get('DK', 0,type=int)
+
+    totals = ''
+    found = 0
+    for x in range(0,len(player_data)):
+        if player_data[x][0] == a:
+            player_data[x]= [a,b,c,d]
+            found = 1
+        totals = ''+totals + player_data[x][0] +","+str(player_data[x][1])+","+str(player_data[x][2])+","+str(player_data[x][3])+"$"
+    if found == 0:
+        player_data.append([a,b,c,d])
+        totals = ''+totals + a +","+str(b)+","+str(c)+","+str(d)+"$"
+
+    return jsonify(result=totals)
 
 if __name__ == '__main__':
     socketio.run(app)

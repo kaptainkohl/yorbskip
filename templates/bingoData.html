@@ -72,9 +72,29 @@
 	</style>
 </head>
 <body>
+<p>Welcome to the Banjo-Tooie Bingo Data Page. This page shows all the current data for Tooie Bingo cards.<br>
+	Using the Navigation Tabs you can sort data. Press your Card version, then the tags you filter for. <br>
+	Press Only to only see cards with those exact tags, otherwise it will just find any card with that tag.<br>
+</p>
+<ul class="pagination" id="sortgroups">
+	<li><a onclick="active(this);">v2020.3</a></li>
+	<li class="active"><a  onclick="active(this);">v2020.4</a></li>
+</ul>
+<ul class="pagination" id="sorttype">
+	<li ><a onclick="active(this);">Standard</a></li>
+	<li ><a onclick="active(this);">Race</a></li>
+	<li ><a  onclick="active(this);">Shot</a></li>
+	<li><a onclick="active(this);">Gimmick</a></li>
+	<li ><a  onclick="active(this);">Shit</a></li>
+	<li><a onclick="active(this);">Short</a></li>
+	<li><a onclick="active(this);">Long</a></li>
+</ul>
+<ul class="pagination" >
+	<li> <a onclick="set_only(this);">Only</a></li>
+</ul>
 <div style="display:flex;">	
 	<div style="margin:10px;">
-	<p> The Fastest Card on the v2020 Patch </p>
+	<p> The Fastest Card </p>
 				<table id="bingo">
 					<tr>
 						<td class="popout" id="tlbr">TL-BR</td>
@@ -251,71 +271,18 @@ function time_seconds_to_hhmmss(time){
 	return `${hours}:${minutes}:${seconds}`;
 
 }
-//parse
-var bingo = '{{data}}';
-bingo = bingo.split('$');
-bingo.pop(); //remove nothing in last value
-for( var i = 0; i< bingo.length;i++){
-	bingo[i] = bingo[i].split('@');
-	bingo[i][6] = bingo[i][6].split('%');
-	bingo[i][6].pop();//remove nothing in last value
-	bingo[i].push(i);
+//parse raw data array
+var bingo_raw = '{{data}}';
+bingo_raw = bingo_raw.split('$');
+bingo_raw.pop(); //remove nothing in last value
+for( var i = 0; i< bingo_raw.length;i++){
+	bingo_raw[i] = bingo_raw[i].split('@');
+	bingo_raw[i][6] = bingo_raw[i][6].split('%');
+	bingo_raw[i][6].pop();//remove nothing in last value
+	bingo_raw[i].push(i);
 }
-
-// make an array of players, to perform ranking
-var bingo_rank = [];
-for( var i = 0; i< bingo.length;i++) {
-	if (bingo_rank[bingo[i][5]] == null){
-
-		bingo_rank[bingo[i][5]]= {"name":bingo[i][5],"cards": 1, "fastest": time_hhmmss_to_seconds(bingo[i][4]), "total" : time_hhmmss_to_seconds(bingo[i][4])};
-	}
-	else{
-		bingo_rank[bingo[i][5]]["cards"] = bingo_rank[bingo[i][5]]["cards"] + 1;
-		bingo_rank[bingo[i][5]]["total"] = bingo_rank[bingo[i][5]]["total"] + time_hhmmss_to_seconds(bingo[i][4]);
-		if (time_hhmmss_to_seconds(bingo[i][4])< bingo_rank[bingo[i][5]]["fastest"]){
-			bingo_rank[bingo[i][5]]["fastest"] = time_hhmmss_to_seconds(bingo[i][4]);
-		}
-	}
-}
-
-//indexed by id -- changed to an array to it can be sorted
-var bingoStats = [];
-for (var i = 1; i <= 25; i++){
-	for (var j = 0; j < bingoList[i].length; j++){
-		var name = bingoList[i][j].name;
-		var id = bingoList[i][j].id;
-		bingoStats.push({"id" : id, "name": name, "tier" : i, "cards_appeared" : [], "cards_picked" : [],"pick_rate": 0, "average_time": 0});
-	}
-}
-
-//fastest
-var fast_time = 999999
-var time_index = -1;
-for( var i = 0; i< bingo.length;i++){
-	var raw = bingo[i][4].replaceAll(":","");
-	var time = parseInt(raw);
-	if (time< fast_time){
-		fast_time = time;
-		time_index = i;
-	}
-}
-
-//Build Card
-for( var i = 1; i<= 25 ;i++){
-	for( var j = 0; j < bingoStats.length; j ++){
-		if(parseInt(bingo[time_index][6][i-1]) == bingoStats[j]["id"]){
-			document.getElementById("slot"+i).innerHTML = bingoStats[j]["name"];
-
-		}
-	}
-}
-//Highlight Row
-for( var i = 1; i<= 25 ;i++){
-	if (document.getElementById("slot"+i).className.includes(bingo[time_index][3])){
-		document.getElementById("slot"+i).classList.add("greensquare");
-	}
-}
-document.getElementById("fast").innerHTML = "Card Info:<br>Player: "+bingo[time_index][5]+"<br>Time: "+bingo[time_index][4]+"<br>Seed: "+bingo[time_index][2]+"<br>Date: "+bingo[time_index][1];
+// let bingo be the sorted data array, starting with everything.
+let bingo = bingo_raw.slice();
 
 
 //All Cards
@@ -470,8 +437,7 @@ function generate_basic_stats(){
     }
 }
 
-fill_bingoStats_with_cards();
-generate_basic_stats();
+
 
 // Button to display all goals stats
 function count_all_goals(){	
@@ -515,6 +481,7 @@ function goal_rank(){
 function tableCreate(name,id) {
 	var a = 0;
 	var place = document.getElementById(name);
+	place.innerHTML ="";
 	var tbl = document.createElement('table');
 	tbl.setAttribute('id',id)
 	var tbdy = document.createElement('tbody');
@@ -595,6 +562,7 @@ function tableCreate(name,id) {
 function tableRankings(name,id) {
 	var a = 0;
 	var place = document.getElementById(name);
+	place.innerHTML ="";
 	var tbl = document.createElement('table');
 	tbl.setAttribute('id',id)
 	var tbdy = document.createElement('tbody');
@@ -660,16 +628,202 @@ function goal_highlight(x){
 	document.getElementById("goal_data").innerHTML = text.replaceAll(goal,'<span style="color:red;">'+goal+'</span>');
 }
 
-//build ranking
-var rankings = [];
-for(var i in bingo_rank)
-	rankings.push(bingo_rank[i]);
-rankings.sort(function(a, b){return (a["total"]/a["cards"])-(b["total"]/b["cards"])});
-tableRankings("rank","user_rank");
 
-//build initial goal_data
-bingoStats.sort(function(a, b){return a["tier"]-b["tier"]});
-tableCreate("goal_data","goalData");
+// call this function to build all the data again once a sort is done
+var bingoStats = [];
+var bingo_rank = [];
+var rankings = [];
+function build_data() {
+	// make an array of players, to perform ranking
+	bingoStats = [];
+	bingo_rank = [];
+	rankings = [];
+	for (var i = 0; i < bingo.length; i++) {
+		if (bingo_rank[bingo[i][5]] == null) {
+			bingo_rank[bingo[i][5]] = {
+				"name": bingo[i][5],
+				"cards": 1,
+				"fastest": time_hhmmss_to_seconds(bingo[i][4]),
+				"total": time_hhmmss_to_seconds(bingo[i][4])
+			};
+		} else {
+			bingo_rank[bingo[i][5]]["cards"] = bingo_rank[bingo[i][5]]["cards"] + 1;
+			bingo_rank[bingo[i][5]]["total"] = bingo_rank[bingo[i][5]]["total"] + time_hhmmss_to_seconds(bingo[i][4]);
+			if (time_hhmmss_to_seconds(bingo[i][4]) < bingo_rank[bingo[i][5]]["fastest"]) {
+				bingo_rank[bingo[i][5]]["fastest"] = time_hhmmss_to_seconds(bingo[i][4]);
+			}
+		}
+	}
+
+	//indexed by id -- changed to an array to it can be sorted
+	for (var i = 1; i <= 25; i++) {
+		for (var j = 0; j < bingoList[i].length; j++) {
+			var name = bingoList[i][j].name;
+			var id = bingoList[i][j].id;
+			bingoStats.push({
+				"id": id,
+				"name": name,
+				"tier": i,
+				"cards_appeared": [],
+				"cards_picked": [],
+				"pick_rate": 0,
+				"average_time": 0
+			});
+		}
+	}
+
+	//fastest
+	var fast_time = 999999
+	var time_index = -1;
+	for (var i = 0; i < bingo.length; i++) {
+		var raw = bingo[i][4].replaceAll(":", "");
+		var time = parseInt(raw);
+		if (time < fast_time) {
+			fast_time = time;
+			time_index = i;
+		}
+	}
+
+	//Build Card
+	for (var i = 1; i <= 25; i++) {
+		for (var j = 0; j < bingoStats.length; j++) {
+			if (parseInt(bingo[time_index][6][i - 1]) == bingoStats[j]["id"]) {
+				document.getElementById("slot" + i).innerHTML = bingoStats[j]["name"];
+				document.getElementById("slot"+i).classList.remove("greensquare");
+			}
+		}
+	}
+	//Highlight Row
+	for (var i = 1; i <= 25; i++) {
+		if (document.getElementById("slot" + i).className.includes(bingo[time_index][3])) {
+			document.getElementById("slot" + i).classList.add("greensquare");
+		}
+	}
+	document.getElementById("fast").innerHTML = "Card Info:<br>Player: " + bingo[time_index][5] + "<br>Time: " + bingo[time_index][4] + "<br>Seed: " + bingo[time_index][2] + "<br>Date: " + bingo[time_index][1];
+
+	fill_bingoStats_with_cards();
+	generate_basic_stats();
+
+	//build ranking
+	for(var i in bingo_rank)
+		rankings.push(bingo_rank[i]);
+	rankings.sort(function(a, b){return (a["total"]/a["cards"])-(b["total"]/b["cards"])});
+	tableRankings("rank","user_rank");
+
+	//build initial goal_data
+	bingoStats.sort(function(a, b){return a["tier"]-b["tier"]});
+	tableCreate("goal_data","goalData");
+
+	nextCard(0);
+}
+
+
+function rebuild(){
+
+	bingo = bingo_raw.slice();
+	// check to see if only is active
+
+	// loop and delete if not includes this type
+	let final = [];
+	let vnum = [];
+	let stand = false;
+	for(let j = 0; j < active_search.length;j++){
+		if (active_search[j].charAt(0)=='v'){
+			vnum.push(active_search[j]);
+		}
+		if (active_search[j]=="standard"){
+
+			stand = true;
+		}
+	}
+	for(let i = 0; i < bingo.length;i++){
+		//count all and active, must equal each other for it to be correct
+		let allc = 0;
+		let actc = 0;
+		//all
+		for(let j = 0; j < all_search.length;j++){
+			if (bingo[i][0].includes(all_search[j])){
+				allc++;
+			}
+		}
+		//active
+		for(let j = 0; j < active_search.length;j++){
+			if (bingo[i][0].includes(active_search[j])){
+				actc++;
+			}
+		}
+		if (only){
+			if (stand){
+				if ((allc - vnum.length == 0) && active_search.length - vnum.length -1 == 0 ){
+					final.push(bingo[i]);
+				}
+			}
+			else{
+				if ((actc - vnum.length == allc - vnum.length && allc - vnum.length != 0 && actc - vnum.length == active_search.length - vnum.length ) || (allc - vnum.length == 0 && active_search.length - vnum.length == 0) ){
+					final.push(bingo[i]);
+				}
+			}
+
+
+		}
+		else {
+			if (stand){
+				if ((allc - vnum.length == 0) || actc - vnum.length > 0  ){
+					final.push(bingo[i]);
+				}
+			}
+			else{
+				if ((active_search.length==vnum.length) || (actc - vnum.length > 0 )){
+					final.push(bingo[i]);
+				}
+			}
+
+
+		}
+
+	}
+	bingo = final.slice();
+	if (bingo.length==0){
+		bingo = [["null","null","null","null","00:00:00","null",[-1]]];
+	}
+	build_data();
+}
+let all_search = ["v2020.3","v2020.4","race","shot","gimmick","long","short","shit"];
+let active_search = ["v2020.4"];
+function active(t){
+	let t_name = t.innerHTML.toLowerCase()
+	t = t.parentNode;
+	if (t.classList.contains("active")){
+		t.classList.remove("active")
+		if(active_search.indexOf(t_name)>-1){
+			active_search.splice(active_search.indexOf(t_name),1);
+		}
+	}
+	else {
+		t.classList.add("active");
+		active_search.push(t_name);
+
+	}
+	rebuild();
+}
+let only = false;
+function set_only(t){
+	t = t.parentNode;
+	if (t.classList.contains("active")){
+		t.classList.remove("active")
+		only = false;
+	}
+	else {
+		t.classList.add("active");
+		only = true;
+
+	}
+	rebuild();
+}
+// default start
+build_data();
+
+
 
 </script>
 </body>

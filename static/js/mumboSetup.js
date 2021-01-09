@@ -50,10 +50,10 @@ function bingosetup() {
 	$("#bltr").hover(function() { $(".bltr").addClass("hover"); }, function() {	$(".bltr").removeClass("hover"); });
 
 	let special = null;
-	if (getUrlParameter('short')){
+	if ((getUrlParameter('type') || "").includes("short")){
 		special = "short";
 	}
-	if (getUrlParameter('long')){
+	if ((getUrlParameter('type') || "").includes("long")){
 		special = "long";
 	}
 	var bingoOpts = {

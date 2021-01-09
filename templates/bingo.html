@@ -64,38 +64,16 @@
 		}		
 
 		let bingoseed=getUrlParameter('seed');
-		let race=getUrlParameter('race');
-		let gim=getUrlParameter('gimmick');
-		let shot=getUrlParameter('shot');
-		let shit=getUrlParameter('shit');
-		let short=getUrlParameter('short');
-		let long=getUrlParameter('long');
+		let type=getUrlParameter('type') || "";
 
-		let bingoversion="";
-		if (race == "True"){
-			bingoversion = bingoversion+"_race";
-		}
-		if (gim == "True"){
-			bingoversion = bingoversion+"_gimmick";
-		}
-		if (shot == "True"){
-			bingoversion = bingoversion+"_shot";
-		}
-		if (shit == "True"){
-			bingoversion = bingoversion+"_shit";
-		}
-		if (short == "True"){
-			bingoversion = bingoversion+"_short";
-		}
-		if (long == "True"){
-			bingoversion = bingoversion+"_long";
-		}
+		let bingoversion=type;
+
 
 	function startBingo() {
 		for (i=0; i<25; i++) {  
 			$('#slot'+(i+1)).css("color","#bec7d2");
 		}
-		if (shot == "True") {
+		if (type.includes("shot")) {
 			start_fire();
 		}
 	}
@@ -139,26 +117,9 @@
 		
 	function reseedPage(mode) {
 		var qSeed = "?seed=" + Math.ceil(999999 * Math.random());
-		var qMode = "";
+		var qMode = "&type="+mode;
 
-		if (mode.includes("short")){
-			qMode = qMode + "&short=True";
-		}
-		if (mode.includes("long")){
-			qMode = qMode + "&long=True";
-		}
-		if (mode.includes("race")){
-			qMode = qMode + "&race=True";
-		}
-		if (mode.includes("gim")){
-			qMode = qMode + "&gimmick=True";
-		}
-		if (mode.includes("shot")){
-			qMode = qMode + "&shot=True";
-		}
-		if (mode.includes("shit")){
-			qMode = qMode + "&shit=True";
-		}
+
 		window.location = qSeed + qMode;
 		return false;
 	}
@@ -178,16 +139,12 @@
 			}
 
 		document.getElementById("card").value = card_data;
-		document.getElementById("version").value = bingoList["info"].version+bingoversion;
+		document.getElementById("version").value = ""+bingoList["info"].version+type;
 		document.getElementById("cardseed").value = bingoseed;
 		document.getElementById("user").value= getCookie("username");
+		console.log(document.getElementById("version").value);
 
-		if (shot == "True"){
-			old_goal= document.getElementById("slot"+stab.toString()).innerHTML;
-			document.getElementById("slot"+stab.toString()).innerHTML = '';
-			document.getElementById("slot"+stab.toString()).appendChild(canvas);
-		}
-		if (shit == "True"){
+		if (type.includes("shit")){
 			//build bad list
 			let shit_list = [];
 			let shit_card = [];
@@ -196,14 +153,20 @@
 					shit_list.push(bingoList[i][j].name);
 				}
 			}
+			console.log(shit_list);
 			for(var x = 1; x <26;x++){
 				let a = 0;
-				while (shit_card.includes(shit_list[((bingseed*x)+a)%(shit_list.length)])){
+				while (shit_card.includes(shit_list[((parseInt(bingoseed)*x)+a)%(shit_list.length)])){
 				 	a++;
 				 }
-				shit_card.push(shit_list[((bingseed*x)+a)%(shit_list.length)]);
+				shit_card.push(shit_list[((parseInt(bingoseed)*x)+a)%(shit_list.length)]);
 				document.getElementById("slot"+x).innerHTML = shit_card[x-1];
 			}
+		}
+		if (type.includes("shot")){
+			old_goal= document.getElementById("slot"+stab.toString()).innerHTML;
+			document.getElementById("slot"+stab.toString()).innerHTML = '';
+			document.getElementById("slot"+stab.toString()).appendChild(canvas);
 		}
 
 	}
@@ -310,8 +273,8 @@
 				 <p>You can build any combination of modes for a seed, if you put all the flags into the URL.</p>
 				 <p>Use &[Type]=True or just press these buttons.</p>
 				 <a class="btn btn-default" href="#" onclick="reseedPage('shot_race');" style="width:150px;">Shot Race</a>
-				 <a class="btn btn-default" href="#" onclick="reseedPage('gim_race');" style="width:150px;">Gimmick Race</a>
-				 <a class="btn btn-default" href="#" onclick="reseedPage('gim_shot_race');" style="width:150px;">Gimmick Shot Race</a>
+				 <a class="btn btn-default" href="#" onclick="reseedPage('gimmick_race');" style="width:150px;">Gimmick Race</a>
+				 <a class="btn btn-default" href="#" onclick="reseedPage('gimmick_shot_race');" style="width:150px;">Gimmick Shot Race</a>
 				 <br>
 				 <br>
 				 <h2>Shit Seed</h2>
@@ -547,17 +510,17 @@
 </div>
 <script>
 	var Start_Time =0;
-	if (race == "True" && gim == "True"){
+	if (type.includes("race")&& type.includes("gimmick")){
 
 		showGim();
 		hideBingo();
 	}
-	else if (race == null && gim == "True"){
+	else if (type.includes("gimmick")){
 			showGim();
 			startBingo();
 			document.getElementById("race_s").style.display= "none";
 	}
-	else if (race == "True" && gim == null){
+	else if (type.includes("race")){
 		document.getElementById("gimmicks").style.display= "none";
 		hideBingo();
 	}
@@ -571,12 +534,13 @@
 	var results = $("#card_info");
 
 	let cardType = "";
-	let types = bingoversion.split("_");
-	if (types.length == 1){
+	let types_text = bingoversion.split("_");
+	if (type == ""){
 		cardType = "Standard";
 	}
-	for (let i = 1; i < types.length ; i++){
-		cardType = cardType + " " + types[i].charAt(0).toUpperCase()+types[i].slice(1);
+
+	for (let i = 0; i < types_text.length ; i++){
+		cardType = cardType + " " + types_text[i].charAt(0).toUpperCase()+types_text[i].slice(1);
 	}
 
 	results.append ("<p>BT Bingo <strong>" + bingoList["info"].version + "</strong>&emsp;Seed: <strong>" +

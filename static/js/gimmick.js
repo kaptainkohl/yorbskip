@@ -53,3 +53,45 @@ let gim_must = [
     {"name":"Go home and die","type":"green","tags":["grenades"]},
     {"name":"Sleep in Mrs. Bottles Bed","type":"green","tags":["split-up","gi"]}
 ]
+
+let shorter = [
+    [
+    "Enter Banjo's House",
+    "1 Cheato Page",
+    "Watch Klungo cut-scene",
+    "Talk to Roysten",
+        ""
+    ],
+    [
+    "Talk To Cheato",
+    "Enter Digger Tunnel in Wading Boots",
+    "Make the Gruntadatil spin forever",
+    "Swim around spiral mountain",
+    "Kill Banjo",
+        "Drown"
+    ],
+    [
+    "talk to all bottle's hills",
+    "Get Green Potion",
+    "Get Red Potion",
+    "Get Blue Potion",
+    "Die to Klungo",
+    ],
+    [
+    "Mourn the Gray Jinjos",
+    "Make the ugger clip OOB",
+    "Enter Red Jinjo House",
+    "Enter Black Jinjo House",
+    "Enter Green Jinjo House",
+    "Enter White Jinjo House",
+    "Enter Purple Jinjo House",
+    "Get a Treble Clef",
+    ],
+    [
+    "Get A Jiggy",
+    "Get the an Egg",
+    "Learn Amaze-o-gaze",
+    "Enter Wooded Hollow",
+    "Get 90 Jiggies"
+    ]
+    ];
