@@ -56,6 +56,9 @@ function bingosetup() {
 	if ((getUrlParameter('type') || "").includes("long")){
 		special = "long";
 	}
+	if ((getUrlParameter('type') || "").includes("legacy")){
+		special = "legacy";
+	}
 	var bingoOpts = {
 		seed: getUrlParameter('seed') || Math.ceil(999999 * Math.random()).toString(),
 		mode: special || 'normal',
@@ -67,25 +70,36 @@ function bingosetup() {
 		'short': 'Short',
 		'long': 'Long'
 	};
-
 	var cardType = prettyMode[bingoOpts.mode];
-
-
 	bingoversion=bingoList["info"].version;
 	bingseed=bingoOpts.seed;
 	
+	var bingoBoard;
 	
+	if (special == 'legacy'){
+		build_legacy();
+		console.log(bingoList)
+		var bingoFunc = bingoLegacy;
+		bingoFunc(bingoList, 5);
+	}
+	else {
 		var bingoFunc = bingoGenerator;
-		
-		var bingoBoard = bingoFunc(bingoList, bingoOpts);
+		bingoBoard = bingoFunc(bingoList, bingoOpts);
 		if(bingoBoard) {
 			for (i=0; i<25; i++) {  
 				$('#slot'+(i+1)).append(bingoBoard[i].name);
+				
 			}
 		} else {
 			alert('Card could not be generated');
 		}
-		goals_done();
+	}
+
+
+
+
+
+	goals_done();
 	
 }
 

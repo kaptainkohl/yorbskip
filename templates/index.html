@@ -98,7 +98,7 @@ function bingo(){
 window.location.href = $SCRIPT_ROOT +"/bingo?seed="+Math.floor((Math.random()*1000000));
 }
 function battle(){
-window.location.href = $SCRIPT_ROOT +"/BattleBingo";
+window.location.href = $SCRIPT_ROOT +"/tracker";
 }
 function stats(){
 window.location.href = $SCRIPT_ROOT +"/bingoData";
@@ -264,7 +264,7 @@ ctx.clearRect(0, 0, 900, 900);
 		if (text_width2 >= 750){
 			ctx.fillStyle = "white"
 			ctx.font = "50px Open Sans";
-			ctx.fillText("Battle Bingo", 110, 80 +150);
+			ctx.fillText("Item Tracker", 110, 80 +150);
 			
 		}	
 	}

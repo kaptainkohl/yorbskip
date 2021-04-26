@@ -1,0 +1,603 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+    <title>Tooie Tracker</title>
+
+    <!-- Style -->
+    <link href="{{ url_for('static', filename='css/bingo.css') }}" rel="stylesheet" type="text/css">
+    <link href="{{ url_for('static', filename='css/style.css') }}" rel="stylesheet" type="text/css">
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.0/css/bootstrap.min.css">
+	<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.0/jquery.min.js"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.0/js/bootstrap.min.js"></script>
+	<link rel="icon" type="image/png" href="{{ url_for('static', filename='5.png') }}"/>
+	<script src="{{ url_for('static', filename='js/querystring.js') }}"></script>
+    <style>
+	body{
+        background:#2c2f33;
+        color: rgba(255, 255, 255, 0.884);
+        margin: 0
+	}
+	
+	
+	
+	</style>
+</head>
+
+    <body>  
+        <p id="status">OpenCV.js is loading...</p>
+        <video hidden id="videoInput" width="1270" height="720"></video>
+        
+        <button id = "bgame" class="btn btn-primary" onclick="select_gameplay();" type="button" style="width:250px;color:black;">Select Gameplay</button>
+        <!-- <button class="btn btn-primary" onclick="forground();" type="button" style="width:250px;color:black;">Start</button>
+        <button id = "bgame2" class="btn btn-primary" onclick="find_match();" type="button" style="width:250px;color:black;">find_match</button> -->
+        <div>
+            <div class="inputoutput">
+              <canvas id="canvasOutput" ></canvas>
+            </div>
+        </div>
+        
+        <canvas id="pieces" ></canvas>
+        <canvas id="test" ></canvas>
+        <div class="row">
+            <div class="col-lg-1"></div> 
+            <div class="col-lg-2">
+                <canvas id="canvasGame" ></canvas> 
+            </div>              
+            <div class="col-lg-1">
+                <img src="{{ url_for('static', filename = 'tooieTracker/icons.png')}}" alt="icons" style="float: right;">
+            </div>          
+            <div class="col-lg-1">
+                <p id="FPS">:  </p>
+                <p id="jiggy_count">: </p>
+                <p id="note_count">:  </p>
+                <p id="hc_count">: </p>
+                <p id="cp_count">: </p>
+            </div>
+          </div>
+        
+        
+        
+
+        <script>
+            function point(x,y){
+                this.x = x
+                this.y = y
+            }
+
+            var streaming = true;
+            var topleft = new point(0,0);
+            var bottomright = new point(100,100);
+
+            var movement = new point(0,0);
+
+        let video = document.getElementById("videoInput"); // video is the id of video tag
+        navigator.mediaDevices.getUserMedia({ video: true, audio: false })
+            .then(function(stream) {
+                video.srcObject = stream;
+                video.play();
+            })
+            .catch(function(err) {
+                console.log("An error occurred! " + err);
+            });
+        function onOpenCvReady() {
+            cv['onRuntimeInitialized']=()=>{
+                document.getElementById('status').innerHTML = 'Click Select Gameplay. Then Click the top left and bottom right of the actual gameplay';
+                let video = document.getElementById('videoInput');
+                let src = new cv.Mat(video.height, video.width, cv.CV_8UC4);
+                let dst = new cv.Mat(video.height, video.width, cv.CV_8UC1);
+                let cap = new cv.VideoCapture(video);
+                let prev = new cv.Mat();
+
+                const FPS = 30;
+                function processVideo() {
+                    try {
+                        if (!streaming) {
+                            // clean and stop.
+                            src.delete();
+                            dst.delete();
+                            return;
+                        }
+                        let begin = Date.now();
+                        // start processing.
+                        cap.read(src);
+                        cv.cvtColor(src, dst, cv.COLOR_BGR2BGRA);
+                        cv.imshow('canvasOutput', dst);
+                        if (canclick == 2){
+                            var c = document.getElementById("canvasOutput");
+                            var ctx = c.getContext("2d");
+                            ctx.beginPath();
+                            ctx.lineWidth = "3";
+                            ctx.strokeStyle = "red";
+                            ctx.rect(topleft.x, topleft.y, movement.x - topleft.x , movement.y - topleft.y);
+                            ctx.stroke();
+                            prev = dst.clone()                        
+
+                        }
+
+                        if (canclick == 3){
+                            document.getElementById('status').innerHTML = '';
+                            let src2 = cv.imread('canvasOutput');
+                            let dst2 = new cv.Mat();
+                            let dst3 = new cv.Mat();
+                            let rect = new cv.Rect(topleft.x, topleft.y, bottomright.x - topleft.x, bottomright.y - topleft.y);
+                            dst2 = src2.roi(rect);
+                            let dsize = new cv.Size(320, 240);
+                            cv.resize(dst2, dst3, dsize, 0, 0, cv.INTER_AREA);
+                            var FC = match(dst3.clone(), prev.clone());
+                            if (FC > -1){
+                                document.getElementById('FPS').innerHTML = ': ~'+FC;
+                            }
+                            cv.imshow('canvasGame', dst3);
+                            prev = dst3.clone()
+                            src2.delete(); dst2.delete(); dst3.delete(); 
+                        }
+                        
+                        // schedule the next one.
+                        let delay = 1000/FPS - (Date.now() - begin);
+                        setTimeout(processVideo, delay);
+                    } catch (err) {
+                        console.log(err);
+                    }
+                };
+                setTimeout(processVideo, 0); 
+            }; 
+        }
+
+        //FPS Counter
+        var frame_count = 0;
+        var same_frame = 0
+        var current_FC = 30;
+        function match(src, prev){
+            let dst = new cv.Mat();
+            let mask = new cv.Mat();
+            cv.cvtColor(src, src, cv.COLOR_RGBA2GRAY, 0);
+            cv.cvtColor(prev, prev, cv.COLOR_RGBA2GRAY, 0);            
+            cv.matchTemplate(src, prev, dst, cv.TM_CCOEFF_NORMED , mask);
+            let result = cv.minMaxLoc(dst, mask);
+            //console.log(result.maxVal)
+            if (result.maxVal > 0.96){
+                same_frame++;
+            }
+            frame_count++;
+            src.delete(); dst.delete(); mask.delete(); prev.delete();
+            if (frame_count > 29){
+                var count = 30 - same_frame;              
+                frame_count = 0;
+                same_frame = 0;
+                return count;
+            }
+            return -1;
+            
+        }
+
+        var canclick = 0;
+        //gameplay setup
+        function select_gameplay(){
+            canclick = 1;
+        }
+        var canvas = document.getElementById('canvasOutput');
+        canvas.addEventListener('mousemove', function(event) { 
+            const rect = canvas.getBoundingClientRect()
+            const x = event.clientX - rect.left
+            const y = event.clientY - rect.top       
+            movement = new point(x,y)
+        });
+
+        canvas.addEventListener('click', function(event) { 
+            const rect = canvas.getBoundingClientRect()
+            const x = event.clientX - rect.left
+            const y = event.clientY - rect.top
+            //console.log("X:"+x+" Y:"+y+"  "+canclick)
+            if (canclick == 1){
+                topleft = new point(x,y);
+                canclick = 2;
+            }
+            else if (canclick == 2){
+                bottomright = new point(x,y);
+                canclick = 3;
+                start_looking();
+                document.getElementById("canvasOutput").style.display = "none";
+                document.getElementById("bgame").style.display = "none";
+            }
+
+        }, false);
+        var canvas2 = document.getElementById('canvasGame');
+        canvas2.addEventListener('click', function(event) { 
+            const rect = canvas.getBoundingClientRect()
+            const x = event.clientX - rect.left
+            const y = event.clientY - rect.top
+            console.log("X:"+x+" Y:"+y+"  ")
+        }, false);
+        //
+        var numbers = [];
+        for(var i = 0; i<10; i++){
+                var picture = new Image();
+                picture.src = "{{ url_for('static', filename = 'tooieTracker/tooie_numbers/')}}"+i+'.png';
+                numbers.push(picture);
+        }
+
+        function obj(num,x,y){
+            this.num = num;
+            this.x = x;
+            this.y = y;
+        }
+
+        function read_number(src,thres){
+            var number = ''
+            var cur_max = 0.0
+            var final = 0;
+            
+            for(var i = 0; i<10; i++){
+                var num = new cv.Mat();
+                num = cv.imread(numbers[i]);
+                let dst = new cv.Mat();
+                let mask = new cv.Mat();
+                cv.cvtColor(num, num, cv.COLOR_RGBA2GRAY, 0);
+                cv.matchTemplate(src, num, dst, cv.TM_CCOEFF_NORMED , mask);
+                let result = cv.minMaxLoc(dst, mask);
+                //console.log(""+i+"  "+result.maxVal)
+                if (result.maxVal > cur_max){
+                    number = ""+i                  
+                    cur_max = result.maxVal;
+                    final = result;
+                }
+                num.delete(); mask.delete(); dst.delete(); 
+            }
+            
+            if (cur_max > thres){
+                return new obj(number,final.maxLoc.x,final.maxLoc.y);
+            }
+            return new obj('',100,0);
+        }
+
+        var jiggy = new Image();
+        jiggy.src = "{{ url_for('static', filename = 'tooieTracker/')}}"+'jiggy.png';
+        var note = new Image();
+        note.src = "{{ url_for('static', filename = 'tooieTracker/')}}"+'note.png';
+        var hc = new Image();
+        hc.src = "{{ url_for('static', filename = 'tooieTracker/')}}"+'hc.png';
+        var cp = new Image();
+        cp.src = "{{ url_for('static', filename = 'tooieTracker/')}}"+'cheato.png';
+
+        function look_for_icon(){
+            let src = cv.imread('canvasGame');
+            let blue = new cv.Scalar(0, 0, 255, 255);
+            
+            //middle
+            let rect = new cv.Rect(120, 200, 65, 35);            
+            let middle = new cv.Mat();
+            middle = src.roi(rect); 
+            //top right
+            rect = new cv.Rect(250, 5, 65, 35);            
+            let topright = new cv.Mat();
+            topright = src.roi(rect);
+            //bottom right
+            rect = new cv.Rect(250, 200, 65, 35);            
+            let bottomright = new cv.Mat();
+            bottomright = src.roi(rect);
+            let bottomright2 = new cv.Mat();
+            bottomright2 = src.roi(rect);
+
+            //jiggy first
+            let dst = new cv.Mat();
+            let mask = new cv.Mat();
+            cv.cvtColor(middle, middle, cv.COLOR_RGBA2GRAY, 0);
+            var jiggy_img = new cv.Mat();
+            jiggy_img = cv.imread(jiggy);
+            cv.cvtColor(jiggy_img, jiggy_img, cv.COLOR_RGBA2GRAY, 0);
+            cv.matchTemplate(middle, jiggy_img, dst, cv.TM_CCOEFF_NORMED , mask);
+            let result = cv.minMaxLoc(dst, mask);
+            if (result.maxVal > 0.8){
+                console.log("found jiggy")
+                // look for numbers
+                var jiggies = [];
+                var num = read_number(middle,0.85);
+                //console.log(num)
+                while (num.num != ''){
+                    jiggies.push(num)
+                    let point1 = new cv.Point(num.x, num.y);
+                    let point2 = new cv.Point(num.x + 6, num.y+10);
+                    cv.rectangle(middle, point1, point2, blue, cv.FILLED, cv.LINE_8, 0);
+                    num = read_number(middle,0.85);
+                }
+                //console.log(jiggies)
+                if (jiggies.length > 0){                   
+                    document.getElementById("jiggy_count").innerHTML = ": "
+                    jiggies.sort(function(a, b){return a.x-b.x;});
+                    for (var i = 0; i < jiggies.length; i ++){
+                        document.getElementById("jiggy_count").innerHTML = document.getElementById("jiggy_count").innerHTML + jiggies[i].num
+                    }
+                }
+            }
+            mask.delete(); dst.delete();
+            //notes           
+            var topright_for = new cv.Mat();
+            topright_for = removeback(topright.clone());
+            cv.cvtColor(topright_for, topright_for, cv.COLOR_RGB2GRAY, 0);
+            //cv.imshow('test', topright_for);
+            dst = new cv.Mat();
+            mask = new cv.Mat();
+            cv.cvtColor(topright, topright, cv.COLOR_RGBA2GRAY, 0);
+            var note_img = new cv.Mat();
+            note_img = cv.imread(note);
+            cv.cvtColor(note_img, note_img, cv.COLOR_RGBA2GRAY, 0);
+            cv.matchTemplate(topright, note_img, dst, cv.TM_CCOEFF_NORMED , mask);
+            result = cv.minMaxLoc(dst, mask);
+            if (result.maxVal > 0.8){
+                //console.log("Looking")
+                // look for numbers
+                var jiggies = [];
+                var num = read_number(topright_for,0.75);
+                //console.log(num)
+                while (num.num != ''){
+                    jiggies.push(num)
+                    let point1 = new cv.Point(num.x , num.y);
+                    let point2 = new cv.Point(num.x + 7, num.y+10);
+                    cv.rectangle(topright_for, point1, point2, blue, cv.FILLED, cv.LINE_8, 0);
+                    num = read_number(topright_for,0.75);
+                }
+                //console.log(jiggies)
+                if (jiggies.length > 0){                   
+                    document.getElementById("note_count").innerHTML = ": "
+                    jiggies.sort(function(a, b){return a.x-b.x;});
+                    for (var i = 0; i < jiggies.length; i ++){
+                        document.getElementById("note_count").innerHTML = document.getElementById("note_count").innerHTML + jiggies[i].num
+                    }
+                }
+            }
+            mask.delete(); dst.delete();
+            //notes           
+            var bottomright_for = new cv.Mat();
+            bottomright_for = removeback(bottomright.clone());
+            cv.cvtColor(bottomright_for, bottomright_for, cv.COLOR_RGB2GRAY, 0);
+            //cv.imshow('test', bottomright);
+            dst = new cv.Mat();
+            mask = new cv.Mat();
+            cv.cvtColor(bottomright, bottomright, cv.COLOR_RGBA2GRAY, 0);
+            var hc_img = new cv.Mat();
+            hc_img = cv.imread(hc);
+            cv.cvtColor(hc_img, hc_img, cv.COLOR_RGBA2GRAY, 0);
+            cv.matchTemplate(bottomright, hc_img, dst, cv.TM_CCOEFF_NORMED , mask);
+            result = cv.minMaxLoc(dst, mask);
+            if (result.maxVal > 0.8){
+                //console.log("hc")
+                // look for numbers
+                var jiggies = [];
+                var num = read_number(bottomright_for,0.75);
+                //console.log(num)
+                while (num.num != ''){
+                    jiggies.push(num)
+                    let point1 = new cv.Point(num.x , num.y);
+                    let point2 = new cv.Point(num.x + 7, num.y+10);
+                    cv.rectangle(bottomright_for, point1, point2, blue, cv.FILLED, cv.LINE_8, 0);
+                    num = read_number(bottomright_for,0.75);
+                }
+                //console.log(jiggies)
+                if (jiggies.length > 0){                   
+                    document.getElementById("hc_count").innerHTML = ": "
+                    jiggies.sort(function(a, b){return a.x-b.x;});
+                    for (var i = 0; i < jiggies.length; i ++){
+                        document.getElementById("hc_count").innerHTML = document.getElementById("hc_count").innerHTML + jiggies[i].num
+                    }
+                }
+            }
+            mask.delete(); dst.delete();
+            //cheatos          
+            bottomright_for = new cv.Mat();
+            bottomright_for = removeback(bottomright2.clone());
+            cv.cvtColor(bottomright_for, bottomright_for, cv.COLOR_RGB2GRAY, 0);
+            //cv.imshow('test', bottomright2);
+            dst = new cv.Mat();
+            mask = new cv.Mat();
+            cv.cvtColor(bottomright2, bottomright2, cv.COLOR_RGBA2GRAY, 0);
+            var cp_img = new cv.Mat();
+            cp_img = cv.imread(cp);
+            cv.cvtColor(cp_img, cp_img, cv.COLOR_RGBA2GRAY, 0);
+            cv.matchTemplate(bottomright2, cp_img, dst, cv.TM_CCOEFF_NORMED , mask);
+            result = cv.minMaxLoc(dst, mask);
+            if (result.maxVal > 0.8){
+                console.log("cp")
+                // look for numbers
+                var jiggies = [];
+                var num = read_number(bottomright_for,0.75);
+                //console.log(num)
+                while (num.num != ''){
+                    jiggies.push(num)
+                    let point1 = new cv.Point(num.x , num.y);
+                    let point2 = new cv.Point(num.x + 7, num.y+10);
+                    cv.rectangle(bottomright_for, point1, point2, blue, cv.FILLED, cv.LINE_8, 0);
+                    num = read_number(bottomright_for,0.75);
+                }
+                //console.log(jiggies)
+                if (jiggies.length > 0){                   
+                    document.getElementById("cp_count").innerHTML = ": "
+                    jiggies.sort(function(a, b){return a.x-b.x;});
+                    for (var i = 0; i < jiggies.length; i ++){
+                        document.getElementById("cp_count").innerHTML = document.getElementById("cp_count").innerHTML + jiggies[i].num
+                    }
+                }
+            }
+            cp_img.delete(); hc_img.delete(); note_img.delete(); jiggy_img.delete();
+            mask.delete(); dst.delete(); topright_for.delete(); topright.delete(); src.delete(); bottomright_for.delete(); bottomright.delete(); bottomright2.delete();
+        }
+
+
+        function start_looking(){
+            setInterval(look_for_icon, 400); 
+            //look_for_icon()
+        }
+
+        function removeback(src){
+            cv.addWeighted(src,0.1,src,0.9,-30,src);
+            cv.cvtColor(src, src, cv.COLOR_RGBA2RGB, 0);
+            let mask = new cv.Mat();
+            let bgdModel = new cv.Mat();
+            let fgdModel = new cv.Mat();
+            let rect = new cv.Rect(10, 8, 40, 18);
+            cv.grabCut(src, mask, rect, bgdModel, fgdModel, 3, cv.GC_INIT_WITH_RECT);
+            // draw foreground
+            for (let i = 0; i < src.rows; i++) {
+                for (let j = 0; j < src.cols; j++) {
+                    if (mask.ucharPtr(i, j)[0] == 0 || mask.ucharPtr(i, j)[0] == 2) {
+                        src.ucharPtr(i, j)[0] = 0;
+                        src.ucharPtr(i, j)[1] = 0;
+                        src.ucharPtr(i, j)[2] = 0;
+                    }
+                }
+            }
+            // draw grab rect
+            let color = new cv.Scalar(0, 0, 255);
+            let point1 = new cv.Point(rect.x, rect.y);
+            let point2 = new cv.Point(rect.x + rect.width, rect.y + rect.height);
+            cv.rectangle(src, point1, point2, color);
+            mask.delete(); bgdModel.delete(); fgdModel.delete();
+            return src;
+           
+        }
+
+
+        var puzzle_img = [];
+        
+        //var picture = new Image();
+        //var name = "mt1";
+        //picture.src = "{{ url_for('static', filename = 'mt/')}}"+name+'.png';
+
+        function find_match(){
+            let src = cv.imread('canvasGame');
+            let src_clean = cv.imread('canvasGame');
+            let src_gray = cv.imread('canvasGame');
+            let src_blk = cv.imread('canvasGame');
+            cv.cvtColor(src_blk , src_blk , cv.COLOR_RGBA2GRAY, 0);
+            cv.cvtColor(src_gray, src_gray, cv.COLOR_RGBA2GRAY, 0);
+            var startx = 80;
+            var starty = 60;
+
+            var src_pieces = cv.imread('canvasGame');
+            cv.cvtColor(src_pieces, src_pieces, cv.COLOR_RGBA2GRAY, 0);
+            let dark = new cv.Scalar(0, 0, 0, 20);
+            let white = new cv.Scalar(255, 255, 255, 255);
+            let blue = new cv.Scalar(0, 0, 255, 255);
+            let point1 = new cv.Point(70, 50);
+            let point2 = new cv.Point(260, 200);
+            let point3 = new cv.Point(0, 0);
+            let point4 = new cv.Point(320, 240);
+            cv.rectangle(src_pieces, point1, point2, blue, cv.FILLED, cv.LINE_8, 0);
+            cv.rectangle(src_blk, point3, point4, dark, cv.FILLED, cv.LINE_8, 0);
+            cv.addWeighted(src_pieces,0.1,src_pieces,0.9,40,src_pieces);
+            console.log(src_pieces)
+            cv.imshow('test', src_pieces);
+            for(var r = 0; r<4; r++)
+            {
+                let templ = new cv.Mat();
+                let rect = new cv.Rect(startx, starty+(r*35), 35, 35);
+                templ = src_gray.roi(rect);
+                //cv.addWeighted(templ,0.1,templ,0.9,30,templ);
+                //cv.imshow('test', templ);
+                //let templ = cv.imread(picture);
+                let dst = new cv.Mat();
+                let mask = new cv.Mat();
+                cv.matchTemplate(src_pieces, templ, dst, cv.TM_CCOEFF_NORMED , mask);
+                let result = cv.minMaxLoc(dst, mask);
+                console.log(result)
+                let maxPoint = result.maxLoc;
+                let color = new cv.Scalar(255, 0, 0, 255);
+                let point = new cv.Point(maxPoint.x + templ.cols, maxPoint.y + templ.rows);
+                cv.rectangle(src_gray, maxPoint, point, color, 2, cv.LINE_8, 0);
+                cv.putText(src_gray,""+parseInt(r),maxPoint,cv.FONT_HERSHEY_SIMPLEX,1.0,white,1,cv.LINE_8,false);
+                dst.delete(); mask.delete(); 
+            }
+
+            cv.imshow('pieces', src_gray);
+            //outline();
+            src.delete(); 
+ 
+        }
+         
+        function outline(){
+            let src = cv.imread('canvasGame');
+            let dst = cv.Mat.zeros(src.rows, src.cols, cv.CV_8UC3);
+            let lines = new cv.Mat();
+            let color = new cv.Scalar(255, 0, 0);
+            cv.cvtColor(src, src, cv.COLOR_RGBA2GRAY, 0);
+            cv.Canny(src, src, 50, 200, 3);
+            // You can try more different parameters
+            cv.HoughLinesP(src, lines, 1, Math.PI / 180, 2, 0, 0);
+            // draw lines
+            for (let i = 0; i < lines.rows; ++i) {
+                let startPoint = new cv.Point(lines.data32S[i * 4], lines.data32S[i * 4 + 1]);
+                let endPoint = new cv.Point(lines.data32S[i * 4 + 2], lines.data32S[i * 4 + 3]);
+                cv.line(dst, startPoint, endPoint, color);
+            }
+            cv.imshow('test', dst);
+            src.delete(); dst.delete(); lines.delete();
+        }
+
+        function puzzle(x1, y1,x2, y2, image) {
+            self.x1 = x1;
+            self.x2 = x2;
+            self.y1 = y1;
+            self.y2 = y2;
+            self.image = image;
+            }
+
+        var puzzles = []
+        var permutations = []
+
+        function permute(permutation) {
+        var length = permutation.length,
+            result = [permutation.slice()],
+            c = new Array(length).fill(0),
+            i = 1, k, p;
+
+        while (i < length) {
+            if (c[i] < i) {
+            k = i % 2 && c[i];
+            p = permutation[i];
+            permutation[i] = permutation[k];
+            permutation[k] = p;
+            ++c[i];
+            i = 1;
+            result.push(permutation.slice());
+            } else {
+            c[i] = 0;
+            ++i;
+            }
+        }
+        return result;
+        }
+        var perm = []
+        for (var i = 0; i < puzzles.length; i++){
+            perm.push(i)
+        }
+        permutations = permute(perm);
+            
+        // Find shortest distance
+
+        function distance(){
+            var best_perm = []
+            var shortest = 1000000
+            //loop through object list for all possibilities
+            for (x in permutations){
+                var cur_distance = 0
+                var cur_pos_x = 0
+                var cur_pos_y = 0
+                for (i in x){
+                    var cur_to_piece = Math.sqrt((cur_pos_x - puzzles[i].x1)*(cur_pos_x - puzzles[i].x1) + (cur_pos_y - puzzles[i].y1)*(cur_pos_y - puzzles[i].y1))
+                    cur_pos_x = puzzles[i].x2
+                    cur_pos_u = puzzles[i].y2
+                    cur_distance = cur_distance +  cur_to_piece
+                    }
+                if (cur_distance < shortest) {
+                    shortest = cur_distance
+                    best_perm = x;
+                    }
+                }
+            return best_perm
+        }
+
+
+        </script>
+        <script async src="{{ url_for('static', filename='js/opencv.js') }}" onload="onOpenCvReady();" type="text/javascript"></script>
+    </body>
+</html>

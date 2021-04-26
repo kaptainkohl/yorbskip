@@ -6,11 +6,14 @@ from flask_socketio import join_room, leave_room
 import json
 import datetime
 import time
+import requests
+from bs4 import BeautifulSoup
 from google.cloud import storage
 
 client = storage.Client()
 bucket = client.get_bucket('my-project-1474166845942.appspot.com')
 
+# $env:FLASK_APP = "main.py"
 
 app = Flask(__name__)
 app.config['SECRET_KEY'] = 'This is a super secret hash for my logins'
@@ -26,6 +29,9 @@ player_data = []
 
 start_time = 0
 
+previous_data = ""
+
+lockout = {}
 
 def start_timer():
     global start_time
@@ -49,6 +55,14 @@ def index():
 def ping_mess():
     return render_template('ping.html')
 
+@app.route('/lock_ping',methods=['GET', 'POST'])
+def lock_ping():
+    room = request.form['room']
+    card = request.form['card']
+    if lockout[room]:
+        return lockout[room]
+    return "null"
+
 @app.route('/_timerStart')
 def time_mess():
     start_timer()
@@ -63,6 +77,47 @@ def timestop_mess():
 @app.route('/usercontrol')
 def user_control():
     return render_template('usercontrol.html')
+
+@app.route('/scheduler')
+def scheduler():
+    return render_template('schedule.html')
+
+@app.route('/bitclip')
+def bitclip():
+    return render_template('bitclip.html')
+
+@app.route('/patterns')
+def pattern():
+    return render_template('pattern.html')
+
+@app.route('/lake')
+def lake():
+    return render_template('lake.html')
+
+@app.route('/lakelevel')
+def lakelevel():
+    URL = 'https://www.laketexoma.com/water_level_widget.php'
+    page = requests.get(URL)
+    
+    soup = BeautifulSoup(page.content, 'html.parser')
+    results = soup.find_all('p')
+    level = results[0].get_text()[-10:]
+
+    return jsonify(result=level)
+
+@app.route('/info',methods=['GET', 'POST'])
+def info():
+    return render_template('bingoInfo.html')
+
+@app.route('/tracker')
+def puzzle():
+    return render_template('puzzle.html')
+
+@app.route('/contest/')
+@app.route('/contest/<room>/')
+@app.route('/contest/<room>/<user>')
+def contest(room="",user=""):
+    return render_template('contest.html', room=room, user=user)
 
 @app.route('/bingo',methods=['GET', 'POST'])
 def bingo_card():
@@ -154,7 +209,7 @@ def test_message(message):
     for x in room_array:
         if x[0] == message:
             current_room = x  
-    emit("load", {'seed': current_room[1]['var_seed'], 'player1':current_room[1]['var_player1'],'player2':current_room[1]['var_player2'],'c1':current_room[1]['var_c1'],'c2':current_room[1]['var_c2'],'start':current_room[1]['running']},room=room);
+    emit("load", {'seed': current_room[1]['var_seed'], 'player1':current_room[1]['var_player1'],'player2':current_room[1]['var_player2'],'c1':current_room[1]['var_c1'],'c2':current_room[1]['var_c2'],'start':current_room[1]['running']},room=room)
     
 @socketio.on('closeroom')
 def close_message(message):
@@ -173,8 +228,8 @@ def end_message(message):
     for x in room_array:
         if x[0] == message['room']:
             current_room = x 
-    current_room[1]['running'] = 0;
-    emit("load", {'seed': current_room[1]['var_seed'], 'player1':current_room[1]['var_player1'],'player2':current_room[1]['var_player2'],'c1':current_room[1]['var_c1'],'c2':current_room[1]['var_c2'],'start':current_room[1]['running']},room=message['room']);
+    current_room[1]['running'] = 0
+    emit("load", {'seed': current_room[1]['var_seed'], 'player1':current_room[1]['var_player1'],'player2':current_room[1]['var_player2'],'c1':current_room[1]['var_c1'],'c2':current_room[1]['var_c2'],'start':current_room[1]['running']},room=message['room'])
  
 @socketio.on('clicked')
 def handle_array(data):
@@ -241,6 +296,24 @@ def startsocket():
         totals = ''+totals + a +","+str(b)+","+str(c)+","+str(d)+"$"
 
     return jsonify(result=totals)
+
+def get_indicies_from_row(row_name):
+	if row_name == "bltr":
+		return [4,8,12,16,20]
+	if row_name == "tlbr":
+		return [0,6,12,18,24]
+	if row_name[0:3] == "row":
+		row_num = int(row_name[3])
+		offset = 5*row_num-5
+		return [offset, offset+1, offset+2, offset+3, offset+4]
+	if row_name[0:3] == "col":
+		col_num = int(row_name[3])
+		offset = col_num
+		return [offset-1, offset+4, offset+9, offset+14, offset+19]
+	else:
+		return -1
+	
+
 
 if __name__ == '__main__':
     socketio.run(app)

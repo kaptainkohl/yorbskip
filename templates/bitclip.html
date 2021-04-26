@@ -1,0 +1,362 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <link rel="icon" type="image/png" href="{{ url_for('static', filename='5.png') }}"/>
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.0/css/bootstrap.min.css">
+    <script src="https://code.jquery.com/jquery-2.1.1.min.js"></script>
+    <script src="{{ url_for('static', filename='js/float16.js') }}"></script>
+    <meta charset="UTF-8">
+    <title>Bit Clip Finder</title>
+    <style>
+        body{
+            padding-right: 30px;
+            padding-left: 30px;
+            padding-top: 5px;
+            background:#2c2f33;
+            color:#9c9c9c;
+        }
+    </style>
+</head>
+<body>
+    <label for="start">Angle:</label>
+    <input type="text" class="form-control" id="start" value = "0x42C8B2E0">
+    <label for="xpos">Xpos:</label>
+    <input type="text" class="form-control" id="xpos" value = "81.741577">
+    <label for="zpos">Zpos:</label>
+    <input type="text" class="form-control" id="zpos" value = "-533.068969">
+    <label for="tick">Turn Amount:</label>
+    <input type="text" class="form-control" id="tick" value = "0x3D3851EC">
+    <textarea  rows="40" cols="120"style="height:400px;width:800px;font-size:14pt;" id="spots" type="text">
+84.3893930001262, -537.557600000505 
+84.3344920001246, -537.338000000499 
+84.2929910001235, -537.172000000494 
+84.2138910001212, -536.855600000485 
+84.1711930001199, -536.68480000048 
+84.0844920001175, -536.33800000047 
+84.0551950001166, -536.220800000467 
+84.0053910001152, -536.021600000461 
+83.9938910001148, -535.975600000459 
+83.963191000114, -535.852800000456 
+83.8847910001117, -535.539200000447 
+83.859395000111, -535.437600000444 
+83.8471900001106, -535.388800000443 
+83.8102920001096, -535.241200000438 
+83.8095910001095, -535.238400000438 
+83.7975960001092, -535.190400000437 
+83.7936910001091, -535.174800000436 
+83.7809950001087, -535.124000000435 
+83.7438910001077, -534.975600000431 
+83.7004910001064, -534.802000000426 
+83.6386910001046, -534.554800000419 
+83.5844920001031, -534.338000000412 
+83.5729900001027, -534.292000000411 
+83.5544930001022, -534.218000000409 
+83.4389910000989, -533.756000000396 
+83.3759960000971, -533.504000000388 
+83.3593950000966, -533.437600000386 
+83.3102920000952, -533.241200000381 
+83.267391000094, -533.069600000376 
+83.2668960000939, -533.067600000376 
+83.2553910000936, -533.021600000374 
+83.2438910000933, -532.975600000373 
+83.2177930000925, -532.87120000037 
+83.2055910000922, -532.822400000369 
+83.1889910000917, -532.756000000367 
+83.1559950000907, -532.624000000363 
+83.1393930000903, -532.557600000361 
+83.1188910000897, -532.475600000359 
+83.1022910000892, -532.409200000357 
+83.096491000089, -532.386000000356 
+83.0097910000866, -532.039200000346 
+83.0053910000864, -532.021600000346 
+82.9128920000838, -531.651600000335 
+82.9059950000835, -531.624000000334 
+82.8893930000831, -531.557600000332 
+82.8464910000819, -531.386000000327 
+82.8102920000808, -531.241200000323 
+82.7177930000781, -530.871200000313 
+82.6979900000776, -530.79200000031 
+82.6877940000773, -530.751200000309 
+82.6686910000767, -530.674800000307 
+82.6520910000763, -530.608400000305 
+82.6188910000753, -530.475600000301 
+82.6022910000748, -530.409200000299 
+82.5595910000736, -530.238400000294 
+82.5097910000722, -530.039200000289 
+82.505391000072, -530.021600000288 
+82.4128920000694, -529.651600000278 
+82.4059950000692, -529.624000000277 
+82.3759960000683, -529.504000000273 
+82.363791000068, -529.455200000272 
+82.3510940000676, -529.40440000027 
+82.3344920000671, -529.338000000268 
+82.3139910000665, -529.256000000266 
+82.2975960000661, -529.190400000264 
+82.2668960000652, -529.067600000261 
+82.1979900000632, -528.792000000253 
+82.1386910000615, -528.554800000246 
+82.1259960000611, -528.504000000245 
+82.0888910000601, -528.35560000024 
+82.0602920000592, -528.241200000237 
+82.0270910000583, -528.108400000233 
+81.9797910000569, -527.919200000228    
+    </textarea>
+    <br>
+    <button class="btn btn-primary" id="racebutton" type="button" onclick="two_moves()">Generate 2 Steps</button>
+    <button class="btn btn-primary" id="racebutton" type="button" onclick="three_moves()">Generate 3 Steps</button>
+    <textarea  rows="40" cols="120"style="height:400px;width:800px;font-size:14pt;" id="clips" type="text">
+    </textarea>   
+
+<script>
+function parseFloatHex(str) {
+    var float = 0, sign, order, mantissa, exp,
+    int = 0, multi = 1;
+    if (/^0x/.exec(str)) {
+        int = parseInt(str, 16);
+    }
+    else {
+        for (var i = str.length -1; i >=0; i -= 1) {
+            if (str.charCodeAt(i) > 255) {
+                console.log('Wrong string parameter');
+                return false;
+            }
+            int += str.charCodeAt(i) * multi;
+            multi *= 256;
+        }
+    }
+    sign = (int >>> 31) ? -1 : 1;
+    exp = (int >>> 23 & 0xff) - 127;
+    mantissa = ((int & 0x7fffff) + 0x800000).toString(2);
+    for (i=0; i<mantissa.length; i+=1) {
+        float += parseInt(mantissa[i]) ? Math.pow(2, exp) : 0;
+        exp--;
+    }
+    return float*sign;
+}
+function hex2bin(hex){
+    return (parseInt(hex, 16).toString(2)).padStart(32, '0');
+}
+function bin2hex(number){
+    return parseInt(number, 2).toString(16).toUpperCase();
+}
+
+
+function binaryAddition(a,b){
+  var result = "",
+      carry = 0;
+
+  while(a || b || carry){
+    let sum = +a.slice(-1) + +b.slice(-1) + carry; // get last digit from each number and sum 
+
+    if( sum > 1 ){  
+      result = sum%2 + result;
+      carry = 1;
+    }
+    else{
+      result = sum + result;
+      carry = 0;
+    }
+    
+    // trim last digit (110 -> 11)
+    a = a.slice(0, -1)
+    b = b.slice(0, -1)
+  }
+  
+  return result;
+}
+function floatADD(bin1,bin2){
+   // console.log("1: "+ bin1)
+    //console.log("2: "+ bin2)
+
+    var sign1 = bin1.charAt(0)
+    var stuff1 = bin1.slice(1,9)
+    var end1 = "1"+bin1.slice(9)
+
+    var sign2 = bin2.charAt(0)
+    var stuff2 = bin2.slice(1,9)
+    var end2 = "1"+bin2.slice(9)
+  
+    
+    // find largest exponet
+    var new_stuff = Math.max(parseInt(stuff1),parseInt(stuff2)).toString().padStart(8, '0')
+
+
+    //if it is 1 --- shift 2
+    if (stuff1 == new_stuff){      
+        var x = parseInt(stuff2)
+        var e = parseInt(stuff1)
+        while(x < e){
+            //console.log("1: "+ e)
+           //console.log("2: "+ x)
+            x = binaryAddition(x.toString().padStart(8, '0'),"1")
+            end2 = "0"+end2.slice(0,end2.length-1)
+        }
+    }
+    else{
+        var x = parseInt(stuff1)
+        var e = parseInt(stuff2)
+        while(x < e){
+            //console.log("1: "+ x)
+            //console.log("2: "+ e)
+            x = binaryAddition(x.toString().padStart(8, '0'),"1")
+            end1 = "0"+end1.slice(0,end1.length-1)
+        }        
+    }
+    //console.log("final: "+ new_stuff)
+
+
+    var m =  binaryAddition(end1,end2).padStart(24, '0')
+    if (m.length == 25){
+        m = m.slice(1,m.length-1)
+        new_stuff = binaryAddition(new_stuff,"1")
+    }
+    //console.log("add: "+ m)
+   // console.log("length: "+ m.length)
+    if (m.length == 24){
+        m = m.slice(1)
+    }
+    
+    
+    return sign1 + new_stuff + m
+}
+
+
+
+
+
+//console.log(floatADD(hex2bin(tick),hex2bin(tick)))
+//console.log(hex2bin(tick))
+//console.log(bin2hex(hex2bin(tick)))
+//console.log(parseFloatHex("0x"+"3D3851EC"))
+//console.log(binaryAddition(hex2bin(tick), hex2bin(tick)))
+//console.log(parseFloatHex("0x"+bin2hex(floatADD(hex2bin(tick),hex2bin(tick)))))
+
+//console.log(floatADD(hex2bin("0x3DB851EC"),tick))
+//console.log(parseFloatHex("0x"+bin2hex(floatADD(hex2bin("0x3DB851EC"),tick))))
+
+function two_moves(){
+   
+    var tick = hex2bin(document.getElementById("tick").value)
+    var FAC = document.getElementById("start").value
+    var x1 = parseFloat(document.getElementById("xpos").value)
+    var z1 = parseFloat(document.getElementById("zpos").value)
+    console.log(parseFloatHex(FAC))
+    var peck = "0x3FDEB7FE"
+
+    var spots =[]
+    var possible = document.getElementById("spots").value.split("\n")
+    for (let x of possible){
+        //console.log(x)
+        date = x.split(",");
+        spots.push({"x" :  parseFloat(date[0]), "z" :  parseFloat(date[1])});
+    }
+
+    var pi_value = "0x40490FD0"
+    // loop all spot pos
+    for (let s of spots){
+        console.log(s["x"]+","+s["z"]);
+        var start_circle = []
+        var end_circle = []
+        var next = FAC    
+        for(var i = 0;i < 8000;i++){
+            next = "0x"+bin2hex(floatADD(hex2bin(next),tick))
+            start_circle.push({"angle": next, "x" : parseFloatHex(peck)*Math.sin(parseFloatHex(next)*(parseFloatHex(pi_value)/180)) + x1 , "z" : parseFloatHex(peck)*Math.cos(parseFloatHex(next)*(parseFloatHex(pi_value)/180)) +z1 })
+            end_circle.push({"angle": "0x"+bin2hex(floatADD(hex2bin(0x43340000),hex2bin(next))), "x" : parseFloatHex(peck)*Math.sin(parseFloatHex(next)*(parseFloatHex(pi_value)/180)) +s["x"] , "z" : parseFloatHex(peck)*Math.cos(parseFloatHex(next)*(parseFloatHex(pi_value)/180)) +s["z"] })
+            //console.log(parseFloatHex(next))
+        }
+        for (let a1 of start_circle){ 
+            //console.log(a1);  
+            var start_angle = a1["angle"]
+            var start_x = a1["x"]
+            var start_z = a1["z"]                      
+            for (let a2 of end_circle){
+                //console.log(a2);
+                if(((a2["x"]-0.0001 <= a1["x"]) && (a1["x"] <= a2["x"]+0.0001)) && ((a2["z"]-0.0001 <= a1["z"]) && ( a1["z"] <= a2["z"]+0.0001))){
+                    console.log("Found")
+                    console.log(a1)
+                    var third = {"angle": a2["angle"] , "x" : parseFloatHex(peck)*Math.sin(parseFloatHex(a2["angle"])*(parseFloatHex(pi_value)/180)) +a1["x"] , "z" : parseFloatHex(peck)*Math.cos(parseFloatHex(a2["angle"])*(parseFloatHex(pi_value)/180)) +a1["z"] }
+                    console.log(third)
+                    console.log(" ")            
+                    console.log("Game.setPosition("+third["x"]+", 0, "+third["z"]+") ")
+                    console.log(" ")
+                    document.getElementById("clips").value = document.getElementById("clips").value + third + "\n" + "Game.setPosition("+third["x"]+", 0, "+third["z"]+") \n";
+                }
+            }
+        } 
+
+    }
+}
+
+function three_moves(){
+    var tick = hex2bin(document.getElementById("tick").value)
+    var FAC = document.getElementById("start").value
+    var x1 = parseFloat(document.getElementById("xpos").value)
+    var z1 = parseFloat(document.getElementById("zpos").value)
+    console.log(parseFloatHex(FAC))
+    var peck = "0x3FDEB7FE"
+
+    var spots =[]
+    var possible = document.getElementById("spots").value.split("\n")
+    for (let x of possible){
+        //console.log(x)
+        date = x.split(",");
+        spots.push({"x" :  parseFloat(date[0]), "z" :  parseFloat(date[1])});
+    }
+
+    var pi_value = "0x40490FD0"
+    // loop all spot pos
+    for (let s of spots){
+        console.log(s["x"]+","+s["z"]);
+        var start_circle = []
+        var end_circle = []
+        var next = FAC    
+        for(var i = 0;i < 8000;i++){
+            next = "0x"+bin2hex(floatADD(hex2bin(next),tick))
+            start_circle.push({"angle": next, "x" : parseFloatHex(peck)*Math.sin(parseFloatHex(next)*(parseFloatHex(pi_value)/180)) + x1 , "z" : parseFloatHex(peck)*Math.cos(parseFloatHex(next)*(parseFloatHex(pi_value)/180)) +z1 })
+            end_circle.push({"angle": "0x"+bin2hex(floatADD(hex2bin(0x43340000),hex2bin(next))), "x" : parseFloatHex(peck)*Math.sin(parseFloatHex(next)*(parseFloatHex(pi_value)/180)) +s["x"] , "z" : parseFloatHex(peck)*Math.cos(parseFloatHex(next)*(parseFloatHex(pi_value)/180)) +s["z"] })
+            //console.log(parseFloatHex(next))
+        }
+        for (let a1 of start_circle){ 
+            //console.log(a1);  
+            var start_angle = a1["angle"]
+            var start_x = a1["x"]
+            var start_z = a1["z"]
+            next = start_angle;
+            var temp = []
+
+            for(var i = 0;i < 8000;i++){
+                next = "0x"+bin2hex(floatADD(hex2bin(next),tick))               
+                var nextx = parseFloatHex(peck)*Math.sin(parseFloatHex(next)*(parseFloatHex(pi_value)/180)) + start_x;
+                var nextz = parseFloatHex(peck)*Math.cos(parseFloatHex(next)*(parseFloatHex(pi_value)/180)) + start_z;
+                if (Math.abs(s["x"] - nextx) > parseFloatHex(peck) || Math.abs(s["z"] - nextz) > parseFloatHex(peck) || (Math.abs(s["x"] - nextx) < (1.23) && Math.abs(s["z"] - nextz) < (1.23))){
+                    temp.push({"angle": next, "x" : nextx , "z" : nextz , "prev" : a1 })
+                }
+
+            }
+            for (let a3 of temp){
+               
+                
+                for (let a2 of end_circle){
+                    //console.log(a2);
+                    if(((a2["x"]-0.00003 <= a1["x"]) && (a1["x"] <= a2["x"]+0.00003)) && ((a2["z"]-0.00003 <= a1["z"]) && ( a1["z"] <= a2["z"]+0.00003))){
+                        console.log("Found")
+                        console.log(a3[prev])
+                        console.log(a3)
+                        var third = {"angle": a2["angle"] , "x" : parseFloatHex(peck)*Math.sin(parseFloatHex(a2["angle"])*(parseFloatHex(pi_value)/180)) +a1["x"] , "z" : parseFloatHex(peck)*Math.cos(parseFloatHex(a2["angle"])*(parseFloatHex(pi_value)/180)) +a1["z"] }
+                        console.log(third)
+                        console.log(" ")            
+                        console.log("Game.setPosition("+third["x"]+", 0, "+third["z"]+") ")
+                        console.log(" ")
+                        document.getElementById("clips").value = document.getElementById("clips").value + third + "\n" + "Game.setPosition("+third["x"]+", 0, "+third["z"]+") \n";
+                    }
+                }
+            }
+        } 
+
+    }
+}
+</script>
+
+
+</body>
+</html>

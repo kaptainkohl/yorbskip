@@ -1,0 +1,308 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+    <title>Contest</title>
+
+    <!-- Style -->
+    <link href="{{ url_for('static', filename='css/bingo.css') }}" rel="stylesheet" type="text/css">
+    <link href="{{ url_for('static', filename='css/style.css') }}" rel="stylesheet" type="text/css">
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.0/css/bootstrap.min.css">
+	<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.0/jquery.min.js"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.0/js/bootstrap.min.js"></script>
+	<link rel="icon" type="image/png" href="{{ url_for('static', filename='5.png') }}"/>
+	<script src="{{ url_for('static', filename='js/querystring.js') }}"></script>
+    <style>
+	body{
+		padding-right: 30px;
+	    padding-left: 30px;
+	    padding-top: 5px;
+        background:#2c2f33;
+	
+	}
+	#bingo td {
+	-moz-box-shadow:inset 0 0 50px rgba(0,0,0,0.6);
+	-webkit-box-shadow:inset 0 0 50px rgba(0,0,0,0.6);
+	box-shadow:inset 0 0 50px rgba(0,0,0,0.6);
+	background:#4f4f4f;
+	border:2px #000000 solid;
+	color:#9c9c9c;
+	font-size:150%;
+	font-weight:700;
+	height:150px;
+	width:150px;
+	max-width:150px;
+	text-align:center;
+	line-height: 120%;
+
+}
+
+#bingo td:hover {
+	background:#1448b3;
+	color:#fff;
+}
+	
+#bingo tr td.greensquare {
+	background:green;
+    color:#fff;
+}
+
+#bingo tr td.greensquare.hover {
+	background:rgb(0, 233, 19);
+    color:#fff;
+}	
+	
+	
+	</style>
+</head>
+
+<body>
+    <div class="modal fade" id="settings" role="dialog">
+        <div class="modal-dialog">
+          <!-- Modal content-->
+          <div class="modal-content" style="background:#2c2f33;">
+            <div class="modal-header">
+              <button type="button" class="close" data-dismiss="modal">&times;</button>
+              <h1 style="color:#bec7d2;">Banjo Race Contest Page</h1>
+            </div>
+            <div class="modal-body" style="color:#bec7d2;background:#2c2f33;">
+                <h2>Get Started</h2>
+                    <p>Select a Tourney and type in your Twitch Username</p>
+                    <p>Press Get card</p>
+                    <p>A Bingo Card will be generated for you.</p>
+                    <br>
+                    <h2>How to Play</h2>
+                    <p>As a Tourney progresses, events may occur that match a goal on your card.</p>
+                    <p>When they do, be sure to make a clip or document a timestamp.</p>
+                    <p>If you get 5 goals in a row or Col or Diagonal, You get a BINGO!</p>
+                    <br>
+                    <h2>How to Win</h2>
+                    <p>Once you have 5 in a row, message a mod in the Banjo Race discord.</p>
+                    <p>Link your Twitch username and proof that you got 5 in a Row.</p>
+                    <p>If your claim is vaild, then you WIN!</p>
+                    <p>Prizes may vary, but for now you can get a SUB for a month or VIP for a month.</p>
+            </div>
+            <div class="modal-footer" style="background:#2c2f33;">
+            </div>
+          </div>
+        </div>
+      </div>
+
+<div style="margin:auto;background:#2c2f33;">
+    <label for="contest" style="color:#9c9c9c;">Tourney:</label>
+    <select id="contest">
+        <option value="bingo3" selected>Live and Let Bingo</option>
+    </select>
+    <label for="username" style="color:#9c9c9c;">Username:</label>
+    <input  id="username"  value="" type="text">
+    <button class="btn btn-primary" onclick = "redirect();">Get Card</button>
+    <button class="btn btn-primary" onclick = "save_button();">Save Goals</button>
+    <a class="glyphicon glyphicon-question-sign" data-toggle="modal" data-target="#settings" style="color:red;"></a>
+
+	<div id="results"style="margin:10px;width:750px;" >
+        <table id="bingo">
+            <tr>
+                <td class="row1 col1 tlbr" id="slot1" onclick="clicked(this);"></td>
+                <td class="row1 col2" id="slot2" onclick="clicked(this);"></td>
+                <td class="row1 col3" id="slot3" onclick="clicked(this);"></td>
+                <td class="row1 col4" id="slot4" onclick="clicked(this);"></td>
+                <td class="row1 col5 bltr" id="slot5" onclick="clicked(this);"></td>
+            </tr>
+            <tr> 
+                <td class="row2 col1" id="slot6" onclick="clicked(this);"></td>
+                <td class="row2 col2 tlbr" id="slot7" onclick="clicked(this);"></td>
+                <td class="row2 col3" id="slot8" onclick="clicked(this);"></td>
+                <td class="row2 col4 bltr" id="slot9" onclick="clicked(this);"></td>
+                <td class="row2 col5" id="slot10" onclick="clicked(this);"></td>
+            </tr>
+            <tr> 
+                <td class="row3 col1" id="slot11" onclick="clicked(this);"></td>
+                <td class="row3 col2" id="slot12" onclick="clicked(this);"></td>
+                <td class="row3 col3 tlbr bltr" id="slot13" onclick="clicked(this);"></td>
+                <td class="row3 col4" id="slot14" onclick="clicked(this);"></td>
+                <td class="row3 col5" id="slot15" onclick="clicked(this);"></td>
+            </tr>
+            <tr> 
+                <td class="row4 col1" id="slot16" onclick="clicked(this);"></td>
+                <td class="row4 col2 bltr" id="slot17" onclick="clicked(this);"></td>
+                <td class="row4 col3" id="slot18" onclick="clicked(this);"></td>
+                <td class="row4 col4 tlbr" id="slot19" onclick="clicked(this);"></td>
+                <td class="row4 col5" id="slot20" onclick="clicked(this);"></td>
+            </tr>
+            <tr> 
+                <td class="row5 col1 bltr" id="slot21" onclick="clicked(this);"></td>
+                <td class="row5 col2" id="slot22" onclick="clicked(this);"></td>
+                <td class="row5 col3" id="slot23" onclick="clicked(this);"></td>
+                <td class="row5 col4" id="slot24" onclick="clicked(this);"></td>
+                <td class="row5 col5 tlbr" id="slot25" onclick="clicked(this);"></td>
+            </tr>
+        </table>
+    </div>
+</div>
+
+<script>
+
+
+
+
+function goals(){
+
+    var goal_list = tourney[document.getElementById("contest").value];
+    var seed =  stringToHash((document.getElementById("username").value).toLowerCase())
+    var user_goals =[]
+    var a = 0;
+    for (var i = 1; i <= 25; i++) {
+        a = 0;
+        while(user_goals.includes(goal_list[((i*seed) + a)%goal_list.length])){
+            a++;
+        }           
+        $('#slot'+i).html(goal_list[((i*seed) + a)%goal_list.length]);
+        user_goals.push((goal_list[((i*seed) + a)%goal_list.length]))
+    }
+    $('#slot13').html(tourney[document.getElementById("contest").value+"_free"]);
+
+}
+
+function stringToHash(string) {                 
+    var hash = 0; 
+
+    if (string.length == 0) return hash; 
+
+    for (i = 0; i < string.length; i++) { 
+        char = string.charCodeAt(i); 
+        hash = ((hash << 5) - hash) + char; 
+        hash = hash & hash; 
+    } 
+    return Math.abs(hash); 
+} 
+
+function clicked(x) {
+    
+    if ($(x).hasClass("greensquare")){
+        $(x).removeClass("greensquare");
+    }
+    else {
+    $(x).addClass("greensquare");
+    }
+
+}
+
+tourney = [];
+
+tourney["bingo3"] = [
+"Both Runners get Double Air",
+"Race is a Tie",
+"Someone is in GI for 20 minutes",
+"Someone forgets Pack Wack",
+"Fak Fak as BK",
+"Death to Mingy Jongo",
+"Loss to CM",
+"DCW to somewhere that softlocks/crashes the game",
+"Loss to kickball",
+"Both runners learn Wing Whack",
+"Someone revisits a level only to get more notes",
+"Someone dies after DCWing",
+"Someone forgets sub-aqua egg aim",
+"Someone forgets ice eggs",
+"Someone tries to learn bill drill with not enough notes",
+"Someone does a bit clip",
+"Someone does a superslide",
+"Someone forgets Wooded Hollow silo",
+"Someone gets floor 4 early first try",
+"Someone fails glide jump twice in a row",
+"Someone tries to leave K3 after DCW",
+"Someone forgets to put roysten in the moat",
+"Someone dies in a minigame",
+"Goal: 7 Jiggies in CCL",
+"Goal: All CP, HC, and Glowbos in GI",
+"Goal: Kill 12 Beehives",
+"Goal: Pawno Cheato Page",
+"Goal: Jiggy & CP in Pot O' Gold",
+"Goal: Defeat Weldar",
+"Goal: 9 Honeycombs",
+"Goal: Icicle Grotto CP w/ Shack Pack",
+"Goal: All CP, HC, and Glowbos in CCL",
+"Goal: Roar Cage Jiggy as T-Rex",
+"Goal: Sabreman Jiggy",
+"Goal: 5 Jiggies in CCL",
+"Goal: 6 Jiggies in TDL",
+"Goal: 7 Jiggies in GI",
+"Someone gets a sub-48",
+"Someone gets over 1:15",
+"Someone forfeits a race",
+"Someone gets over 20 jiggies",
+"Someone misspells the Cheato code 3+ times",
+"Someone gets a jiggy for no reason",
+"Both runners have technical difficulties at the same time",
+"SHM forgets to change his stream key after a match",
+"A mod awards the wrong side at the end of a prediction",
+"Star Spinner as Mumbo",
+"SHM yells GIVE IT UP FOR GAME 3"
+];
+tourney["bingo3_free"] = "SHM slaps his knees";
+
+
+
+var name = '{{user}}';
+var contest = '{{room}}';
+var goal_list = '';
+console.log(name);
+if (name != ""){
+    document.getElementById("username").value = '{{user}}';
+}
+if (contest != ""){
+    document.getElementById("contest").value = '{{room}}';
+}
+if (name != "" && contest != ""  ){
+    goals();
+    goal_list = getCookie(contest);
+    highlight_goals(goal_list);
+}
+
+function getCookie(cname) {
+    var name = cname + "=";
+    var decodedCookie = decodeURIComponent(document.cookie);
+    var ca = decodedCookie.split(';');
+    for(var i = 0; i <ca.length; i++) {
+    var c = ca[i];
+    while (c.charAt(0) == ' ') {
+        c = c.substring(1);
+    }
+    if (c.indexOf(name) == 0) {
+        return c.substring(name.length, c.length);
+    }
+    }
+    return "";
+}	
+
+function redirect(){
+    name =document.getElementById("username").value;
+    contest =document.getElementById("contest").value;
+    $SCRIPT_ROOT = {{ request.script_root|tojson|safe }};
+    window.location.href = $SCRIPT_ROOT +"/contest/"+contest+"/"+name;
+}
+
+function save_button(){
+    var text = ""
+    for (var i = 1; i <= 25; i++) {      
+        if ($('#slot'+i).hasClass("greensquare")){
+            text = text + document.getElementById('slot'+i).innerHTML + "$";
+        }
+    }   
+    document.cookie = contest+"="+text;
+}
+
+function highlight_goals(goal){
+    var list = goal.split("$");
+    for (var i = 1; i <= 25; i++) {      
+        if (list.includes(document.getElementById('slot'+i).innerHTML)){
+            $('#slot'+i).addClass("greensquare");
+        }
+
+    }
+}
+
+</script>
+
+</body>
+</html>

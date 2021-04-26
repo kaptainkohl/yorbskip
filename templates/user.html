@@ -128,13 +128,14 @@
 
     }
     var timerstart =0;
+    var gts;
     function grab_time(){
-        setInterval(grab_time_socket, 1000);
+        gts = setInterval(grab_time_socket, 1000);
         document.getElementById('racebutton').style="display: none;";
         document.getElementById('timestop').style="display: Visable;";
-        document.getElementById('race_status').innerHTML="Player Ready";
+        document.getElementById('race_status').innerHTML="Timed Out Try Again";
     }
-
+    var timeout = 0;
     var inttimmer = 0;
     var fixtimmer = 0;
     function grab_time_socket(){
@@ -155,7 +156,15 @@
                 }
 
             });
+            timeout++;
+            if (timeout >15){
+                clearInterval(gts);
+                document.getElementById('racebutton').style="display: block;";
+                document.getElementById('timestop').style="display: hidden;";
+                document.getElementById('race_status').innerHTML="Player Ready";
+            }
             return false;
+        
         }
     }
 
@@ -252,7 +261,7 @@
             };
             ctx.fillStyle = "black";
             ctx.font = "16px Impact";
-            ctx.fillText("Rareware 301 Race 2019",this.scrollpos +25 + ((list_people.length) * 150) ,48);
+            ctx.fillText("Rareware 301 Race 2021",this.scrollpos +25 + ((list_people.length) * 150) ,48);
 
 
             this.scrollpos-=1;

@@ -1,0 +1,134 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+    <title>Texoma</title>
+
+    <!-- Style -->
+    <link href="{{ url_for('static', filename='css/bingo.css') }}" rel="stylesheet" type="text/css">
+    <link href="{{ url_for('static', filename='css/style.css') }}" rel="stylesheet" type="text/css">
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.0/css/bootstrap.min.css">
+	<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.0/jquery.min.js"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.0/js/bootstrap.min.js"></script>
+	<link rel="icon" type="image/png" href="{{ url_for('static', filename='5.png') }}"/>
+	<script src="{{ url_for('static', filename='js/querystring.js') }}"></script>
+    <script src="https://unpkg.com/@ffmpeg/ffmpeg@0.9.5/dist/ffmpeg.min.js"></script>
+    <style>
+	body{
+        background:#2c2f33;
+        color: rgba(255, 255, 255, 0.884);
+        margin: 0
+	}
+	
+	
+	
+	</style>
+</head>
+
+    <body>  
+
+        <div id = "time" onclick="full();" style="position:absolute;left:100px;bottom:50px;font-size:800%;font-weight:700;"></div>
+        <div id = "weather" style="position:absolute;right:100px;bottom:100px;text-align:right;"></div>
+        <div id = "water" style="position:absolute;right:100px;bottom:50px;text-align:right;"></div>
+        
+        <script>
+            var stream = "rtsps://stream-ue1-charlie.dropcam.com:443/sdm_live_stream/CiQA2vuxr2jYIpWArxDi4qa62kXmUMeOpc4chhjzBnsRuaukUJYScQAbBGW1aH6vVTECmiR5SadrYBy-ggN1qkrdt9svRu-0J8ggG2Zj7lmXA-2wpXBOLKqAp-c44hqy2bMPWc9zBoVvzf9PiI4CALnzoNMwsyykSkLcM_7x8AiV3upEMxrIEJ_cZjeJyU_DwfZ31fRWOVMY?auth=g.0.eyJraWQiOiIyMzhiNTUxZmMyM2EyM2Y4M2E2ZTE3MmJjZTg0YmU3ZjgxMzAzMmM4IiwiYWxnIjoiUlMyNTYifQ.eyJzdWIiOiJuZXN0X2lkOm5lc3QtcGhvZW5peC1wcm9kOjI0MjIyNjY0IiwiaXNzIjoibmVzdC1zZWN1cml0eS1hdXRocHJveHkiLCJwb2wiOiIzcC1vYXV0aC1zY29wZS1BUElfU0RNX1NFUlZJQ0UtY2xpZW50LTc1MjQ3NTA1MjUwNi0xYWRnajkyNXBnbjgwN2dqOGgzNmhwY2xhY2tlZ284Mi5hcHBzLmdvb2dsZXVzZXJjb250ZW50LmNvbSIsImV4cCI6MTYxNzY3MTQzNX0.JVD5mTs8bGKevzFIZ6IoJl9g0qhUD9V3cUGQNL-vxogeXJI4vEBQI4m5ma1x1OWJK9xcqBoeWqAykQr03IwhaaoK9X_T5B2N-i4liuSJasNPAGpWV4VX4UT72TTaajx9aWlswgvIOmXj05aXOe3mb8OHHmwX77HXtKAN_GT9ZG93GuAeC_csZ3tycOZycTf-4Kn78jMUll2rldxndl-jT5K1GRhA6OZYwbPPB9iSQNExp-iBeZno-sDC0coSbDp663JjiaD472wUU0KKppyliLxAMRv4RZW9MzduJbV7P0IgBf0N7KHsM_E-ySb-sy4LfOJrmETXDKiDkS4dOXeWxQ"
+            const { createFFmpeg } = FFmpeg;
+            const ffmpeg = createFFmpeg({
+            corePath: 'https://unpkg.com/@ffmpeg/core@0.8.5/dist/ffmpeg-core.js',
+            log: true,
+            });
+            (async () => {
+                await ffmpeg.load();
+            })();
+
+            let request = new XMLHttpRequest()
+            let request2 = new XMLHttpRequest()
+            request.addEventListener("load", reqListener);
+            request2.addEventListener("load", reqListener2);
+            var dir2 = {"0" : "N", "45" : "NE" , "90" : "E", "135" : "SE", "180" : "S", "225" : "SW", "275" : "W", "315" : "NW"}
+            var dir = ["N","NE","E","SE","S","SW","W","NW"];
+
+            //document.getElementById("lake").style.width = window.width;
+           // document.getElementById("lake").style.height = window.height;
+
+            function reqListener () {
+                console.log(this.responseText);
+                var w = JSON.parse(this.responseText);
+
+                var temp = Math.floor(((w["main"]["temp"]- 273.15) * (9/5)) + 32);
+                var wind = Math.floor((w["wind"]["speed"] * 2.237)*10)/10
+                var wind_dir = w["wind"]["deg"]
+                var index = Math.floor(wind_dir/45);
+                if (((wind_dir/45)*10)%10 >=5){
+                    index+=1;
+                }
+                var date = new Date(w["sys"]["sunset"] * 1000);
+                // Hours part from the timestamp
+                var hours = date.getHours();
+                // Minutes part from the timestamp
+                var minutes = "0" + date.getMinutes();
+                // Seconds part from the timestamp
+                var seconds = "0" + date.getSeconds();
+                // Will display time in 10:30:23 format
+                var formattedTime = (hours-12) + ':' + minutes.substr(-2);
+
+                document.getElementById("weather").innerHTML = "<h1>Lake Texoma</h1><h1>"+temp+" F</h1><h2>"+wind+"mph "+dir[index]+"</h2><h2>Sunset: "+formattedTime+"</h2>";
+            }
+            function reqListener2 () {
+                console.log(this.responseText);
+                var w = JSON.parse(this.responseText);
+                document.getElementById("water").innerHTML = "<h2>Water Level: "+ w["result"]+"</h2>";
+            }
+
+            function weather(){
+                
+                request.open('GET','http://api.openweathermap.org/data/2.5/weather?id=4535414&appid=669fbda8a499180c2b9be5268a03d399')
+                request.send()
+            }
+            function level(){
+                request2.open('GET','lakelevel')
+                request2.send()
+            }
+            function startTime() {
+                var today = new Date();
+                var h = today.getHours();
+                var m = today.getMinutes();
+                var s = today.getSeconds();
+                m = checkTime(m);
+                s = checkTime(s);
+                if (h>12){
+                    h = h - 12;
+                }
+                document.getElementById('time').innerHTML =
+                h + ":" + m + ":" + s;
+                var t = setTimeout(startTime, 500);
+                }
+            function checkTime(i) {
+                if (i < 10) {i = "0" + i};  // add zero in front of numbers < 10
+                return i;
+            }
+            weather();
+            startTime();
+            level();
+            
+            function full(){
+               // var elem = document.documentElement;
+                //elem.requestFullscreen();
+                (async () => {
+                await ffmpeg.run('-rtsp_flags', 'listen', stream);
+                /* equals to `$ ffmpeg -i flame.avi -s 1920x1080 output.mp4` */
+                })();
+            }
+
+            //752475052506-1adgj925pgn807gj8h36hpclackego82.apps.googleusercontent.com
+
+            //n6Jl1AFL2rpKZwxZ7X21-4x5
+
+            //4/0AY0e-g5bp4AtSCV_jkYHtUn5GpzGAHTnfPLwWkC5ZywPTSczduEmU9X-JGoNMSV54FvXYw&scope=https://www.googleapis.com/auth/sdm.service
+
+
+        </script>
+
+    </body>
+</html>

@@ -1,0 +1,123 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+    <title>Banjo-Tooie Bingo</title>
+
+    <!-- Style -->
+    <link href="{{ url_for('static', filename='css/bingo.css') }}" rel="stylesheet" type="text/css">
+    <link href="{{ url_for('static', filename='css/style.css') }}" rel="stylesheet" type="text/css">
+	<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.0/jquery.min.js"></script>
+	<link rel="icon" type="image/png" href="{{ url_for('static', filename='5.png') }}"/>
+	<script src="{{ url_for('static', filename='js/MumboGen2.js') }}" type="text/javascript"></script>
+	<script src="{{ url_for('static', filename='js/querystring.js') }}"></script>
+	<script src="{{ url_for('static', filename='js/seedrandom-min.js') }}" type="text/javascript"></script>
+	<script src="{{ url_for('static', filename='js/mumboSetup.js') }}" type="text/javascript"></script>
+    <style>
+	body{
+		 padding-right: 30px;
+	  padding-left: 30px;
+	   padding-top: 5px;
+	
+	}
+	#bingo td {
+	-moz-box-shadow:inset 0 0 50px rgba(0,0,0,0.6);
+	-webkit-box-shadow:inset 0 0 50px rgba(0,0,0,0.6);
+	box-shadow:inset 0 0 50px rgba(0,0,0,0.6);
+	background:#4f4f4f;
+	border:2px #000000 solid;
+	color:#9c9c9c;
+	font-size:175%;
+	font-weight:700;
+	height:130px;
+	width:130px;
+	min-width:130px;
+	max-width:130px;
+	text-align:center;
+	line-height: 120%;
+
+}
+
+#bingo td:hover {
+	background:#1448b3;
+	color:#fff;
+}
+	
+#bingo tr td.greensquare {
+	background:#051;
+}
+
+#bingo tr td.greensquare.hover {
+	background:#072;
+}	
+	
+	
+	</style>
+</head>
+
+<body>
+
+	<div id="results"style="margin:10px;width:500px;" >
+				<table id="bingo">
+					<tr>
+						<td class="choice" id="tlbr">TL-BR</td>
+						<td class="choice" id="col1">COL1</td>
+						<td class="choice" id="col2">COL2</td>
+						<td class="choice" id="col3">COL3</td>
+						<td class="choice" id="col4">COL4</td>
+						<td class="choice" id="col5">COL5</td>
+					</tr>
+					<tr>
+						<td class="choice" id="row1">ROW1</td>
+						<td class="row1 col1 tlbr" id="slot1"></td> 
+						<td class="row1 col2" id="slot2"></td> 
+						<td class="row1 col3" id="slot3"></td> 
+						<td class="row1 col4" id="slot4"></td> 
+						<td class="row1 col5 bltr" id="slot5"></td> 
+					</tr>
+					<tr> 
+						<td class="choice" id="row2">ROW2</td>
+						<td class="row2 col1" id="slot6"></td> 
+						<td class="row2 col2 tlbr" id="slot7"></td> 
+						<td class="row2 col3" id="slot8"></td> 
+						<td class="row2 col4 bltr" id="slot9"></td> 
+						<td class="row2 col5" id="slot10"></td> 
+					</tr>
+					<tr> 
+						<td class="choice" id="row3">ROW3</td>
+						<td class="row3 col1" id="slot11"></td> 
+						<td class="row3 col2" id="slot12"></td> 
+						<td class="row3 col3 tlbr bltr" id="slot13"></td> 
+						<td class="row3 col4" id="slot14"></td> 
+						<td class="row3 col5" id="slot15"></td> 
+					</tr>
+					<tr> 
+						<td class="choice" id="row4">ROW4</td>
+						<td class="row4 col1" id="slot16"></td> 
+						<td class="row4 col2 bltr" id="slot17"></td> 
+						<td class="row4 col3" id="slot18"></td> 
+						<td class="row4 col4 tlbr" id="slot19"></td> 
+						<td class="row4 col5" id="slot20"></td> 
+					</tr>
+					<tr> 
+						<td class="choice" id="row5">ROW5</td>
+						<td class="row5 col1 bltr" id="slot21"></td> 
+						<td class="row5 col2" id="slot22"></td> 
+						<td class="row5 col3" id="slot23"></td> 
+						<td class="row5 col4" id="slot24"></td> 
+						<td class="row5 col5 tlbr" id="slot25"></td> 
+					</tr>
+					<tr>
+						<td class="choice" id="bltr">BL-TR</td>
+					</tr>
+				</table>
+			</div>
+
+
+<script>
+
+
+</script>
+
+</body>
+</html>

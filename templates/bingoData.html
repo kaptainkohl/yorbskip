@@ -11,7 +11,34 @@
 	<link rel="icon" type="image/png" href="{{ url_for('static', filename='5.png') }}"/>
 <link rel="icon" type="image/png" href="{{ url_for('static', filename='5.png') }}"/>
 <script src="{{ url_for('static', filename='js/goal-list.js') }}" type="text/javascript"></script>
+<script src="https://d3js.org/d3.v4.min.js"></script>
     <style>
+		.bar {
+            fill: #0a245a;
+			color:#bec7d2;
+        }
+		text {
+        font: 10px sans-serif;
+        fill: #bec7d2;
+    	}
+		.highlight {
+            fill: white;
+        }
+		.label {
+		font: 14px sans-serif;
+		} 
+		.axis line {
+		stroke: #000;
+		}
+
+		.axis path {
+		fill: none;
+		stroke: #000;
+		}
+
+		.axis + .axis g text {
+		display: none;
+		}
 	body{
 		 padding-right: 30px;
 	  padding-left: 30px;
@@ -88,6 +115,8 @@
 	<li ><a  onclick="active(this);">Shit</a></li>
 	<li><a onclick="active(this);">Short</a></li>
 	<li><a onclick="active(this);">Long</a></li>
+	<li><a onclick="active(this);">Legacy</a></li>
+	<li><a onclick="active(this);">Random</a></li>
 </ul>
 <ul class="pagination" >
 	<li> <a onclick="set_only(this);">Only</a></li>
@@ -106,43 +135,43 @@
 					</tr>
 					<tr>
 						<td class="popout" id="row1">ROW1</td>
-						<td onclick="goal_highlight(this);" class="row1 col1 tlbr" id="slot1"></td>
-						<td onclick="goal_highlight(this);" class="row1 col2" id="slot2"></td>
-						<td onclick="goal_highlight(this);" class="row1 col3" id="slot3"></td>
-						<td onclick="goal_highlight(this);" class="row1 col4" id="slot4"></td>
-						<td onclick="goal_highlight(this);" class="row1 col5 bltr" id="slot5"></td>
+						<td onclick="goal_highlight(this,'red');" class="row1 col1 tlbr" id="slot1"></td>
+						<td onclick="goal_highlight(this,'red');" class="row1 col2" id="slot2"></td>
+						<td onclick="goal_highlight(this,'red');" class="row1 col3" id="slot3"></td>
+						<td onclick="goal_highlight(this,'red');" class="row1 col4" id="slot4"></td>
+						<td onclick="goal_highlight(this,'red');" class="row1 col5 bltr" id="slot5"></td>
 					</tr>
 					<tr> 
 						<td class="popout" id="row2">ROW2</td>
-						<td onclick="goal_highlight(this);" class="row2 col1" id="slot6"></td>
-						<td onclick="goal_highlight(this);" class="row2 col2 tlbr" id="slot7"></td>
-						<td onclick="goal_highlight(this);" class="row2 col3" id="slot8"></td>
-						<td onclick="goal_highlight(this);" class="row2 col4 bltr" id="slot9"></td>
-						<td onclick="goal_highlight(this);" class="row2 col5" id="slot10"></td>
+						<td onclick="goal_highlight(this,'red');" class="row2 col1" id="slot6"></td>
+						<td onclick="goal_highlight(this,'red');" class="row2 col2 tlbr" id="slot7"></td>
+						<td onclick="goal_highlight(this,'red');" class="row2 col3" id="slot8"></td>
+						<td onclick="goal_highlight(this,'red');" class="row2 col4 bltr" id="slot9"></td>
+						<td onclick="goal_highlight(this,'red');" class="row2 col5" id="slot10"></td>
 					</tr>
 					<tr> 
 						<td class="popout" id="row3">ROW3</td>
-						<td onclick="goal_highlight(this);" class="row3 col1" id="slot11"></td>
-						<td onclick="goal_highlight(this);" class="row3 col2" id="slot12"></td>
-						<td onclick="goal_highlight(this);" class="row3 col3 tlbr bltr" id="slot13"></td>
-						<td onclick="goal_highlight(this);" class="row3 col4" id="slot14"></td>
-						<td onclick="goal_highlight(this);" class="row3 col5" id="slot15"></td>
+						<td onclick="goal_highlight(this,'red');" class="row3 col1" id="slot11"></td>
+						<td onclick="goal_highlight(this,'red');" class="row3 col2" id="slot12"></td>
+						<td onclick="goal_highlight(this,'red');" class="row3 col3 tlbr bltr" id="slot13"></td>
+						<td onclick="goal_highlight(this,'red');" class="row3 col4" id="slot14"></td>
+						<td onclick="goal_highlight(this,'red');" class="row3 col5" id="slot15"></td>
 					</tr>
 					<tr> 
 						<td class="popout" id="row4">ROW4</td>
-						<td onclick="goal_highlight(this);" class="row4 col1" id="slot16"></td>
-						<td onclick="goal_highlight(this);" class="row4 col2 bltr" id="slot17"></td>
-						<td onclick="goal_highlight(this);" class="row4 col3" id="slot18"></td>
-						<td onclick="goal_highlight(this);" class="row4 col4 tlbr" id="slot19"></td>
-						<td onclick="goal_highlight(this);" class="row4 col5" id="slot20"></td>
+						<td onclick="goal_highlight(this,'red');" class="row4 col1" id="slot16"></td>
+						<td onclick="goal_highlight(this,'red');" class="row4 col2 bltr" id="slot17"></td>
+						<td onclick="goal_highlight(this,'red');" class="row4 col3" id="slot18"></td>
+						<td onclick="goal_highlight(this,'red');" class="row4 col4 tlbr" id="slot19"></td>
+						<td onclick="goal_highlight(this,'red');" class="row4 col5" id="slot20"></td>
 					</tr>
 					<tr> 
 						<td class="popout" id="row5">ROW5</td>
-						<td onclick="goal_highlight(this);" class="row5 col1 bltr" id="slot21"></td>
-						<td onclick="goal_highlight(this);" class="row5 col2" id="slot22"></td>
-						<td onclick="goal_highlight(this);" class="row5 col3" id="slot23"></td>
-						<td onclick="goal_highlight(this);" class="row5 col4" id="slot24"></td>
-						<td onclick="goal_highlight(this);" class="row5 col5 tlbr" id="slot25"></td>
+						<td onclick="goal_highlight(this,'red');" class="row5 col1 bltr" id="slot21"></td>
+						<td onclick="goal_highlight(this,'red');" class="row5 col2" id="slot22"></td>
+						<td onclick="goal_highlight(this,'red');" class="row5 col3" id="slot23"></td>
+						<td onclick="goal_highlight(this,'red');" class="row5 col4" id="slot24"></td>
+						<td onclick="goal_highlight(this,'red');" class="row5 col5 tlbr" id="slot25"></td>
 					</tr>
 					<tr>
 						<td class="popout" id="bltr">BL-TR</td>
@@ -165,43 +194,43 @@
 					</tr>
 					<tr>
 						<td class="popout" id="row1">ROW1</td>
-						<td onclick="goal_highlight(this);" class="row1 col1 tlbr" id="2slot1"></td>
-						<td onclick="goal_highlight(this);" class="row1 col2" id="2slot2"></td>
-						<td onclick="goal_highlight(this);" class="row1 col3" id="2slot3"></td>
-						<td onclick="goal_highlight(this);" class="row1 col4" id="2slot4"></td>
-						<td onclick="goal_highlight(this);" class="row1 col5 bltr" id="2slot5"></td>
+						<td onclick="goal_highlight(this,'red');" class="row1 col1 tlbr" id="2slot1"></td>
+						<td onclick="goal_highlight(this,'red');" class="row1 col2" id="2slot2"></td>
+						<td onclick="goal_highlight(this,'red');" class="row1 col3" id="2slot3"></td>
+						<td onclick="goal_highlight(this,'red');" class="row1 col4" id="2slot4"></td>
+						<td onclick="goal_highlight(this,'red');" class="row1 col5 bltr" id="2slot5"></td>
 					</tr>
 					<tr> 
 						<td class="popout" id="row2">ROW2</td>
-						<td onclick="goal_highlight(this);" class="row2 col1" id="2slot6"></td>
-						<td onclick="goal_highlight(this);" class="row2 col2 tlbr" id="2slot7"></td>
-						<td onclick="goal_highlight(this);" class="row2 col3" id="2slot8"></td>
-						<td onclick="goal_highlight(this);" class="row2 col4 bltr" id="2slot9"></td>
-						<td onclick="goal_highlight(this);" class="row2 col5" id="2slot10"></td>
+						<td onclick="goal_highlight(this,'red');" class="row2 col1" id="2slot6"></td>
+						<td onclick="goal_highlight(this,'red');" class="row2 col2 tlbr" id="2slot7"></td>
+						<td onclick="goal_highlight(this,'red');" class="row2 col3" id="2slot8"></td>
+						<td onclick="goal_highlight(this,'red');" class="row2 col4 bltr" id="2slot9"></td>
+						<td onclick="goal_highlight(this,'red');" class="row2 col5" id="2slot10"></td>
 					</tr>
 					<tr> 
 						<td class="popout" id="row3">ROW3</td>
-						<td onclick="goal_highlight(this);" class="row3 col1" id="2slot11"></td>
-						<td onclick="goal_highlight(this);" class="row3 col2" id="2slot12"></td>
-						<td onclick="goal_highlight(this);" class="row3 col3 tlbr bltr" id="2slot13"></td>
-						<td onclick="goal_highlight(this);" class="row3 col4" id="2slot14"></td>
-						<td onclick="goal_highlight(this);" class="row3 col5" id="2slot15"></td>
+						<td onclick="goal_highlight(this,'red');" class="row3 col1" id="2slot11"></td>
+						<td onclick="goal_highlight(this,'red');" class="row3 col2" id="2slot12"></td>
+						<td onclick="goal_highlight(this,'red');" class="row3 col3 tlbr bltr" id="2slot13"></td>
+						<td onclick="goal_highlight(this,'red');" class="row3 col4" id="2slot14"></td>
+						<td onclick="goal_highlight(this,'red');" class="row3 col5" id="2slot15"></td>
 					</tr>
 					<tr> 
 						<td class="popout" id="row4">ROW4</td>
-						<td onclick="goal_highlight(this);" class="row4 col1" id="2slot16"></td>
-						<td onclick="goal_highlight(this);" class="row4 col2 bltr" id="2slot17"></td>
-						<td onclick="goal_highlight(this);" class="row4 col3" id="2slot18"></td>
-						<td onclick="goal_highlight(this);" class="row4 col4 tlbr" id="2slot19"></td>
-						<td onclick="goal_highlight(this);" class="row4 col5" id="2slot20"></td>
+						<td onclick="goal_highlight(this,'red');" class="row4 col1" id="2slot16"></td>
+						<td onclick="goal_highlight(this,'red');" class="row4 col2 bltr" id="2slot17"></td>
+						<td onclick="goal_highlight(this,'red');" class="row4 col3" id="2slot18"></td>
+						<td onclick="goal_highlight(this,'red');" class="row4 col4 tlbr" id="2slot19"></td>
+						<td onclick="goal_highlight(this,'red');" class="row4 col5" id="2slot20"></td>
 					</tr>
 					<tr> 
 						<td class="popout" id="row5">ROW5</td>
-						<td onclick="goal_highlight(this);" class="row5 col1 bltr" id="2slot21"></td>
-						<td onclick="goal_highlight(this);" class="row5 col2" id="2slot22"></td>
-						<td onclick="goal_highlight(this);" class="row5 col3" id="2slot23"></td>
-						<td onclick="goal_highlight(this);" class="row5 col4" id="2slot24"></td>
-						<td onclick="goal_highlight(this);" class="row5 col5 tlbr" id="2slot25"></td>
+						<td onclick="goal_highlight(this,'red');" class="row5 col1 bltr" id="2slot21"></td>
+						<td onclick="goal_highlight(this,'red');" class="row5 col2" id="2slot22"></td>
+						<td onclick="goal_highlight(this,'red');" class="row5 col3" id="2slot23"></td>
+						<td onclick="goal_highlight(this,'red');" class="row5 col4" id="2slot24"></td>
+						<td onclick="goal_highlight(this,'red');" class="row5 col5 tlbr" id="2slot25"></td>
 					</tr>
 					<tr>
 						<td class="popout" id="bltr">BL-TR</td>
@@ -233,17 +262,28 @@
 </div>
 <br>
 <br>
-<table id="sort_goals">
-	<tr>
-		<td> <button class="btn btn-primary" onclick="goal_name();" type="button" style="width:250px;color:black;">Goal Name</button> </td>
-		<td> <button class="btn btn-primary" onclick="goal_rank();" type="button" style="width:150px;color:black;">Rank</button> </td>
- 		<td> <button class="btn btn-primary" onclick="count_all_goals();" type="button" style="width:150px;color:black;">Cards Appeared </button> </td>
-		<td> <button class="btn btn-primary" onclick="count_chosen_goals();" type="button" style="width:150px;color:black;">Cards Chosen</button> </td>
-		<td> <button  class="btn btn-primary"onclick="pick_rate();" type="button" style="width:150px;color:black;">Pick Rate</button> </td>
-		<td> <button class="btn btn-primary" onclick="average_time();" type="button" style="width:150px;color:black;">Average Time</button> </td>
-	</tr>
-</table>
-<p id="goal_data"></p>
+<button class="btn btn-primary"  style="width:150px;color:black;" data-toggle="collapse" data-target="#goal_info">Goal Info</button>
+<div id="goal_info" class="collapse">
+	<table id="sort_goals">
+		<tr>
+			<td> <button class="btn btn-primary" onclick="goal_name();" type="button" style="width:250px;color:black;">Goal Name</button> </td>
+			<td> <button class="btn btn-primary" onclick="goal_rank();" type="button" style="width:150px;color:black;">Rank</button> </td>
+			<td> <button class="btn btn-primary" onclick="goal_rank();" type="button" style="width:150px;color:black;">Types</button> </td>
+			<td> <button class="btn btn-primary" onclick="goal_rank();" type="button" style="width:150px;color:black;">Subtypes</button> </td>
+			<td> <button class="btn btn-primary" onclick="count_all_goals();" type="button" style="width:150px;color:black;">Cards Appeared </button> </td>
+			<td> <button class="btn btn-primary" onclick="count_chosen_goals();" type="button" style="width:150px;color:black;">Cards Chosen</button> </td>
+			<td> <button  class="btn btn-primary"onclick="pick_rate();" type="button" style="width:150px;color:black;">Pick Rate</button> </td>
+			<td> <button class="btn btn-primary" onclick="average_time();" type="button" style="width:150px;color:black;">Average Time</button> </td>
+		</tr>
+	</table>
+	<p id="goal_data"></p>
+</div>
+<div id = "graph_row"  style="position:relative;"></div>
+<div id = "graph_bubble"  style="position:relative;"></div>
+<div id = "graph_line"  style="position:relative;"></div>
+<svg id = "graph" width="1800" height="4500"></svg>
+<p id="graph_name" style="margin:auto; width: 10%;"></p>
+
 <script>
 function time_hhmmss_to_seconds(time){
 	total_time = 0;
@@ -283,7 +323,7 @@ for( var i = 0; i< bingo_raw.length;i++){
 }
 // let bingo be the sorted data array, starting with everything.
 let bingo = bingo_raw.slice();
-
+var row_count = {};
 
 //All Cards
 var current_card = 0;
@@ -379,11 +419,20 @@ function fill_bingoStats_with_cards(){
 		var row_name = card[3];
 		var picked_goals = get_indicies_from_row(row_name);
 
+
+
+		if (row_count[row_name]){
+			row_count[row_name] += 1;
+		}
+		else {
+			row_count[row_name] = 1;
+		}
+
 		for (var j = 0; j < 25; j++){
 			for( var a = 0; a < bingoStats.length; a++){
 				if(card[6][j] == bingoStats[a]["id"]) {
-					bingoStats[a]["cards_appeared"].push(i);
-					}
+					bingoStats[a]["cards_appeared"].push(i);				
+					}	
 				}
 
 		}
@@ -393,7 +442,11 @@ function fill_bingoStats_with_cards(){
 			for( var a = 0; a < bingoStats.length; a++) {
 				if (card[6][j] == bingoStats[a]["id"]) {
 					bingoStats[a]["cards_picked"].push(i);
+					for (var l = 0; l < 5; l++){
+						bingoStats[a]["paired"].push(card[6][picked_goals[l]]);
+						}						
 				}
+								
 			}
 		}
 	}
@@ -404,10 +457,12 @@ function generate_basic_stats(){
     for (var i = 0; i < bingoStats.length; i++){
 
         var appeared = bingoStats[i]["cards_appeared"].length;
-        bingoStats[i]["appeared"] = appeared;
+        
+		bingoStats[i]["appeared"] = appeared;
 
         var picked = bingoStats[i]["cards_picked"].length;
-        bingoStats[i]["picked"] = picked;
+        bingoStats[i]["picked_indexes"] = bingoStats[i]["picked"];
+		bingoStats[i]["picked"] = picked;
 
         var pick_rate = "-1";
         if (appeared > 0){
@@ -499,6 +554,24 @@ function tableCreate(name,id) {
 		a++;
 		td = document.createElement('td');
 		td.appendChild(document.createTextNode(bingoStats[i]["tier"]))
+		td.setAttribute('id',name +" cell " +a)
+		td.setAttribute('height', '10px');
+		td.setAttribute('width', '150px');
+		td.setAttribute('text-align', 'center');
+		td.setAttribute('onclick','clicked(this)')
+		tr.appendChild(td)
+		a++;
+		td = document.createElement('td');
+		td.appendChild(document.createTextNode(bingoStats[i]["types"]))
+		td.setAttribute('id',name +" cell " +a)
+		td.setAttribute('height', '10px');
+		td.setAttribute('width', '150px');
+		td.setAttribute('text-align', 'center');
+		td.setAttribute('onclick','clicked(this)')
+		tr.appendChild(td)
+		a++;
+		td = document.createElement('td');
+		td.appendChild(document.createTextNode(bingoStats[i]["subtypes"]))
 		td.setAttribute('id',name +" cell " +a)
 		td.setAttribute('height', '10px');
 		td.setAttribute('width', '150px');
@@ -620,12 +693,70 @@ function tableRankings(name,id) {
 	place.appendChild(tbl);
 }
 
-function goal_highlight(x){
+function clicked(e){
+	//console.log(e);
+	var info = e.id.split(" ");
+	var name = e.innerHTML;
+	//goal_highlight(e,'blue');
+	change_graphs(info,name);
+
+}
+function change_graphs(info,name){
+
+	if (info[0] == "rank" && info[2]%5 == 0){
+		sort_runner();
+		//find username in list
+		for (var i = 0; i < bingo.length; i++) {
+			if (bingo[i][5].toLowerCase() == name.toLowerCase()){
+				nextCard(i);
+				break;
+			}
+		}
+	}
+	// goals?
+	if (info[0] == "goal_data" && info[2]%6 == 0){		
+		//find id
+		var id = 0;
+		var picked = 0;
+		var rank = "";
+		var avg = "";
+		var pr = "";
+		for (var i = 0; i < bingoStats.length; i++) {
+			if (bingoStats[i]["name"]==name){
+				id = bingoStats[i]["id"];
+				picked = bingoStats[i]["picked"];
+				rank = bingoStats[i]["tier"];
+				avg = bingoStats[i]["average_time"];
+				pr = bingoStats[i]["pick_rate"];
+			}
+		}
+		for (var i = 0; i < bingo.length; i++) {
+			var row_name = bingo[i][3];
+			var picked_goals = get_indicies_from_row(row_name);
+			for (var k = 0; k < 5; k++){
+				var j = picked_goals[k];
+				
+				if (bingo[i][6][j] == id) {
+					//swap
+					var temp = bingo[i];
+					bingo.splice(i,1);
+					bingo.splice(0,0,temp);
+				}
+			}	
+		}
+		current_card = 0;
+		nextCard(0);
+		build_graph(picked,[name,rank,avg,pr]);
+		build_goal_goal_time_graph(picked,id);
+	}
+}
+
+function goal_highlight(x,color){
 	let goal = x.innerHTML;
 	document.getElementById("goal_data").innerHTML = "";
 	tableCreate("goal_data","goalData");
 	let text = document.getElementById("goal_data").innerHTML;
-	document.getElementById("goal_data").innerHTML = text.replaceAll(goal,'<span style="color:red;">'+goal+'</span>');
+	document.getElementById("goal_data").innerHTML = text.replaceAll(goal,'<span style="color:'+color+';">'+goal+'</span>');
 }
 
 
@@ -660,14 +791,19 @@ function build_data() {
 		for (var j = 0; j < bingoList[i].length; j++) {
 			var name = bingoList[i][j].name;
 			var id = bingoList[i][j].id;
+			var types = bingoList[i][j].types;
+			var subtypes = bingoList[i][j].subtypes;
 			bingoStats.push({
 				"id": id,
 				"name": name,
 				"tier": i,
+				"types": types,
+				"subtypes": subtypes,
 				"cards_appeared": [],
 				"cards_picked": [],
 				"pick_rate": 0,
-				"average_time": 0
+				"average_time": 0,
+				"paired" : []
 			});
 		}
 	}
@@ -715,6 +851,100 @@ function build_data() {
 	tableCreate("goal_data","goalData");
 
 	nextCard(0);
+}
+
+function make_temp_bingoStats(some_cards){
+	temp_bingoStats = []
+	for (var i = 1; i <= 25; i++) {
+		for (var j = 0; j < bingoList[i].length; j++) {
+			var name = bingoList[i][j].name;
+			var id = bingoList[i][j].id;
+			temp_bingoStats.push({
+				"id": id,
+				"name": name,
+				"tier": i,
+				"cards_appeared": [],
+				"cards_picked": [],
+				"pick_rate": 0,
+				"average_time": 0
+			});
+		}
+	}
+	fill_bingoStats_with_some_cards(temp_bingoStats, some_cards);
+	generate_temp_stats(temp_bingoStats);
+	return temp_bingoStats;
+}
+
+//fills a temporary array with data from a subset of cards
+function fill_bingoStats_with_some_cards(temp_bingoStats, bingo_subset){
+	for (var i = 0; i < bingo_subset.length; i++){
+		// console.log(i);
+		var card = bingo_subset[i];
+		// console.log(card);
+		var row_name = card[3];
+		var picked_goals = get_indicies_from_row(row_name);
+
+		for (var j = 0; j < 25; j++){
+			for( var a = 0; a < temp_bingoStats.length; a++){
+				if(card[6][j] == temp_bingoStats[a]["id"]) {
+					temp_bingoStats[a]["cards_appeared"].push(i);
+					}
+				}
+
+		}
+
+		for (var k = 0; k < 5; k++){
+			var j = picked_goals[k];
+			for( var a = 0; a < temp_bingoStats.length; a++) {
+				if (card[6][j] == temp_bingoStats[a]["id"]) {
+					temp_bingoStats[a]["cards_picked"].push(i);
+				}
+			}
+		}
+	}
+
+	//console.log(temp_bingoStats);
+	
+}
+
+//for the temporary array
+function generate_temp_stats(temp_bingoStats){
+    for (var i = 0; i < temp_bingoStats.length; i++){
+
+        var appeared = temp_bingoStats[i]["cards_appeared"].length;
+        
+		temp_bingoStats[i]["appeared"] = appeared;
+
+        var picked = temp_bingoStats[i]["cards_picked"].length;
+        temp_bingoStats[i]["picked_indexes"] = temp_bingoStats[i]["picked"];
+		temp_bingoStats[i]["picked"] = picked;
+
+        var pick_rate = "-1";
+        if (appeared > 0){
+            pick_rate = picked/appeared;
+        }
+        temp_bingoStats[i]["pick_rate"] = pick_rate;
+
+        var total_time = 0;        
+        temp_bingoStats[i]["cards_picked"].forEach(calc_row_time);
+        function calc_row_time(value, index, array){
+            var card = bingo[value];
+            var card_time = card[4];
+            if (card_time.length == 5){
+                card_time = "00:".concat(card_time);
+            }
+            var xtime = time_hhmmss_to_seconds(card_time);
+            total_time += xtime;
+        }
+        temp_bingoStats[i]["total_time"] = total_time;
+
+        var average_time = '359999';
+        if (picked > 0){
+            average_time = total_time/picked;
+        }
+        temp_bingoStats[i]["average_time"] = average_time;
+        temp_bingoStats[i]["average_time_hhmmss"] = time_seconds_to_hhmmss(average_time);
+    }
 }
 
 
@@ -823,6 +1053,821 @@ function set_only(t){
 // default start
 build_data();
 
+
+
+function build_graph(indices,info){
+	var bdata = bingo.slice(0,indices)
+	//console.log(bdata);
+	var data = []
+	for(var i = 0;i < bdata.length;i++){
+		var row_indices = get_indicies_from_row(bdata[i][3]);
+		var goals = [];
+		for (var j in row_indices){
+			goals.push(bdata[i][6][j])
+		}
+		var run = {
+			run_id: bdata[i][5]+"_"+bdata[i][7],
+			runner: bdata[i][5],
+			time: bdata[i][4],
+			seconds: time_hhmmss_to_seconds(bdata[i][4]),
+			date: bdata[i][1],
+			row: bdata[i][3],
+			goals: goals
+		}
+		data.push(run)
+	}
+	data.sort(function(a, b){return b.seconds-a.seconds});
+
+	var tooltip = d3.select("body")
+		.append("div")
+		.attr("id", "tooltip")
+		.style("position", "absolute")
+		.style("z-index", "10")
+		.style("visibility", "hidden")
+		.style("opacity", 1)
+		.style("background-color", "white")
+		.style("border", "solid")
+		.style("border-width", "2px")
+		.style("border-radius", "5px")
+		.style("border-color", "black")
+		.style("color", "black")
+		.style("padding", "5px")
+		.html("<p>a simple tooltip2</p>");
+
+	document.getElementById("graph").innerHTML = "";
+	var svg = d3.select("svg")
+        margin = 200,
+        width = svg.attr("width") - margin,
+        height = 300
+
+    var xScale = d3.scaleBand().range ([0, width]).padding(0.2),
+        yScale = d3.scaleLinear().range ([height, 0]);
+
+	var g = svg.append("g")
+               .attr("transform", "translate(" + 100 + "," + 100 + ")");
+
+        xScale.domain(data.map(function(d) { return d.run_id; }));
+        yScale.domain([2400, d3.max(data, function(d) { return d.seconds; })]);
+
+        g.append("g")
+         .attr("transform", "translate(0," + height + ")")
+         .call(d3.axisBottom(xScale))
+		 .append("text")
+		 .attr("y", height - 250)
+		 .attr("x", (width / 2) + 200)
+		 .attr("text-anchor", "end")
+		 .attr("stroke", "#bec7d2;")	
+		 .style("font", "24px sans-serif")
+		 .attr("fill","#000")		
+		 .text(info[0] + "  ||  Rank: "+info[1]+ "  ||  Avg Time: "+time_seconds_to_hhmmss(info[2])+ "  ||  Pick Rate: "+Math.floor((info[3])*1000)/10 + '%')
+		 .attr("class", "title");      
+
+		g.append("g")
+         .attr("transform", "translate(0," + height + ")")
+         .call(d3.axisBottom(xScale));
+
+        g.append("g")
+         .call(d3.axisLeft(yScale).tickFormat(function(d){
+             return time_seconds_to_hhmmss(d);
+         }).ticks(10));
+
+         g.selectAll("text")
+    		.style("fill", "#000");
+
+        g.selectAll(".bar")
+         	.data(data)
+         	.enter().append("rect")
+        	.attr("class", "bar")
+        	.attr("x", function(d) { return xScale(d.run_id); })
+			.text(function(d) { return d.run_id; })
+        	.attr("y", function(d) { return yScale(d.seconds); })
+        	.attr("width", xScale.bandwidth())
+        	.attr("height", function(d) { return height - yScale(d.seconds); })
+        	.on('mouseover', handle_mouseover)
+        	.on('mousemove', handle_mousemove)
+        	.on('mouseout', handle_mouseout);
+
+	function handle_mouseover(d){
+		var tooltip_html = "";
+		tooltip_html += "<p>Runner: " + d.runner + "</p>";
+		tooltip_html += "<p>Time: " + d.time + "</p>";
+		tooltip_html += "<p>Date: " + d.date + "</p>";
+		d3.select("#tooltip")
+		.style("visibility","visible")
+		.html(tooltip_html);
+		d3.select(this)
+			.style('fill', '#00a800');
+	};
+
+	function handle_mousemove(d){
+		d3.select("#tooltip").style("top", (event.pageY-100)+"px").style("left",(event.pageX+10)+"px");
+	}
+
+	function handle_mouseout(d){
+		d3.select("#tooltip").style("visibility","hidden");
+		d3.select(this)
+			.style('fill', '#0a245a');
+	}		
+		row_graph();
+		build_bubbles();
+		build_edge();
+		time_graph();
+}
+function row_graph(){
+	// build row picks
+	var rows = Object.entries(row_count)
+	for(var i = 0;i < rows.length;i++){
+		rows[i].push(rows[i][1]);
+		rows[i][1] = (Math.floor((rows[i][1]/bingo.length)*10000)/100);
+		
+	}
+	
+	var data = rows;
+	data.sort(function(a, b){return b[1]-a[1]});
+	var svg = d3.select("svg"),
+            width = 400,
+            height = 400,
+            radius = 200;
+        
+        var g = svg.append("g")
+                   .attr("transform", "translate(" + 300 + "," +700+")");
+
+        var color = d3.scaleOrdinal(['#C0392B','#E74C3C','#D35400','#E67E22','#F39C12','#F1C40F','#2ECC71','#27AE60','#16A085','#3498DB','#2980B9','#8E44AD']);
+
+        var pie = d3.pie().value(function(d) { 
+                return d[1]; 
+            });
+
+        var path = d3.arc()
+                     .outerRadius(radius - 10)
+                     .innerRadius(0);
+
+        var label = d3.arc()
+                      .outerRadius(radius)
+                      .innerRadius(radius - 80);
+
+
+            var arc = g.selectAll(".arc")
+                       .data(pie(data))
+                       .enter().append("g")
+                       .attr("class", "arc");
+
+            arc.append("path")
+               .attr("d", path)
+               .attr("fill", function(d) { return color(d.data[0]); });
+			   
+			 
+			arc.on('mouseover', function(d) {                                                                                   
+				tooltip.select('.label').html(d.data[0]);                
+				tooltip.select('.count').html("Choosen: "+d.data[2]);               
+				tooltip.select('.percent').html("Percent: "+d.data[1] + '%');            
+				tooltip.style('opacity', '100'); 
+				tooltip.style('display', 'block');
+				tooltip.style('left', '100px');     
+				tooltip.style('top', '900px');                   
+			});                                                           
+			
+			arc.on('mouseout', function() {                             
+				tooltip.style('display', 'none');                        
+			});
+        
+            
+        
+            arc.append("text")
+				.attr("stroke", "black")
+               .attr("transform", function(d) { 
+                        return "translate(" + label.centroid(d) + ")"; 
+                })
+               .text(function(d) { return d.data[0]; });
+			
+			   
+			var tooltip = d3.select('#graph_row')                          
+				.append('div')                                        
+				.attr('class', 'tooltip');                            
+							
+				tooltip.append('div')                              
+				.attr('class', 'label');                            
+					
+				tooltip.append('div')                           
+				.attr('class', 'count');                      
+
+				tooltip.append('div')                                  
+				.attr('class', 'percent'); 
+
+            svg.append("g")
+               .attr("transform", "translate(" + (400 - 60) + "," + 950 + ")")
+               .append("text")
+			   .attr("text-anchor", "end")
+               .text("Rows Picked")
+               .attr("class", "title")
+}
+
+function build_bubbles(){
+	var dataset = {"children": bingoStats};
+
+	var diameter = 1200;
+		var color = ['#00fa03','#00c702','#2DB100','#66B100','#B19C00','#b17f00','#B17500','#B12400','#B10000','#780000'];
+
+        var bubble = d3.pack(dataset)
+            .size([diameter, diameter])
+            .padding(7);
+
+        var svg = d3.select("svg")
+            .attr("class", "bubble");
+
+		var g = svg.append("g")
+                   .attr("transform", "translate(" + 600 + "," +450+")");
+
+        var nodes = d3.hierarchy(dataset)
+            .sum(function(d) { return d.picked; });
+
+        var node = g.selectAll(".node")
+            .data(bubble(nodes).descendants())
+            .enter()
+            .filter(function(d){
+                return  !d.children
+            })
+            .append("g")
+            .attr("class", "node")
+            .attr("transform", function(d) {
+                return "translate(" + d.x+ 1800 + "," + d.y+1500 + ")";
+            });
+
+
+        node.append("circle")
+            .attr("r", function(d) {
+                return d.r + 3;
+            })
+            .style("fill", function(d,i) {
+				var time = Math.floor((d.data.average_time - 2820)/138);
+				if (d.data.average_time > 4200) {time = 9;}
+				return color[time];
+            });
+
+        node.append("text")
+            .attr("dy", ".2em")
+            .style("text-anchor", "middle")
+            .text(function(d) {
+                return d.data.name.substring(0, d.r/3);
+            })
+            .attr("font-family", "sans-serif")
+            .attr("font-size", function(d){
+                return d.r/5;
+            })
+            .attr("fill", "white");
+
+        node.append("text")
+            .attr("dy", "1.3em")
+            .style("text-anchor", "middle")
+            .text(function(d) {
+                return "("+d.data.picked+")";
+            })
+            .attr("font-family",  "Gill Sans", "Gill Sans MT")
+            .attr("font-size", function(d){
+                return d.r/5;
+            })
+            .attr("fill", "white");
+
+        d3.select(self.frameElement)
+            .style("height", diameter + "px");
+
+		var tooltip = d3.select('#graph_bubble')                          
+			.append('div')                                        
+			.attr('class', 'tooltip');                            
+						
+			tooltip.append('div')                              
+			.attr('class', 'label');                            
+				
+			tooltip.append('div')                           
+			.attr('class', 'rank');                      
+
+			tooltip.append('div')                                  
+			.attr('class', 'picked');
+
+			tooltip.append('div')                                  
+			.attr('class', 'time');
+		
+		node.on('mouseover', function(d) {                                                                                   
+			tooltip.select('.label').html(d.data.name);                
+			tooltip.select('.rank').html("Rank: "+d.data.tier);               
+			tooltip.select('.picked').html("Pick Rate: "+Math.floor((d.data.pick_rate)*1000)/10 + '%');
+			tooltip.select('.time').html("Avg Time: "+d.data.average_time_hhmmss);             
+			tooltip.style('opacity', '100'); 
+			tooltip.style('display', 'block');
+			tooltip.style('left', '425px');     
+			tooltip.style('top', '900px');                   
+		});                                                           
+		
+		node.on('mouseout', function() {                             
+			tooltip.style('display', 'none');                        
+		});
+
+		node.on('mousedown', function(d) {                             
+			graph_mousedown(d.data);
+		});
+
+
+}
+
+function build_edge(){
+
+	var diameter = 1800;
+	var radius = diameter / 2;
+	var margin = 20;
+
+// Generates a tooltip for a SVG circle element based on its ID
+function addTooltip(circle) {
+    var x = parseFloat(circle.attr("cx"));
+    var y = parseFloat(circle.attr("cy"));
+    var r = parseFloat(circle.attr("r"));
+    var text = circle.attr("id");
+
+
+    var tooltip = d3.select("#plot")
+        .append("text")
+        .html(text)
+		.attr("stroke", "white")
+		.style("font", "24px sans-serif")
+        .attr("x", x)
+        .attr("y", y)
+        .attr("dy", -r * 2)
+        .attr("id", "tooltip");
+
+    var offset = tooltip.node().getBBox().width / 2;
+
+    if ((x - offset) < -radius) {
+        tooltip.attr("text-anchor", "start");
+        tooltip.attr("dx", -r);
+    }
+    else if ((x + offset) > (radius)) {
+        tooltip.attr("text-anchor", "end");
+        tooltip.attr("dx", r);
+    }
+    else {
+        tooltip.attr("text-anchor", "middle");
+        tooltip.attr("dx", 0);
+    }
+}
+
+// Draws an arc diagram for the provided undirected graph
+function drawGraph() {
+    // create svg image
+	var linker = [];
+	
+	for (var i = 0; i < bingoStats.length; i++){
+		if (bingoStats[i]["paired"].length > 0){
+			var counts = {};
+			var top10 = [];
+			var new_10 = [];
+			for (var j = 0; j <  bingoStats[i]["paired"].length; j++) {
+				var num = bingoStats[i]["paired"][j];
+				counts[num] = counts[num] ? counts[num] + 1 : 1;				
+			}
+			for (var j = 0; j <  bingoStats[i]["paired"].length; j++) {
+				top10.push({"id": bingoStats[i]["paired"][j],"count" : counts[bingoStats[i]["paired"][j]]})
+			}
+			top10.sort(function(a, b){return b.count-a.count});
+			for (var j = 0; j < 10; j++){
+				for (var k = 0; k < bingoStats.length; k++){				
+					if (bingoStats[k]["id"] == bingoStats[i]["paired"][j]){
+						linker.push({"source": i,"target": bingoStats[k],"value": 1});
+						new_10.push(bingoStats[i]["paired"][j]);
+					}
+				}
+			}
+			bingoStats[i]["paired_10"] = new_10;
+		}
+	}
+	
+	var graph = { "nodes": bingoStats, "links" : linker};
+	
+
+
+    var svg  = d3.select("svg");
+
+    // draw border around svg image
+    // svg.append("rect")
+    //     .attr("class", "outline")
+    //     .attr("width", diameter)
+    //     .attr("height", diameter);
+
+    // create plot area within svg image
+    var plot = svg.append("g")
+        .attr("id", "plot")
+        .attr("transform", "translate(" + radius + ", " + 2700 + ")");
+	
+	svg.append("g")
+		.attr("transform", "translate(" + 350 + "," + 1550 + ")")
+		.append("text")
+		.attr("text-anchor", "end")
+		.style("font", "20px sans-serif")
+		.text("Top Goals Paired with when Picked")
+		.attr("class", "title")
+    // draw border around plot area
+    // plot.append("circle")
+    //     .attr("class", "outline")
+    //     .attr("r", radius - margin);
+
+    // fix graph links to map to objects instead of indices
+
+    graph.links.forEach(function(d, i) {
+        d.source = isNaN(d.source) ? d.source : graph.nodes[d.source];
+        d.target = isNaN(d.target) ? d.target : graph.nodes[d.target.id];
+    });
+
+	for (var i = 0; i < graph["links"].length; i++){
+		if (graph["links"][i]["target"] === undefined) {
+			graph["links"][i]["target"] = graph["links"][i]["source"];
+		}
+	}
+
+    // calculate node positions
+    circleLayout(graph.nodes);
+
+	//console.log(graph)
+
+    // draw edges first
+    drawLinks(graph.links);
+    //drawCurves(graph.links);
+
+    // draw nodes last
+    drawNodes(graph.nodes);
+}
+
+// Calculates node locations
+function circleLayout(nodes) {
+    // sort nodes by group
+    nodes.sort(function(a, b) {
+        return a.tier - b.tier;
+    });
+
+    // use to scale node index to theta value
+    var scale = d3.scaleLinear()
+        .domain([0, nodes.length])
+        .range([0, 2 * Math.PI]);
+
+    // calculate theta for each node
+    nodes.forEach(function(d, i) {
+        // calculate polar coordinates
+        var theta  = scale(i);
+        var radial = radius - margin;
+
+        // convert to cartesian coordinates
+        d.x = radial * Math.sin(theta);
+        d.y = radial * Math.cos(theta);
+		d.o = "10";
+    });
+}
+
+// Draws nodes with tooltips
+function drawNodes(nodes) {
+    // used to assign nodes color by group
+    var color = d3.scaleOrdinal(d3.schemeCategory20);
+
+    d3.select("#plot").selectAll(".node")
+        .data(nodes)
+        .enter()
+        .append("circle")
+        .attr("class", "node")
+        .attr("id", function(d, i) { return d.name; })
+        .attr("cx", function(d, i) { return d.x; })
+        .attr("cy", function(d, i) { return d.y; })
+        .attr("r", 8)
+        .style("fill",   function(d, i) { return color(d.tier); })
+		.attr("stroke", "black")
+        .on("mouseover", function(d, i) { addTooltip(d3.select(this),);  })
+        .on("mouseout",  function(d, i) { d3.select("#tooltip").remove(); })
+		.on("mousedown", function(d, i) { graph_mousedown(d); });
+}
+
+
+// Draws straight edges between nodes
+function drawLinks(links) {
+	var color = d3.scaleOrdinal(d3.schemeCategory20);
+    d3.select("#plot").selectAll(".link")
+        .data(links)
+        .enter()
+        .append("line")
+        .attr("class", "link")
+		.style('opacity', function(d) {d.source.o})
+		.attr("stroke", function(d, i) { return color(d.source.tier); })
+		.attr("data-rank", function(d) { return d.source.tier; })
+		.attr("data-id", function(d) { return d.source.id; })
+        .attr("x1", function(d) { return d.source.x; })
+        .attr("y1", function(d) { return d.source.y; })
+        .attr("x2", function(d) { return d.target.x; })
+        .attr("y2", function(d) { return d.target.y; });
+}
+
+	// Draws curved edges between nodes
+	function drawCurves(links) {
+		// remember this from tree example?
+
+		d3.select("#plot").selectAll(".link")
+			.data(links)
+			.enter()
+			.append("path")
+			.attr("class", "link")
+			.attr("d", d3.linkHorizontal()
+				.x(function(d) { return d.source.y; })
+				.y(function(d) { return d.source.x; }));
+	}
+	drawGraph();
+}
+
+function time_graph(){
+
+	var formatDate = d3.timeFormat("%a"),
+    formatDay = function(d) { return formatDate(new Date(2007, 0, d)); };
+
+	var width = 960,
+		height = 500,
+		outerRadius = height / 2 - 10,
+		innerRadius = 130;
+
+	var angle = d3.scaleTime()
+		.range([0, 2 * Math.PI]);
+
+	var radius = d3.scaleLinear()
+		.range([innerRadius, outerRadius]);
+
+	var z = d3.scaleOrdinal(d3.schemeCategory20);
+
+	var stack2 = d3.stack()
+		.offset(d3.stackOffsetNone)
+		.keys(function(d) { return d.keys; })
+		.value(function(d) { return d.value; });
+		//.x(function(d) { return d.time; })
+		//.y(function(d) { return d.value; });
+
+	var nest = d3.nest()
+		.key(function(d) { return d.key; });
+
+	var line = d3.radialLine()
+		.angle(function(d) { return angle(d.time); })
+		.radius(function(d) { return radius(1); });
+
+	var area = d3.areaRadial()
+		//.angle(function(d) { console.log(d.time);return angle(d.time); })
+		.curve(d3.curveCardinalClosed)
+		.angle(function(d) {return angle(d.time);})
+		.innerRadius(function(d) { return innerRadius; })
+		.outerRadius(function(d) { return innerRadius + d.value * 30 ; });	
+	
+		//.radius(function(d) { return radius(d.value);})
+		//.innerRadius(function(d) { return radius(1); })
+		//
+
+	var svg = d3.select("svg")
+		.append("g")
+		.attr("transform", "translate(" + 300 + "," + 1200 + ")");
+
+	var data = [];
+	
+	var week = {"Sun": 0,"Mon": 1,"Tue": 2,"Wed": 3,"Thu": 4,"Fri": 5,"Sat":6};
+	var monthMap = {"Jan" : 1,"Feb" : 2,"Mar" : 3,"Apr" : 4,"May" : 5,"Jun" : 6,"Jul" : 7,"Aug" : 8,"Sep" : 9,"Oct" : 10,"Nov" : 11,"Dec" : 12};
+	for (var i = 0; i < bingo.length; i++){
+		var date = bingo[i][1].split(" ");	
+		var time = date[2];
+		var min =date[3]
+		if ( date.length >5){
+			time = date[2]+date[3];
+			min = date[4];
+		}
+		min = time_hhmmss_to_seconds(min);
+		
+		//console.log(week[date[0]] + Math.floor((Math.floor(min / 3600)*100)/24)/100)
+		var key = Math.floor((((monthMap[date[1]] - 1)* 30) + parseInt(time)) / 7);					
+		data.push({"key": key,"value": 1,"time":week[date[0]] + (Math.floor((Math.floor(min / 3600)*100)/24)/100)})
+	
+	}
+	//console.log(data);
+
+	var layers = nest.entries(data);
+	// build stack
+	//console.log(layers);
+	var stack = [];
+	for (var i = 0; i < layers.length; i++){
+		for (var k = 0; k < 7; k+=0.01){
+			var count = 0;
+			for (var j = 0; j < layers[i].values.length; j++){
+				if (layers[i].values[j].time == (Math.floor(k*100)/100)){
+					count++;
+				}
+			}
+			if (count != 0  || [0,0.5,1,1.5,2,2.5,3,3.5,4,4.5,5,5.5,6,6.5,].includes((Math.floor(k*100)/100)) ){
+				stack.push({"key": layers[i].key,"value":count,"time": (Math.floor(k*100)/100)})
+			}
+		}
+		
+	}
+	
+	//var stacked = nest.entries(stack);
+	//console.log(stack);
+	//console.log(stacked.values);
+	// Extend the domain slightly to match the range of [0, 2π].
+	angle.domain([0, d3.max(data, function(d) { return d.time + 1; })]);
+	radius.domain([0, d3.max(data, function(d) { return d.y0 + d.y; })]);
+
+	//console.log(layers);
+	var pathData = area(stack);
+	//console.log( area(nest.entries(stack).values))
+	svg.selectAll(".layer")
+		.data(stack)
+		.enter().append("path")
+		.attr("class", "layer")
+		.attr("fill-opacity", 1)
+		.attr("d", area(stack) )
+		.style("fill", function(d, i) { return z(i); });
+
+	svg.selectAll(".axis")
+		.data(d3.range(angle.domain()[1]))
+		.enter().append("g")
+		.attr("class", "axis")
+		.attr("transform", function(d) { return "rotate(" + angle(d + 0.25) * 180 / Math.PI +  ")"; })
+		.call(d3.axisLeft()
+		.scale(radius.copy().range([-innerRadius+15, -outerRadius])))
+		.append("text")
+		.attr("y", -innerRadius + 21)
+		.attr("dy", ".71em")
+		.attr("text-anchor", "middle")
+		.text(function(d) { return formatDay(d); });
+
+	svg.append("g")
+			.attr("transform", "translate(" + 50 + "," + 300 + ")")
+			.append("text")
+			.attr("text-anchor", "end")
+			.text("Days of the Week Played")
+			.attr("class", "title");
+
+	function type(d) {
+	d.time = +d.time;
+	d.value = +d.value;
+	return d;
+	}
+
+
+}
+
+function build_goal_goal_time_graph(indices, selected_goal_id){
+	var cards_picked = [];
+	var selected_goal_name = '';
+	//find the goal
+	for (var i = 0; i < bingoStats.length; i++){
+		if (bingoStats[i].id == selected_goal_id){
+			cards_appeared = bingoStats[i].cards_picked;
+			selected_goal_name = bingoStats[i].name;
+			break;
+		}
+	}
+
+	//extract from bingo the cards on which the selected goal was picked
+	var bdata = bingo.slice(0,indices)
+	var data1 = make_temp_bingoStats(bdata);
+	//only take goals that have actually been picked with picked goal
+	var data = [];
+	for (var i = 0; i<data1.length; i++){
+		if (data1[i].id == selected_goal_id){}
+		else if (data1[i].picked == 0){}
+		else {data.push(data1[i]);}
+	}
+	data.sort(function(a,b){return b.average_time-a.average_time});
+	//console.log(data);
+
+
+	var margin = 100,
+		width = window.innerWidth - 2*margin,
+		height = 500 - 2*margin;
+
+
+	var svg = d3.select("svg")
+
+	svg.append('text')
+		.text('Goal average time when paired with ' + selected_goal_name)
+		.attr('x', margin + width/2)
+		.attr('y', 3700)
+		.attr('id', 'goal-goal-title')
+		.style('text-anchor', 'middle');
+
+	var graph_g = svg.append('g')
+						.attr("transform", "translate(" + 100 + "," + 3700 + ")")
+						.attr('id', 'goal-goal-graph');
+
+	var xScale = d3.scaleBand().range ([0, width]).padding(0.2),
+        yScale = d3.scaleLinear().range ([height, 0]);
+
+        xScale.domain(data.map(function(d) { return d.name; }));
+        yScale.domain([2400, d3.max(data, function(d) { return d.average_time; })]);
+
+        graph_g.append("g")
+         		.attr("transform", "translate(0," + height + ")")
+         		.call(d3.axisBottom(xScale))
+         		.selectAll("text")
+         		.attr("transform","rotate(-90)")
+         		.style("text-anchor", "end")
+         		.attr("x", -10)
+         		.attr("y", -xScale.bandwidth()/4);
+
+        graph_g.append("g")
+         		.call(d3.axisLeft(yScale).tickFormat(function(d){
+             		return time_seconds_to_hhmmss(d);
+         		})
+         		.ticks(10));
+
+        graph_g.selectAll(".bar")
+         		.data(data)
+         		.enter().append("rect")
+        		.attr("class", "bar")
+        		.attr("x", function(d) { return xScale(d.name); })
+				.text(function(d) { return d.name; })
+        		.attr("y", function(d) { return yScale(d.average_time); })
+        		.attr("width", xScale.bandwidth())
+        		.attr("height", function(d) { return height - yScale(d.average_time); })
+        		.on('mouseover', handle_mouseover)
+        		.on('mousemove', handle_mousemove)
+        		.on('mouseout', handle_mouseout);
+
+    function handle_mouseover(d){
+		var tooltip_html = "";
+		tooltip_html += "<p>Goal Name: " + d.name + "</p>";
+		tooltip_html += "<p>Average Time: " + d.average_time_hhmmss + "</p>";
+		tooltip_html += "<p>Picked: " + d.picked + "</p>";
+		tooltip_html += "<p>Pick Rate: " + d.pick_rate + "</p>";
+		d3.select("#tooltip")
+		.style("visibility","visible")
+		.html(tooltip_html);
+		d3.select(this)
+			.style('fill', '#00a800');
+	};
+
+	function handle_mousemove(d){
+		d3.select("#tooltip").style("top", (event.pageY-100)+"px").style("left",(event.pageX+10)+"px");
+	}
+
+	function handle_mouseout(d){
+		d3.select("#tooltip").style("visibility","hidden");
+		d3.select(this)
+			.style('fill', '#0a245a');
+	}
+
+
+}
+
+function changeOpacity(rank, id) {
+	var x = document.getElementsByClassName("link");
+	for (var i = 0; i < x.length; i++){
+		if (x[i].dataset.rank == rank && x[i].dataset.id == id){
+			x[i].style.opacity = '1.0';
+			
+		}
+		else {
+			x[i].style.opacity = '0.1';
+		}
+	}
+}
+
+function show_text(name,goals,id,types,sub){
+	
+	var text = "";
+	var a = 1;
+	for (var i = 0; i < goals.length; i++){
+		for (var j = 0; j < bingoStats.length; j++){
+			if (goals[i] == parseInt(bingoStats[j].id) && goals[i] != parseInt(id)){
+				text = text + "<p> <h4>" + a +". "+ bingoStats[j].name + "</h4> <span>&emsp;&emsp;&emsp;Types: [" + bingoStats[j].types + "],[" + bingoStats[j].subtypes + "]</span></p>";
+				a++;
+			}
+		}
+	}
+	//document.getElementById("graph_line").innerHTML = "";  
+	tooltip2.select('.label').html("<h3>" + name + "</h3> <span>&emsp;&emsp;Types: ["+ types+"],["+sub+"]</span>");                
+	tooltip2.select('.goals').html(text);                       
+	tooltip2.style('opacity', '100'); 
+	tooltip2.style('display', 'block');
+	tooltip2.style('left', '30px');     
+	tooltip2.style('top', '1540px');
+
+}
+
+var tooltip2 = d3.select('#graph_line')                          
+				.append('div')                                        
+				.attr('class', 'tooltip');                            
+							
+				tooltip2.append('div')                              
+				.attr('class', 'label');                            
+					
+				tooltip2.append('div')                           
+				.attr('class', 'goals');                      
+
+
+function graph_mousedown(d){
+	document.getElementById("graph_bubble").innerHTML = "";  
+	change_graphs(["goal_data","cell","0"],d.name);   
+	show_text(d.name,d.paired_10,d.id,d.types,d.subtypes)
+	changeOpacity(d.tier,d.id)
+}
+
+
+build_graph(bingo.length,["All Cards","","",""])
 
 
 </script>

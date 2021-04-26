@@ -7,15 +7,18 @@
 	<link href='https://fonts.googleapis.com/css?family=Roboto:400,700,400italic,700italic' rel='stylesheet' type='text/css'>
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.0/css/bootstrap.min.css">
 	<link href="{{ url_for('static', filename='css/style.css') }}" rel="stylesheet" type="text/css">
+	<link href="{{ url_for('static', filename='css/colors.css') }}" rel="stylesheet" type="text/css">
 	<script type="text/javascript" src="https://www.google.com/jsapi"></script> <!-- google libraries API -->	
 	<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.0/jquery.min.js"></script>
 	<script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.0/js/bootstrap.min.js"></script>
 	<script src="{{ url_for('static', filename='js/MumboGen2.js') }}" type="text/javascript"></script>
+	<script src="{{ url_for('static', filename='js/generator.js') }}" type="text/javascript"></script>
 	<script src="{{ url_for('static', filename='js/querystring.js') }}"></script>
 	<script src="{{ url_for('static', filename='js/seedrandom-min.js') }}" type="text/javascript"></script>
 	<script src="{{ url_for('static', filename='js/mumboSetup.js') }}" type="text/javascript"></script>
 	<script src="{{ url_for('static', filename='js/gimmick.js') }}" type="text/javascript"></script>
 	<script src="{{ url_for('static', filename='js/shot.js') }}" type="text/javascript"></script>
+	<script src="{{ url_for('static', filename='js/legacy.js') }}" type="text/javascript"></script>
 	<style>
 	.middle {
 	display: block;
@@ -47,6 +50,7 @@
 
 	</style>
 	<script type="text/javascript">
+	$SCRIPT_ROOT = {{ request.script_root|tojson|safe }};
 		function getCookie(cname) {
 		  var name = cname + "=";
 		  var decodedCookie = decodeURIComponent(document.cookie);
@@ -125,24 +129,7 @@
 	}
 			
 	function goals_done(){
-		//grab goals as string
-		var card_data = "";
-		for( var x = 1; x <26;x++){
-				for( var i = 1; i<= 25 ;i++){
-					for( var j = 0; j< bingoList[i].length ;j++){
-						
-						if (document.getElementById("slot"+x).innerHTML.replace("&amp;","&").replace("&apos;","'") == bingoList[i][j].name){							
-							card_data= card_data+bingoList[i][j].id+"%";
-							}
-						}
-					}
-			}
 
-		document.getElementById("card").value = card_data;
-		document.getElementById("version").value = ""+bingoList["info"].version+type;
-		document.getElementById("cardseed").value = bingoseed;
-		document.getElementById("user").value= getCookie("username");
-		console.log(document.getElementById("version").value);
 
 		if (type.includes("shit")){
 			//build bad list
@@ -163,26 +150,65 @@
 				document.getElementById("slot"+x).innerHTML = shit_card[x-1];
 			}
 		}
-		if (type.includes("shot")){
+		if (type.includes("random")){
+			//build bad list
+			let shit_list = [];
+			let shit_card = [];
+			for( var i = 1; i< 26 ;i++){
+				for( var j = 0; j< bingoList[i].length ;j++) {
+					shit_list.push(bingoList[i][j].name);
+				}
+			}
+			console.log(shit_list);
+			for(var x = 1; x <26;x++){
+				let a = 0;
+				while (shit_card.includes(shit_list[((parseInt(bingoseed)*x)+a)%(shit_list.length)])){
+				 	a++;
+				 }
+				shit_card.push(shit_list[((parseInt(bingoseed)*x)+a)%(shit_list.length)]);
+				document.getElementById("slot"+x).innerHTML = shit_card[x-1];
+			}
+		}
+
+		//grab goals as string
+		var card_data = "";
+		for( var x = 1; x <26;x++){
+				for( var i = 1; i<= 25 ;i++){
+					for( var j = 0; j< bingoList[i].length ;j++){
+						
+						if (document.getElementById("slot"+x).innerHTML.replace("&amp;","&").replace("&apos;","'") == bingoList[i][j].name){							
+							card_data= card_data+bingoList[i][j].id+"%";
+							}
+						}
+					}
+			}
+			console.log(card_data);
+		document.getElementById("card").value = card_data;
+		document.getElementById("version").value = ""+bingoList["info"].version+type;
+		document.getElementById("cardseed").value = bingoseed;
+		document.getElementById("user").value= getCookie("username");
+		console.log(document.getElementById("version").value);
+
+		if (type.includes("shot")){						
 			old_goal= document.getElementById("slot"+stab.toString()).innerHTML;
 			document.getElementById("slot"+stab.toString()).innerHTML = '';
 			document.getElementById("slot"+stab.toString()).appendChild(canvas);
+			
 		}
-
 	}
 	function change_settings(){
 		let bg = document.getElementById("bg").value;
 		let font = document.getElementById("bodyfont").value;
 		let textc = document.getElementById("textc").value;
 		let bgc = document.getElementById("bgc").value;
-
+		
 		document.getElementsByTagName("html")[0].style.background=bg;
 		document.getElementsByTagName("body")[0].style.background=bg;
 		document.getElementsByTagName("body")[0].style.fontFamily=font;
-
+		
+		
 		for(let i = 1; i<26; i++){
-
-			document.getElementById("slot"+i).style.setProperty('color',textc);
+			document.getElementById("slot"+i).style.setProperty('color',textc);		
 		}
 
 
@@ -430,7 +456,7 @@
 		  <ul class="nav nav-pills">
 			<li class="active"><a data-toggle="tab" href="#home" style="background:#2c2f33;">Rules</a></li>
 			<li><a data-toggle="tab" href="#menu1" style="background:#2c2f33;">Cheat Sheet</a></li>
-			<li><a data-toggle="tab" href="#menu2" style="background:#2c2f33;">Banjo-Toolie</a></li>
+			<li><a data-toggle="tab" href="#menu2" style="background:#2c2f33;">Bingo-Toolie</a></li>
 		  </ul>
 
 		  <div class="tab-content">
@@ -497,9 +523,9 @@
 		   </div>
 			<div id="menu2" class="tab-pane fade">
 				<p></p>
-				<iframe id="toolie" src="https://banjospeedruns.com/bingo-toolie" style="width:850px;height:760px;"></iframe>
+				<iframe id="toolie" src="https://banjospeedruns.com/bt/bingo-toolie" style="width:850px;height:760px;"></iframe>
 			  <p></p>
-			  <a class="newcard" href="https://banjospeedruns.com/bingo-toolie" target="_blank" style="width:350px;">Bingo-Toolie</a>
+			  <a class="newcard" href="https://banjospeedruns.com/bt/bingo-toolie" target="_blank" style="width:350px;">Bingo-Toolie</a>
 			</div>
 		  </div>			
 	</div>

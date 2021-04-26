@@ -8,12 +8,15 @@ bingoGenerator = function(bingoList, opts){
     Math.seedrandom(SEED);
     var MODE = opts.mode || 'normal';
 
-    //Guarantees no goal is on the card more than once
-    var loc_by_id = bingoList_loc_by_id();
-    var picked = new Array(loc_by_id.length);
-    for (var i = 0; i < loc_by_id.length; i++){
-        picked[i] = false;
-    }
+        //Guarantees no goal is on the card more than once
+        var loc_by_id = bingoList_loc_by_id();
+        var picked = new Array(loc_by_id.length);
+        for (var i = 0; i < loc_by_id.length; i++){
+            picked[i] = false;
+        }
+
+        
+
 
     //builds a 5x5 grid where each row, column, and diagonal add up to the same number
     function generate_bingo_template(weights1, weights2){
@@ -234,7 +237,7 @@ bingoGenerator = function(bingoList, opts){
 
     function make_cards_until_i_get_a_card(bingoList){
         var iterations = 0;
-        while (iterations < 100){
+        while (iterations < 10000){
             iterations++;
             try{
                 return make_card(bingoList);
@@ -247,6 +250,7 @@ bingoGenerator = function(bingoList, opts){
     }
 
     var the_card = make_cards_until_i_get_a_card(bingoList);
+    //console.log(the_card)
     //console.log(picked)
     return the_card;
 }

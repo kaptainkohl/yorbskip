@@ -6,3 +6,6 @@ Pillow==7.1.0
 python-socketio==4.5.1
 google-cloud-datastore==2.0.1
 google-cloud-storage==1.33.0
+requests==2.25.1
+beautifulsoup4==4.9.3
+selenium==3.141.0
