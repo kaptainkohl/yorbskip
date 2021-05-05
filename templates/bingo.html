@@ -7,7 +7,6 @@
 	<link href='https://fonts.googleapis.com/css?family=Roboto:400,700,400italic,700italic' rel='stylesheet' type='text/css'>
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.0/css/bootstrap.min.css">
 	<link href="{{ url_for('static', filename='css/style.css') }}" rel="stylesheet" type="text/css">
-	<link href="{{ url_for('static', filename='css/colors.css') }}" rel="stylesheet" type="text/css">
 	<script type="text/javascript" src="https://www.google.com/jsapi"></script> <!-- google libraries API -->	
 	<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.0/jquery.min.js"></script>
 	<script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.0/js/bootstrap.min.js"></script>
@@ -66,10 +65,10 @@
 		  }
 		  return "";
 		}		
-
+		
 		let bingoseed=getUrlParameter('seed');
 		let type=getUrlParameter('type') || "";
-
+		var lockout = false;
 		let bingoversion=type;
 
 
@@ -80,6 +79,10 @@
 		if (type.includes("shot")) {
 			start_fire();
 		}
+		if (type.includes("mission")) {
+			$("#square1").show();
+		}
+		
 	}
 	function hideBingo() {
 		for (i=0; i<25; i++) {  
@@ -128,16 +131,17 @@
 		return false;
 	}
 			
-	function goals_done(){
+	function goals_done(bingoBoard){
 
 
 		if (type.includes("shit")){
+			$("#sendData").hide();
 			//build bad list
 			let shit_list = [];
 			let shit_card = [];
 			for( var i = 23; i<= 26 ;i++){
 				for( var j = 0; j< bingoList[i].length ;j++) {
-					shit_list.push(bingoList[i][j].name);
+					shit_list.push(bingoList[i][j]);
 				}
 			}
 			console.log(shit_list);
@@ -147,16 +151,18 @@
 				 	a++;
 				 }
 				shit_card.push(shit_list[((parseInt(bingoseed)*x)+a)%(shit_list.length)]);
-				document.getElementById("slot"+x).innerHTML = shit_card[x-1];
+				document.getElementById("slot"+x).innerHTML = shit_card[x-1].name;				
 			}
+			bingoBoard = shit_card;
 		}
 		if (type.includes("random")){
+			$("#sendData").hide();
 			//build bad list
 			let shit_list = [];
 			let shit_card = [];
 			for( var i = 1; i< 26 ;i++){
 				for( var j = 0; j< bingoList[i].length ;j++) {
-					shit_list.push(bingoList[i][j].name);
+					shit_list.push(bingoList[i][j]);
 				}
 			}
 			console.log(shit_list);
@@ -166,8 +172,9 @@
 				 	a++;
 				 }
 				shit_card.push(shit_list[((parseInt(bingoseed)*x)+a)%(shit_list.length)]);
-				document.getElementById("slot"+x).innerHTML = shit_card[x-1];
+				document.getElementById("slot"+x).innerHTML = shit_card[x-1].name;
 			}
+			bingoBoard = shit_card;
 		}
 
 		//grab goals as string
@@ -195,7 +202,82 @@
 			document.getElementById("slot"+stab.toString()).appendChild(canvas);
 			
 		}
+		if (type.includes("mission")){						
+			$("#sendData").hide();
+			$("#bingo").hide();
+			$("#square2").hide();
+			$("#square3").hide();
+			$("#square4").hide();
+			$("#square5").hide();
+			console.log(bingoBoard)
+			var row = Math.floor(31*bingoseed)%5;
+			var boardarray = [{name: bingoBoard[0+row*5].name, d: bingoBoard[0+row*5].difficulty},
+					{name: bingoBoard[1+row*5].name, d: bingoBoard[1+row*5].difficulty},
+					{name: bingoBoard[2+row*5].name, d: bingoBoard[2+row*5].difficulty},
+					{name: bingoBoard[3+row*5].name, d: bingoBoard[3+row*5].difficulty},
+					{name: bingoBoard[4+row*5].name, d: bingoBoard[4+row*5].difficulty}];
+			boardarray.sort(function(a, b){return a.d-b.d});
+			document.getElementById("square1").innerHTML = boardarray[0].name;
+			document.getElementById("square2").innerHTML = boardarray[1].name;
+			document.getElementById("square3").innerHTML = boardarray[2].name;
+			document.getElementById("square4").innerHTML = boardarray[3].name;
+			document.getElementById("square5").innerHTML = boardarray[4].name;
+		}
+
+		if (type.includes("lockout")){	
+			$("#sendData").hide();	
+			$("#lockoutStuff").show();				
+			lockout = true;	
+			//start lockout ping
+			setInterval(ping_server_lockout, 10000);	
+		}
 	}
+
+	function ping_server_lockout(){
+		$.getJSON($SCRIPT_ROOT + '/lock_ping', {
+                room:bingoseed+document.getElementById("userroom").value
+            }, function(data) {
+                var card = data.result;
+
+				for( var i = 1; i< 26 ;i++){						
+					if (card["slot"+i]){							
+						if (card["slot"+i] == "delete"){
+							document.getElementById("slot"+i).className = ''
+						}
+						else {
+							document.getElementById("slot"+i).classList.add(card["slot"+i]+"square");
+						}
+						
+					}					
+				}
+            });
+	}
+	function update_server_lockout(num,color){
+		$.getJSON($SCRIPT_ROOT + '/lock_update', {
+                room:bingoseed+document.getElementById("userroom").value,num:num,color:color
+            }, function(data) {
+                var card = data.result;
+				console.log(card)
+				for( var i = 1; i< 26 ;i++){						
+					if (card["slot"+i]){							
+						if (card["slot"+i] == "delete"){
+							document.getElementById("slot"+i).className = ''
+						}
+						else {
+							document.getElementById("slot"+i).classList.add(card["slot"+i]+"square");
+						}
+					}				
+				}
+            });
+	}
+	function clear_server_lockout(){
+		$.getJSON($SCRIPT_ROOT + '/lock_clear', {
+			room:bingoseed+document.getElementById("userroom").value
+            }, function(data) {
+            });
+		
+	}
+
 	function change_settings(){
 		let bg = document.getElementById("bg").value;
 		let font = document.getElementById("bodyfont").value;
@@ -276,37 +358,63 @@
 			 </div>
 			 <div class="modal-body" style="color:#bec7d2;background:#2c2f33;">
 				 <h2>Page Settings</h2>
+				 <p>Goal Pick Color</p>
+				 <select class="form-control" id="pickcolor" name="pickcolor" style="background:#5e5e5e;color:white;">
+					<option value="green" selected style="color:green;">Green</option>
+					<option value="blue" style="color:blue;">Blue</option>
+					<option value="purple" style="color:purple;">Purple</option>
+					<option value="orange" style="color:orange;">Orange</option>						
+					<option value="yellow" style="color:yellow;">Yellow</option>					  
+				  </select>
 				 <p>Page Background</p>
 				 <input class="form-control" id="bg"  value="#2c2f33" type="text" style="background:#5e5e5e;color:white;">
 				 <p>Page Font</p>
 				 <input class="form-control" id="bodyfont"  value="Helvetica" type="text" style="background:#5e5e5e;color:white;">
 				 <p>Text Color</p>
 				 <input class="form-control" id="textc"  value="#fff" type="text" style="background:#5e5e5e;color:white;">
-				 <p>Card Background</p>
-				 <input class="form-control" id="bgc"  value="#fff" type="text" style="background:#5e5e5e;color:white;">
 				 <br>
 				 <button class="btn btn-default" id="setting_change" style="width:180px" onclick="change_settings();">Confirm Settings</button>
 				 <br>
 				 <br>
-				 <h2>Beta: Gimmick Bingo</h2>
-				 <p>Generates a new card. At the Bottom there will be 2 new squares, red and green. These are the arbitrary rules you must follow on the card.</p>
-				 <p>You <span style="color:red;">CANNOT</span> do what the red says. You <span style="color:green;">MUST</span> do what the green says. Not all rows will be completable.</p>
-				 <br>
-				 <a class="btn btn-default" href="#" onclick="reseedPage('gim');" style="width:150px;">Gimmick Seed</a>
-				 <br>
-				 <br>
-				 <h2>Multi-Modes</h2>
-				 <p>You can build any combination of modes for a seed, if you put all the flags into the URL.</p>
-				 <p>Use &[Type]=True or just press these buttons.</p>
-				 <a class="btn btn-default" href="#" onclick="reseedPage('shot_race');" style="width:150px;">Shot Race</a>
-				 <a class="btn btn-default" href="#" onclick="reseedPage('gimmick_race');" style="width:150px;">Gimmick Race</a>
-				 <a class="btn btn-default" href="#" onclick="reseedPage('gimmick_shot_race');" style="width:150px;">Gimmick Shot Race</a>
+				 <h2>Mission Bingo</h2>
+				 <p>You are given a random row, These goals will be given 1 at a time, in order from shortest to longest. You will not be able to see the next goal until you beat the current one. Complete All five goals to win!</p>
+				 <a class="btn btn-default" href="#" onclick="reseedPage('mission');" style="width:150px;">Mission</a>
+				 <a class="btn btn-default" href="#" onclick="reseedPage('mission_race');" style="width:150px;">Mission Race</a>
 				 <br>
 				 <br>
 				 <h2>Shit Seed</h2>
 				 <p>Generate a card with goals 23-26 with no tagging done. Try to find something to do in this shit show</p>
 				 <a class="btn btn-default" href="#" onclick="reseedPage('shit');" style="width:150px;">Shit</a>
 				 <a class="btn btn-default" href="#" onclick="reseedPage('shit_race');" style="width:150px;">Shit Race</a>
+				 <br>
+				 <br>
+				 <h2>Random Seed</h2>
+				 <p>Generate a card with all goals randomly scattered with no tagging done. Try to find something absolutly broken!</p>
+				 <a class="btn btn-default" href="#" onclick="reseedPage('random');" style="width:150px;">Random</a>
+				 <a class="btn btn-default" href="#" onclick="reseedPage('random_race');" style="width:150px;">Random Race</a>
+				 <br>
+				 <br>
+				 <h2>Beta: Lockout Bingo</h2>
+				 <p>Generates a new card. All players are looking at the same card, and can see what each other are placing. Each player can choose a color. There are different ways to play this, but one way is that who ever completes the most goals on the board wins. </p>
+				 <br>
+				 <a class="btn btn-default" href="#" onclick="reseedPage('lockout');" style="width:150px;">Lockout</a>
+				 <a class="btn btn-default" href="#" onclick="reseedPage('lockout_race');" style="width:150px;">Lockout Race</a>
+				 <br>
+				 <br>
+				 <h2>Beta: Gimmick Bingo</h2>
+				 <p>Generates a new card. At the Bottom there will be 2 new squares, red and green. These are the arbitrary rules you must follow on the card.</p>
+				 <p>You <span style="color:red;">CANNOT</span> do what the red says. You <span style="color:green;">MUST</span> do what the green says. Not all rows will be completable.</p>
+				 <br>
+				 <a class="btn btn-default" href="#" onclick="reseedPage('gimmick');" style="width:150px;">Gimmick Seed</a>
+				 <br>
+				 <br>
+				 <h2>Multi-Modes</h2>
+				 <p>You can build any combination of modes for a seed, if you put all the flags into the URL.</p>
+				 <p>Use &type=XXX or just press these buttons.</p>
+				 <a class="btn btn-default" href="#" onclick="reseedPage('shot_race');" style="width:150px;">Shot Race</a>
+				 <a class="btn btn-default" href="#" onclick="reseedPage('gimmick_race');" style="width:150px;">Gimmick Race</a>
+				 <a class="btn btn-default" href="#" onclick="reseedPage('gimmick_shot_race');" style="width:150px;">Gimmick Shot Race</a>
+
 
 			 </div>
 			 <div class="modal-footer" style="background:#2c2f33;">
@@ -314,7 +422,7 @@
 		 </div>
 	 </div>
  </div>
- <a class="glyphicon glyphicon-question-sign" data-toggle="modal" data-target="#settings" style="position:fixed;right:0px;bottom:0px;color:black;"></a>
+ <a class="glyphicon glyphicon-question-sign" data-toggle="modal" data-target="#settings" style="font-size:300%;position:fixed;right:0px;bottom:0px;color:black;"></a>
 <div id="wrap"><div id="main">
 	<div class="container_main" id="pageContent">
 		<div  id="bingoPage" style="display:flex">
@@ -344,7 +452,21 @@
 			<p></p>
 			<div style="width:230px;">
 				<button class="newcard" id="stop" style="width:80px">Start</button>
-				<button class="newcard" id="clear" style="width:80px">Reset</button>
+				<button class="newcard" id="clear" style="width:80px" >Reset</button>
+			</div>
+			<br><br><br>
+			<div id="lockoutStuff">
+				<h2>Room:</h2>
+				<input class="form-control" id="userroom"  value="" type="text" style="background:#424242;border-color:#4c4c4c #000 #000 #474747;border-radius:5px;border-style:solid;border-width:1px 0 1px 1px;box-shadow:1px 1px 2px rgba(0,0,0,0.6);">
+				<br>
+				<h2>Color:</h2>
+				<select class="form-control newcard" id="lockoutcolor"  style="text-align: center;width: 100%;">
+					<option value="green" selected style="color:#051">Green</option>
+					<option value="blue" style="color:rgb(0, 122, 179);">Blue</option>
+					<option value="purple" style="color:rgb(225, 2, 245);">Purple</option>
+					<option value="orange" style="color:rgb(245, 99, 2);">Orange</option>						
+					<option value="yellow" style="color:rgb(245, 221, 2);">Yellow</option>					  
+				</select>
 			</div>
 			<br><br>
 			<div id = "gimmicks" style="display:flex">
@@ -367,7 +489,13 @@
 			</div>
 			<div id="results"style="margin:10px;width:500px;" >				
 
-				
+				<div id="mission">
+					<p id="square1"  style="size: 20px"> Click Start Race. Then Click the goal to move onto the next one!</p>
+					<p id="square2"> No, click start, not the goal.</p>
+					<p id="square3"> Someone is not listening</p>
+					<p id="square4"> Can't you read?</p>
+					<p id="square5"> Pjii would be dissapointed in you</p>
+				</div>				
 				
 				<table id="bingo">
 					<tr>
@@ -434,7 +562,7 @@
 				<p><br></p>
 				<p>
 
-					<a class="newcard" data-toggle="modal" data-target="#myModal" style="width:500px;">Submit Bingo</a>
+					<a id="sendData" class="newcard" data-toggle="modal" data-target="#myModal" style="width:500px;">Submit Bingo</a>
 				</p>
 				<p><br></p>
 				<div style="width:500px;">
@@ -457,6 +585,7 @@
 			<li class="active"><a data-toggle="tab" href="#home" style="background:#2c2f33;">Rules</a></li>
 			<li><a data-toggle="tab" href="#menu1" style="background:#2c2f33;">Cheat Sheet</a></li>
 			<li><a data-toggle="tab" href="#menu2" style="background:#2c2f33;">Bingo-Toolie</a></li>
+			<li><a data-toggle="tab" href="#menu3" style="background:#2c2f33;">Links</a></li>
 		  </ul>
 
 		  <div class="tab-content">
@@ -516,17 +645,41 @@
 					<p></p>	
 			</div>
 			<div id="menu1" class="tab-pane fade">
-				<p></p>
-				<iframe id="googleDoc" src="https://docs.google.com/document/d/e/2PACX-1vQL_E8NAeoL1H0Iwe_KbtJXnB4e1AXN9L0T21ix4NePssAIkhVHfD98xbUpUo08lIatw1b-H3X1zgaG/pub?embedded=true" style="width:850px;height:760px;"></iframe>
-				<p></p>
-				<a class="newcard" href="https://docs.google.com/document/d/1g1p-ajc_ze5aIi49mb0AY94q4FRVvcf9WQF7il-XXmQ/edit" target="_blank" style="width:350px;">Cheat Sheet Link</a>   
+
+				<iframe id="googleDoc" src="https://docs.google.com/document/d/e/2PACX-1vQL_E8NAeoL1H0Iwe_KbtJXnB4e1AXN9L0T21ix4NePssAIkhVHfD98xbUpUo08lIatw1b-H3X1zgaG/pub?embedded=true" style="width:860px;height:800px;"></iframe>
+ 
 		   </div>
 			<div id="menu2" class="tab-pane fade">
-				<p></p>
-				<iframe id="toolie" src="https://banjospeedruns.com/bt/bingo-toolie" style="width:850px;height:760px;"></iframe>
-			  <p></p>
-			  <a class="newcard" href="https://banjospeedruns.com/bt/bingo-toolie" target="_blank" style="width:350px;">Bingo-Toolie</a>
+				<iframe id="toolie" src="https://banjospeedruns.com/bt/bingo-toolie" style="width:860px;height:800px;"></iframe>
+
 			</div>
+			<div id="menu3" class="tab-pane fade">
+				<a class="newcard" href="https://www.yorbskip.com/bingoData" target="_blank" style="width:350px;">Bingo Data Page</a>
+				<p></p>
+				<p></p>
+				<p></p>
+				<p></p>
+				<a class="newcard" href="https://pastebin.com/HYusXWkU" target="_blank" style="width:350px;">Bingo Rules</a>
+				<p></p>
+				<p></p>
+				<p></p>
+				<p></p>
+				<a class="newcard" href="https://docs.google.com/document/d/1mfGaSn2BTV40qzU0r9TmQ72ucfQzVlsPUG_6KJkKhPU/edit" target="_blank" style="width:350px;">Bingo Goals Doc</a>
+				<p></p>
+				<p></p>	
+				<p></p>	
+				<p></p>		
+				<a class="newcard" href="https://www.youtube.com/watch?v=yL-oJuR4Ffw" target="_blank" style="width:350px;">"How to Get Started with Bingo" Video</a>
+				<p></p>
+				<p></p>
+				<p></p>
+				<p></p>
+				<a class="newcard" href="https://docs.google.com/document/d/1g1p-ajc_ze5aIi49mb0AY94q4FRVvcf9WQF7il-XXmQ/edit" target="_blank" style="width:350px;">Cheat Sheet Link</a>  
+				<p></p>
+				<p></p>
+				<p></p>
+				<p></p>
+				<a class="newcard" href="https://banjospeedruns.com/bt/bingo-toolie" target="_blank" style="width:350px;">Bingo-Toolie</a>
 		  </div>			
 	</div>
 	</div>
@@ -535,6 +688,12 @@
 </div>
 </div>
 <script>
+	$("#lockoutStuff").hide();
+	$("#square1").hide();
+	$("#square2").hide();
+	$("#square3").hide();
+	$("#square4").hide();
+	$("#square5").hide();
 	var Start_Time =0;
 	if (type.includes("race")&& type.includes("gimmick")){
 
@@ -647,9 +806,38 @@
 		for (var i = 0; i < 5; i++) {
           $('#CR_'+(i+1)).html("");
         }
-	}		
+		clear_server_lockout();
+	}
+	
+	var log = document.getElementById('lockoutcolor');
+
+	log.addEventListener('input', updateValue);
+
+	function updateValue(e) {
+		document.getElementById('pickcolor').value =  e.target.value;
+	}
 		
-		
+
+	$("#square1").click(function(){
+		$("#square2").show();
+		$("#square1").css({ 'color': 'Green'});
+	});  
+	$("#square2").click(function(){
+		$("#square3").show();
+		$("#square2").css({ 'color': 'Green'});
+	}); 
+	$("#square3").click(function(){
+		$("#square4").show();
+		$("#square3").css({ 'color': 'Green'});
+	}); 
+	$("#square4").click(function(){
+		$("#square5").show();
+		$("#square4").css({ 'color': 'Green'});
+	}); 
+	$("#square5").click(function(){
+		$("#square5").css({ 'color': 'Green'});
+	}); 
+	
 </script>
 </body>
 </html>

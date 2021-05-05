@@ -22,14 +22,26 @@ function bingosetup() {
         }		
 	});
     $("#bingo tr td:not(.choice),#bingoSingle tr td:not(.choice), #selected td").click(function(){
-		if ($(this).hasClass("greensquare")){
-			$(this).addClass("redsquare").removeClass("greensquare");
+		if (lockout == false){		
+			if ($(this).hasClass(document.getElementById("pickcolor").value + "square")){
+				$(this).addClass("redsquare").removeClass(document.getElementById("pickcolor").value + "square");
+			}
+			else if ($(this).hasClass("redsquare")){
+			$(this).removeClass("redsquare");
+			}
+			else {
+			$(this).addClass(document.getElementById("pickcolor").value + "square");
+			}
 		}
-		else if ($(this).hasClass("redsquare")){
-		   $(this).removeClass("redsquare");
-		}
-		else {
-		  $(this).addClass("greensquare");
+		else{
+			if ($(this).hasClass(document.getElementById("pickcolor").value + "square")){
+				$(this).removeClass(document.getElementById("pickcolor").value + "square");
+				update_server_lockout($(this).attr('id'),"delete")
+			}
+			else {
+				update_server_lockout($(this).attr('id'),document.getElementById("pickcolor").value)
+			}
+
 		}
 	}     
   );
@@ -99,7 +111,7 @@ function bingosetup() {
 
 
 
-	goals_done();
+	goals_done(bingoBoard);
 	
 }
 

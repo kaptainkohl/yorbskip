@@ -288,6 +288,62 @@ th {
 	background:#072;
 }
 
+
+
+
+#bingoPage #bingo tr td.bluesquare {
+	background:rgb(0, 122, 179);
+}
+
+#bingoPage #bingo tr td.bluesquare:hover,#bingoPage #bingo tr td.bluesquare.hover {
+	background:rgb(86, 192, 241);
+}
+
+#bingoPage #bingo tr td.orangesquare {
+	background:rgb(245, 99, 2);
+}
+
+#bingoPage #bingo tr td.orangesquare:hover,#bingoPage #bingo tr td.orangesquare.hover {
+	background:rgb(241, 148, 86);
+}
+
+#bingoPage #bingo tr td.purplesquare {
+	background:rgb(225, 2, 245);
+}
+
+#bingoPage #bingo tr td.purplesquare:hover,#bingoPage #bingo tr td.purplesquare.hover {
+	background:rgb(236, 86, 241);
+}
+
+#bingoPage #bingo tr td.yellowsquare {
+	background:rgb(245, 221, 2);
+}
+
+#bingoPage #bingo tr td.yellowsquare:hover,#bingoPage #bingo tr td.yellowsquare.hover {
+	background:rgb(241, 238, 86);
+}
+
+#square1,#square2 ,#square3 ,#square4 ,#square5  {
+	display: block;  
+	width: 500px;
+	min-width: 200px;
+	height: 120px;
+	min-height: 100px;
+	color: #fff;
+	overflow: hidden;
+	margin: 0;
+	padding:2%;
+	border-color: white;
+	box-sizing:border-box;
+	background:#000;
+	font-size: 250%;
+	border:1px #424242 solid;
+	text-align: center;
+  }
+ 
+
+
+
 #bingoPage #bingo tr td.redsquare {
 	background:#501;
 }
@@ -369,6 +425,38 @@ th {
 
 #bingoPage #time_id tr td.greensquare:hover,#bingoPage #time_id tr td.greensquare.hover {
 	background:#072;
+}
+
+#bingoPage #time_id tr td.bluesquare {
+	background:rgb(0, 122, 179);
+}
+
+#bingoPage #time_id tr td.bluesquare:hover,#bingoPage #time_id tr td.bluesquare.hover {
+	background:rgb(86, 192, 241);
+}
+
+#bingoPage #time_id tr td.orangesquare {
+	background:rgb(245, 99, 2);
+}
+
+#bingoPage #time_id tr td.orangesquare:hover,#bingoPage #time_id tr td.orangesquare.hover {
+	background:rgb(241, 148, 86);
+}
+
+#bingoPage #time_id tr td.purplesquare {
+	background:rgb(225, 2, 245);
+}
+
+#bingoPage #time_id tr td.purplesquare:hover,#bingoPage #time_id tr td.purplesquare.hover {
+	background:rgb(236, 86, 241);
+}
+
+#bingoPage #time_id tr td.yellowsquare {
+	background:rgb(245, 221, 2);
+}
+
+#bingoPage #time_id tr td.yellowsquare:hover,#bingoPage #time_id tr td.yellowsquare.hover {
+	background:rgb(241, 238, 86);
 }
 
 #bingoPage #time_id tr td.redsquare {

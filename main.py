@@ -10,6 +10,7 @@ import requests
 from bs4 import BeautifulSoup
 from google.cloud import storage
 
+
 client = storage.Client()
 bucket = client.get_bucket('my-project-1474166845942.appspot.com')
 
@@ -33,6 +34,7 @@ previous_data = ""
 
 lockout = {}
 
+
 def start_timer():
     global start_time
     start_time = datetime.datetime.now()
@@ -55,13 +57,42 @@ def index():
 def ping_mess():
     return render_template('ping.html')
 
+# ---------LOCKOUT---------------------
 @app.route('/lock_ping',methods=['GET', 'POST'])
 def lock_ping():
-    room = request.form['room']
-    card = request.form['card']
-    if lockout[room]:
-        return lockout[room]
-    return "null"
+    global lockout
+    room = request.args.get('room','-1')
+    if room in lockout:
+        return jsonify(result=lockout[room])
+    return "no room found"
+
+@app.route('/lock_update',methods=['GET', 'POST'])
+def lock_update():
+    global lockout
+    room = request.args.get('room','-1')
+    num = request.args.get('num','-1')
+    color = request.args.get('color','delete')
+    if room in lockout:
+        if num in lockout:
+            if color == "delete":
+                lockout[room].remove(num)
+        else:
+            lockout[room][num] = color   
+    else:
+        lockout[room] = {}
+        lockout[room][num] = color
+    
+    return jsonify(result=lockout[room])
+
+@app.route('/lock_clear',methods=['GET', 'POST'])
+def lock_clear():
+    global lockout
+    room = request.args.get('room','-1')
+    if room in lockout:
+        lockout[room] = {}
+    return "Cleared"
+
+
 
 @app.route('/_timerStart')
 def time_mess():

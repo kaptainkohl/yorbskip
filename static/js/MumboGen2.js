@@ -214,6 +214,7 @@ bingoGenerator = function(bingoList, opts){
             var square = population_order[i];
             var difficulty = template[square];
             var goal = choose_goal(bingoList, difficulty, collisions[square].types, collisions[square].subtypes);
+            goal["difficulty"] = difficulty;
             card[square] = goal;
             var new_types = goal.types;
             var new_subtypes = goal.subtypes;
